@@ -10,8 +10,8 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  webAppName: $(WebAppName)
-  ResourceGroupName: $(ResourceGroup)
+- group: azure
+- group: vsf
 
 jobs:
   - job: build
@@ -22,6 +22,6 @@ jobs:
         inputs:
           command: buildAndpush
           Dockerfile: docker/vue-storefront/Dockerfile
-          repository: $(AzureContainerRegistry)
+          repository: $(DockerRepository)
           containerRegistry: $(AzureContainerRegistry)
           tags: $(DockerTag)
