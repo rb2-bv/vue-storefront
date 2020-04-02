@@ -23,7 +23,7 @@ jobs:
         inputs:
           command: buildAndpush
           Dockerfile: docker/vue-storefront/Dockerfile
-          buildContext: ../..
+          buildContext: $(Build.SourcesDirectory)/**
           repository: $(DockerRepository)
           containerRegistry: $(AzureContainerRegistry)
           tags: $(DockerTag)-$(Build.SourceBranchName)
