@@ -1,0 +1,4 @@
+[submodule "src/themes/capybara"]
+	path = src/themes/capybara
+	url = https://github.com/rb2-bv/vsf-capybara.git
+	branch = master
