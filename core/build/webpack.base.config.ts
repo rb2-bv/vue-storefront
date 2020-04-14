@@ -75,7 +75,10 @@ export default {
       'process.env.__BUILDTIME__': JSON.stringify(dayjs().format('YYYY-MM-DD HH:mm:ss'))
     })
   ],
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: '../../dist'
+  },
   entry: {
     app: ['@babel/polyfill', './core/client-entry.ts']
   },
