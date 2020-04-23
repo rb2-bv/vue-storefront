@@ -490,10 +490,10 @@ export interface Category {
     parentId?: string | null;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<CategoryParent>}
      * @memberof Category
      */
-    parentIds?: Array<string> | null;
+    parents?: Array<CategoryParent> | null;
     /**
      * 
      * @type {boolean}
@@ -539,10 +539,41 @@ export interface CategoryChildren {
     label?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof CategoryChildren
+     */
+    urlPath?: string | null;
+    /**
+     * 
      * @type {Array<CategoryChildren>}
      * @memberof CategoryChildren
      */
     children?: Array<CategoryChildren> | null;
+}
+/**
+ * 
+ * @export
+ * @interface CategoryParent
+ */
+export interface CategoryParent {
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryParent
+     */
+    id?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryParent
+     */
+    label?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryParent
+     */
+    urlPath?: string | null;
 }
 /**
  * 

@@ -1,36 +1,37 @@
 /* istanbul ignore file */
 
 import { UserOrderGetters } from '@vue-storefront/core';
-import { BapiOrder, BapiLineItem } from '../../types';
+import { CartTotal, CartItem } from '../../types';
+import { formatPrice } from 'composables/src/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getDate = (order: BapiOrder): string => '123';
+export const getDate = (order: CartTotal): string => order?.orderDate;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getId = (order: BapiOrder): string => '123';
+export const getId = (order: CartTotal): string => order?.orderId;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getStatus = (order: BapiOrder): string => '';
+export const getStatus = (order: CartTotal): string => order?.status || '';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getPrice = (order: BapiOrder): number => 0;
+export const getPrice = (order: CartTotal): number => order?.grandTotal || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getItems = (order: BapiOrder): BapiLineItem[] => [];
+export const getItems = (order: CartTotal): CartItem[] => order?.items || [];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getItemSku = (item: BapiLineItem): string => 'sku-1';
+export const getItemSku = (item: CartItem): string => item?.sku || '';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getItemName = (item: BapiLineItem): string => 'bapi-line-item-1';
+export const getItemName = (item: CartItem): string => item?.name || '';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getItemQty = (item: BapiLineItem): number => 0;
+export const getItemQty = (item: CartItem): number => item?.quantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getFormattedPrice = (price: number) => String(price);
+export const getFormattedPrice = (price: number) => formatPrice(price);
 
-const orderGetters: UserOrderGetters<BapiOrder, BapiLineItem> = {
+const orderGetters: UserOrderGetters<CartTotal, CartItem> = {
   getDate,
   getId,
   getStatus,

@@ -2,10 +2,8 @@
 
 import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticAttribute } from '@vue-storefront/core';
 import { CartItem, CartTotal } from '../../types';
-import { locale,
-  currency,
-  country,
-  priceWithTax } from '@vue-storefront/commerceapi-api';
+import { formatPrice } from '../../helpers';
+import { priceWithTax } from '@vue-storefront/commerceapi-api';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItems = (cart: CartTotal): CartItem[] => cart ? cart.items : [];
@@ -60,8 +58,7 @@ export const getCartShippingPrice = (cart: CartTotal): number => cart.shippingIn
 export const getCartTotalItems = (cart: CartTotal): number => cart.totalQuantity;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getFormattedPrice = (price: number) =>
-  new Intl.NumberFormat(`${locale}-${country}`, { style: 'currency', currency }).format(price);
+export const getFormattedPrice = (price: number) => formatPrice(price);
 
 const cartGetters: CartGetters<CartTotal, CartItem> = {
   getTotals: getCartTotals,
