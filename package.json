@@ -1,9 +1,6 @@
 {
   "name": "root",
   "private": true,
-  "engines": {
-    "node": "10.x"
-  },
   "scripts": {
     "build:docs": "cd packages/core/docs && yarn build",
     "dev:docs": "cd packages/core/docs && yarn dev",
@@ -36,7 +33,12 @@
     "dev:ay": "cd packages/about-you/theme && yarn dev",
     "dev:bp": "cd packages/boilerplate/theme && yarn dev",
     "dev:ct": "cd packages/commercetools/theme && yarn dev",
-    "lint": "eslint . --ext .js,.ts,.vue"
+    "lint": "eslint . --ext .js,.ts,.vue",
+    "build:ca:api-client": "cd packages/commerceapi/api-client && yarn build",
+    "build:ca:composables": "cd packages/commerceapi/composables && yarn build",
+    "build:ca:theme": "cd packages/commerceapi/theme && yarn build",
+    "dev:ca": "cd packages/commerceapi/theme && yarn dev",
+    "dev:ca:inspect": "cd packages/commerceapi/theme && yarn dev:inspect"    
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
@@ -73,7 +75,8 @@
       "packages/boilerplate/*",
       "packages/core/*",
       "packages/prismic",
-      "packages/about-you/*"
+      "packages/about-you/*",
+      "packages/commerceapi/*"
     ],
     "nohoist": [
       "**/**/**"
