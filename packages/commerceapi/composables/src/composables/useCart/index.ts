@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
-import { UseCart } from '@vue-storefront/core';
 import { useCartFactory, UseCartFactoryParams } from '@vue-storefront/core';
 import { ref, Ref } from '@vue/composition-api';
+
 import {
   CartItem,
   Product,
@@ -12,11 +12,10 @@ import {
   cartApplyCoupon,
   cartDeleteCoupon,
   cartClear,
-  CartTotal} from '../../types';
+  CartTotal
+} from '../../types';
 
 export const cart: Ref<CartTotal> = ref(null);
-
-// @todo: implement cart
 
 const params: UseCartFactoryParams<CartTotal, CartItem, Product, string> = {
   cart,
@@ -59,6 +58,4 @@ const params: UseCartFactoryParams<CartTotal, CartItem, Product, string> = {
   }
 };
 
-const useCart: () => UseCart<CartTotal, CartItem, Product, string> = useCartFactory<CartTotal, CartItem, Product, string>(params);
-
-export default useCart;
+export default useCartFactory<CartTotal, CartItem, Product, string>(params);

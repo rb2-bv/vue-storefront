@@ -1,6 +1,6 @@
 # theme
 
-> commerceapi theme
+> My breathtaking Nuxt.js project
 
 ## Build Setup
 

@@ -20,9 +20,15 @@
       ],
       "@/*": [
         "./*"
-      ]
+      ],
+      "@vue-storefront/commerceapi-api": ["../api-client/src"],
+      "@vue-storefront/commerceapi": ["../composables/src"]
     },
-    "types": []
+    "types": [
+      "@types/node",
+      "@nuxt/types",
+      "nuxt-i18n"
+    ]
   },
   "exclude": [
     "node_modules"

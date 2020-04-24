@@ -16,9 +16,11 @@ let priceWithTax = true;
 let locale = 'en';
 let currency = 'EUR';
 let country = 'nl';
-let currencies = ['EUR'];
-let countries = ['nl'];
-let locales = ['en'];
+let currencies = [{code: 'EUR', label: 'Euro', prefixSign: true, sign: '€'}];
+let countries = [{code: 'nl', label: 'Nederland'}];
+let locales = [{code: 'en', label: 'English' }];
+let tokenChanged: (token: string, refresh: string) => void = () => {};
+let cartChanged: (cartId: string) => void = () => {};
 export let currentToken = '';
 export let currentRefreshToken = '';
 export let currentCart = '';
@@ -60,14 +62,6 @@ let methods = {
   userResetPassword: userApi.apiUserResetPasswordPost
 };
 
-let cookies = {
-  currencyCookieName: 'vsf-currency',
-  countryCookieName: 'vsf-country',
-  localeCookieName: 'vsf-locale',
-  cartCookieName: 'vsf-cart',
-  tokenCookieName: 'vsf-token'
-};
-
 function override(overrides) {
   methods = { ...methods,
     ...overrides };
@@ -81,7 +75,6 @@ function setup(setupConfig) {
   locale = setupConfig.locale || locale;
   currency = setupConfig.currency || currency;
   country = setupConfig.country || country;
-  cookies = setupConfig.cookies || cookies;
   currentToken = setupConfig.currentToken || currentToken;
   currentRefreshToken = setupConfig.currentRefreshToken || currentRefreshToken;
   currentCart = setupConfig.currentCart || currentCart;
@@ -89,6 +82,8 @@ function setup(setupConfig) {
   currencies = setupConfig.currencies || currencies;
   countries = setupConfig.countries || countries;
   locales = setupConfig.locale || locales;
+  tokenChanged = setupConfig.tokenChanged || tokenChanged;
+  cartChanged = setupConfig.cartChanged || cartChanged;
 
   cartApi = new CartApi(config);
   catalogApi = new CatalogApi(config);
@@ -105,11 +100,13 @@ const cartDeleteCoupon = async() => (await methods.cartDeleteCoupon(currentToken
 const cartLoad = async() =>{
   if (!currentCart) {
     currentCart = (await methods.cartCreate(currentToken)).data;
+    cartChanged(currentCart);
   }
   let data = await methods.cartTotals(currentToken, currentCart);
   if (data.status === 404) {
     currentCart = (await methods.cartCreate(currentToken)).data;
     data = await methods.cartTotals(currentToken, currentCart);
+    cartChanged(currentCart);
   }
   return data.data;
 };
@@ -143,19 +140,32 @@ const userCreate = async(firstName: string, lastName: string, email: string, pas
 const userLogin = async (email: string, password: string) => {
   const newTok = (await (methods.userLogin(email, password))).data;
   if (!newTok) return false;
+  const oldId = currentCart;
+  const cartContent = await cartLoad();
+
   currentRefreshToken = newTok.refresh;
   currentToken = newTok.token;
+  tokenChanged(currentToken, currentRefreshToken);
+
+  await cartLoad();
+  if (currentCart !== oldId) {
+    for (let i = 0; i < cartContent.items.length; i++) {
+      await cartUpdate(cartContent.items[i]);
+    }
+  }
   return true;
 };
 const userMe = async () => (await methods.userMe(currentToken)).data;
 const userMeSet = async (newData: UserInfo) => (await methods.userMeSet(currentToken, newData)).data;
 const userRefresh = async () => {
   currentToken = (await methods.userRefresh(currentRefreshToken)).data;
+  tokenChanged(currentToken, currentRefreshToken);
 };
 const userOrderHistory = async (skip: number) => (await methods.userOrderHistory(currentToken, skip)).data;
 const userLogout = async() => {
   currentToken = null;
   currentRefreshToken = null;
+  tokenChanged(currentToken, currentRefreshToken);
 };
 
 const cartPaymentMethods = async () => (await methods.cartPaymentMethods(currentToken, currentCart)).data;
@@ -221,7 +231,6 @@ export {
   priceWithTax,
   currency,
   country,
-  cookies,
   countries,
   locales,
   currencies
