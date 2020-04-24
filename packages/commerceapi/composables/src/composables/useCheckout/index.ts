@@ -2,8 +2,7 @@
 
 import { UseCheckout } from '@vue-storefront/core';
 import { ref, Ref, watch, computed } from '@vue/composition-api';
-import { CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo } from '@vue-storefront/commerceapi-api/src/swagger';
-import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order } from '@vue-storefront/commerceapi-api/src';
+import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order, CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo } from '@vue-storefront/commerceapi-api';
 import { PaymentMethod } from 'composables/src/types';
 
 export const paymentMethods: Ref<CartPaymentMethod[]> = ref([]);

@@ -1,7 +1,6 @@
-import { ProductProperty } from '@vue-storefront/commerceapi-api/src/swagger';
+import { ProductProperty } from '@vue-storefront/commerceapi-api';
 
-export * from '@vue-storefront/commerceapi-api/src';
-export * from '@vue-storefront/commerceapi-api/src/swagger';
+export * from '@vue-storefront/commerceapi-api';
 
 // Variant OR Product
 export interface ProductInfo {

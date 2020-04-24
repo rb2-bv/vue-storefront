@@ -1,6 +1,9 @@
 import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
 
+export * from './swagger';
+export * from './types';
+
 let cartApi: CartApi = null;
 let catalogApi: CatalogApi = null;
 let orderApi: OrderApi = null;
@@ -223,3 +226,4 @@ export {
   locales,
   currencies
 };
+

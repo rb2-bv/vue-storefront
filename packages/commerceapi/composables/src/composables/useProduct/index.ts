@@ -1,6 +1,6 @@
 import { useProductFactory, ProductsSearchResult } from '@vue-storefront/core';
 import { ProductInfo, catalogProducts, priceWithTax } from 'composables/src/types';
-import { CatalogProductRequest } from '@vue-storefront/commerceapi-api/src/types';
+import { CatalogProductRequest } from '@vue-storefront/commerceapi-api';
 
 const productsSearch = async (params: CatalogProductRequest): Promise<ProductsSearchResult<ProductInfo>> => {
   const productResponse = await catalogProducts(params);
