@@ -1,7 +1,7 @@
 import { ProductProperty } from '@vue-storefront/commerceapi-api/src/swagger';
 
-export * from '../../../api-client/src/index';
-export * from '../../../api-client/src/swagger/index';
+export * from '@vue-storefront/commerceapi-api/src';
+export * from '@vue-storefront/commerceapi-api/src/swagger';
 
 // Variant OR Product
 export interface ProductInfo {
@@ -18,4 +18,20 @@ export interface ProductInfo {
     categoryIds?: string[];
     variant: boolean;
     properties: ProductProperty[];
+}
+
+export interface CreateUserInfo {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+}
+
+export interface SearchOrderHistory {
+  skip: number;
+}
+
+export interface PaymentMethod {
+    methodName?: string;
+    extraInfo?: any;
 }

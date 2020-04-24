@@ -1,15 +1,11 @@
-/* istanbul ignore file */
-
 import { useUserOrdersFactory, UseUserOrdersFactoryParams, OrdersSearchResult } from '@vue-storefront/core';
-import { BapiOrder, BapiOrderSearchParams } from '../../types';
+import { CartTotal, SearchOrderHistory, userOrderHistory } from '../../types';
 
-// @todo userOrders
-
-const params: UseUserOrdersFactoryParams<BapiOrder, BapiOrderSearchParams> = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  searchOrders: async (params: BapiOrderSearchParams = {}): Promise<OrdersSearchResult<BapiOrder>> => new Promise(() => ({}))
+const params: UseUserOrdersFactoryParams<CartTotal, SearchOrderHistory> = {
+  searchOrders: async ({ skip }: SearchOrderHistory = {skip: 0}): Promise<OrdersSearchResult<CartTotal>> => {
+    const result = await userOrderHistory(skip);
+    return { data: result.items, total: result.totalCount };
+  }
 };
 
-const useUserOrders: () => any = useUserOrdersFactory<BapiOrder, BapiOrderSearchParams>(params);
-
-export default useUserOrders;
+export default useUserOrdersFactory<CartTotal, SearchOrderHistory>(params);

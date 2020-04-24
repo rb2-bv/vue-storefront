@@ -1,4 +1,4 @@
-import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem } from './swagger/index';
+import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
 
 let cartApi: CartApi = null;
@@ -17,6 +17,7 @@ let currencies = ['EUR'];
 let countries = ['nl'];
 let locales = ['en'];
 export let currentToken = '';
+export let currentRefreshToken = '';
 export let currentCart = '';
 
 let methods = {
@@ -47,7 +48,7 @@ let methods = {
   productRenderList: productApi.apiProductRenderListGet,
   userChangePassword: userApi.apiUserChangePasswordPost,
   userCreatePassword: userApi.apiUserCreatePasswordPost,
-  userCreate: userApi.apiUserCreatePasswordPost,
+  userCreate: userApi.apiUserCreatePost,
   userLogin: userApi.apiUserLoginPost,
   userMe: userApi.apiUserMeGet,
   userMeSet: userApi.apiUserMePost,
@@ -79,6 +80,7 @@ function setup(setupConfig) {
   country = setupConfig.country || country;
   cookies = setupConfig.cookies || cookies;
   currentToken = setupConfig.currentToken || currentToken;
+  currentRefreshToken = setupConfig.currentRefreshToken || currentRefreshToken;
   currentCart = setupConfig.currentCart || currentCart;
   priceWithTax = setupConfig.priceWithTax || priceWithTax;
   currencies = setupConfig.currencies || currencies;
@@ -131,25 +133,40 @@ const stockCheck = methods.stockCheck;
 const stockList = methods.stockList;
 const productRenderList = methods.productRenderList;
 
-/* const cartPaymentMethods =  methods.cartPaymentMethods;
-const cartShippingInformation =  methods.cartShippingInformation;
-const catalogCmsBlock = methods.catalogCmsBlock;
+const userChangePassword = async (currentPassword: string, newPassword: string) => (await methods.userChangePassword(currentToken, currentPassword, newPassword)).data;
+const userResetPassword = async (email: string) => (await methods.userResetPassword(email)).data;
+const userCreatePassword = async (email: string, newPassword: string, resetToken: string) => (await methods.userCreatePassword(currentToken, email, newPassword, resetToken)).data;
+const userCreate = async(firstName: string, lastName: string, email: string, password: string) => (await (methods.userCreate(firstName, lastName, email, password))).data;
+const userLogin = async (email: string, password: string) => {
+  const newTok = (await (methods.userLogin(email, password))).data;
+  if (!newTok) return false;
+  currentRefreshToken = newTok.refresh;
+  currentToken = newTok.token;
+  return true;
+};
+const userMe = async () => (await methods.userMe(currentToken)).data;
+const userMeSet = async (newData: UserInfo) => (await methods.userMeSet(currentToken, newData)).data;
+const userRefresh = async () => {
+  currentToken = (await methods.userRefresh(currentRefreshToken)).data;
+};
+const userOrderHistory = async (skip: number) => (await methods.userOrderHistory(currentToken, skip)).data;
+const userLogout = async() => {
+  currentToken = null;
+  currentRefreshToken = null;
+};
+
+const cartPaymentMethods = async () => (await methods.cartPaymentMethods(currentToken, currentCart)).data;
+const cartShippingInformation = async(carrierCode: string, userAddress: UserAddress) => (await methods.cartShippingInformation(currentToken, currentCart, carrierCode, userAddress)).data;
+const cartShippingMethods = async(address: UserAddress) => (await methods.cartShippingMethods(currentToken, currentCart, address)).data;
+const orderPaymentSubMethods = async(method: string) => (await methods.orderPaymentSubMethods(method)).data;
+const order = async(data: CreateOrderRequest) => (await methods.order(currentToken, currentCart, data)).data;
+const orderStartPayment = async(data: RequestStartPayment) => (await methods.orderStartPayment(data)).data;
+
+/* const catalogCmsBlock = methods.catalogCmsBlock;
 const catalogCmsPage = methods.catalogCmsPage;
-const catalogRelatedProducts = methods.catalogRelatedProducts;
-const cartShippingMethods =  methods.cartShippingMethods;
-const orderPaymentSubMethods =  methods.orderPaymentSubMethods;
-const order =  methods.order;
-const orderStartPayment =  methods.orderStartPayment;
 const reviewCreate =  methods.reviewCreate;
-const userChangePassword =  methods.userChangePassword;
-const userCreatePassword =  methods.userCreatePassword;
-const userCreate =  methods.userCreatePassword;
-const userLogin =  methods.userLogin;
-const userMe =  methods.userMe;
-const userMeSet =  methods.userMeSet;
-const userOrderHistory =  methods.userOrderHistory;
-const userRefresh =  methods.userRefresh;
-const userResetPassword =  methods.userResetPassword;*/
+const catalogRelatedProducts = methods.catalogRelatedProducts;
+*/
 
 export {
 
@@ -165,25 +182,11 @@ export {
   cartClear,
   catalogAttributes,
   catalogCategories,
-  // catalogCmsBlock,
-  // catalogCmsPage,
   catalogProducts,
-  // catalogRelatedProducts,
   catalogReviews,
   stockCheck,
   stockList,
   productRenderList,
-
-  /*
-  reviewCreate,
-  cartPaymentMethods,
-  cartPull,
-  cartShippingInformation,
-  cartShippingMethods,
-  cartTotals,
-  orderPaymentSubMethods,
-  order,
-  orderStartPayment,
   userChangePassword,
   userCreatePassword,
   userCreate,
@@ -193,6 +196,23 @@ export {
   userOrderHistory,
   userRefresh,
   userResetPassword,
+  userLogout,
+
+  cartPaymentMethods,
+  cartShippingInformation,
+  cartShippingMethods,
+  orderPaymentSubMethods,
+  order,
+  orderStartPayment,
+
+  // catalogCmsBlock,
+  // catalogCmsPage,
+  // catalogRelatedProducts,
+  /*
+  reviewCreate,
+  cartPull,
+  cartTotals,
+
 */
   locale,
   priceWithTax,

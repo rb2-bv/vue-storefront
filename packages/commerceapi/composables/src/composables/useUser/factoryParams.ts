@@ -1,35 +1,32 @@
-/* istanbul ignore file */
+import {UseUserFactoryParams} from '@vue-storefront/core';
+import { UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo } from '../../types';
+import useCart from '../useCart';
 
-import { UseUserFactoryParams } from '@vue-storefront/core';
-import { BapiUser } from '../../types';
-
-export const params: UseUserFactoryParams<BapiUser, any, any> = {
+export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = {
   loadUser: async () => {
-    // @todo
-    return {};
+    const profile = await userMe();
+    return profile;
   },
   logOut: async () => {
-    // @todo
+    userLogout();
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateUser: async ({currentUser, updatedUserData}): Promise<BapiUser> => {
-    // @todo
-    return {};
+  updateUser: async ({updatedUserData}): Promise<UserInfo> => {
+    await userMeSet(updatedUserData);
+    return updatedUserData;
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  register: async ({email, password, firstName, lastName}) => {
-    // @todo
-    return {};
+  register: async ({email, password, firstName, lastName}: CreateUserInfo) => {
+    return await userCreate(firstName, lastName, email, password);
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   logIn: async ({ username, password }) => {
-    // @todo
-    return {};
+    await useCart().refreshCart();
+    if (await userLogin(username, password)) {
+      return await userMe();
+    }
+    return null;
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  changePassword: async function changePassword({currentUser, currentPassword, newPassword}) {
-    // @todo
-    return {};
+  changePassword: async function changePassword({currentPassword, newPassword}) {
+    await userChangePassword(currentPassword, newPassword);
+    return await userMe();
   }
 };
 
