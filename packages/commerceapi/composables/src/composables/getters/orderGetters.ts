@@ -2,7 +2,7 @@
 
 import { UserOrderGetters } from '@vue-storefront/core';
 import { CartTotal, CartItem } from '../../types';
-import { formatPrice } from 'composables/src/helpers';
+import { formatPrice } from '../../helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getDate = (order: CartTotal): string => order?.orderDate;

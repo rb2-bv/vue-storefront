@@ -8,22 +8,26 @@ export const getCategoryTree = (category: Category): AgnosticCategoryTree => {
   // we need to build a tree, and return the root.
   const mapChildren = (cat: CategoryChildren): AgnosticCategoryTree => ({
     items: cat.children ? cat.children.map(mapChildren) : [],
-    label: cat.label,
-    slug: cat.urlPath
+    label: cat.label || "",
+    slug: cat.urlPath || ""
   });
 
   let res: AgnosticCategoryTree = {
-    label: category.slug,
-    slug: category.urlPath,
+    label: category.slug || "",
+    slug: category.urlPath || "",
     items: category.children ? category.children.map(mapChildren) : []
   };
 
-  for (let i = category.parents.length - 1; i >= 0; i--) {
-    res = {
-      items: [res],
-      label: category.parents[i].label,
-      slug: category.parents[i].urlPath
-    };
+  if (!category) 
+    res = {label: "", items:[]}
+  else {
+    for (let i = category!.parents!.length - 1; i >= 0; i--) {
+      res = {
+        items: [res],
+        label: category!.parents![i].label || "",
+        slug: category!.parents![i].urlPath || ""
+      };
+    }
   }
 
   return res;

@@ -3,9 +3,9 @@
 import { UserGetters} from '@vue-storefront/core';
 import { UserInfo } from '../../types';
 
-export const getUserFirstName = (user: UserInfo): string => user ? user.firstName : '';
+export const getUserFirstName = (user: UserInfo): string => user?.firstName ? user.firstName : '';
 
-export const getUserLastName = (user: UserInfo): string => user ? user.lastName : '';
+export const getUserLastName = (user: UserInfo): string => user?.lastName ? user.lastName : '';
 
 export const getUserFullName = (user: UserInfo): string => user ? `${user.firstName} ${user.lastName}` : '';
 

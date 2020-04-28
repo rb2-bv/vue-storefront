@@ -1,11 +1,8 @@
 export const config = {
   basePath: 'http://localhost:9999',
-  locale: { name: 'en',
-    label: 'English' },
-  currency: { name: 'EUR',
-    label: 'Euro' },
-  country: { name: 'NL',
-    label: 'Netherlands' },
+  locale: 'en',
+  currency: 'EUR',
+  country: 'NL',
   countries: [
     { name: 'US',
       label: 'United States' },

@@ -19,8 +19,8 @@ module.exports = async function DefaultThemeModule(moduleOptions) {
 
   const baseThemeDir = path.join(__dirname, 'theme');
   const projectLocalThemeDir = this.options.buildDir.replace('.nuxt', '.theme');
-  const themeComponentsDir = path.join(this.options.rootDir, 'pages');
-  const themePagesDir = path.join(this.options.rootDir, 'components');
+  const themeComponentsDir = path.join(this.options.rootDir, 'components');
+  const themePagesDir = path.join(this.options.rootDir, 'pages');
   const themeHelpersDir = path.join(this.options.rootDir, 'helpers');
   const themeFiles = getAllFilesFromDir(baseThemeDir).filter(file => !file.includes(path.sep + 'static' + path.sep));
 

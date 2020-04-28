@@ -7,11 +7,13 @@ export function generateBaseConfig(pkg) {
     output: [
       {
         file: pkg.main,
-        format: 'cjs'
+        format: 'cjs',
+        sourceMap: 'inline'
       },
       {
         file: pkg.module,
-        format: 'es'
+        format: 'es',
+        sourceMap: 'inline'
       }
     ],
     external: [

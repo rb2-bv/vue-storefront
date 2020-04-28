@@ -10,13 +10,13 @@ export const formatAttributeList = (attributes: ProductProperty[]): AgnosticAttr
   attributes.map((attr) => {
     const attrValue = String(attr.intValue ?? attr.decimalValue ?? attr.stringValue);
     return {
-      name: attr.name,
-      value: attrValue,
-      label: attr.displayValue
+      name: attr.name || "",
+      value: attrValue || "",
+      label: attr.displayValue || ""
     };
   });
 
-export const getVariantByAttributes = (products: ProductInfo[] | Readonly<ProductInfo[]>, attributes: any): ProductInfo => {
+export const getVariantByAttributes = (products: ProductInfo[] | Readonly<ProductInfo[]>, attributes: any): ProductInfo | null => {
   if (!products || products.length === 0) {
     return null;
   }
@@ -29,5 +29,5 @@ export const getVariantByAttributes = (products: ProductInfo[] | Readonly<Produc
     return configurationKeys.every((attrName) =>
       currentAttributes.find(({ name, value }) => attrName === name && attributes[attrName] === value)
     );
-  });
+  }) || null;
 };

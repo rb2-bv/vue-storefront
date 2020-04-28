@@ -3,7 +3,7 @@
 import { UseCheckout } from '@vue-storefront/core';
 import { ref, Ref, watch, computed } from '@vue/composition-api';
 import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order, CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo } from '@vue-storefront/commerceapi-api';
-import { PaymentMethod } from 'composables/src/types';
+import { PaymentMethod } from '../../types';
 
 export const paymentMethods: Ref<CartPaymentMethod[]> = ref([]);
 export const shippingMethods: Ref<CartShippingMethod[]> = ref([]);
@@ -38,7 +38,7 @@ Ref<UserInfo>, Ref<UserAddress>, Ref<UserAddress>, Ref<PaymentMethod>, Ref<CartS
     loading.value = true;
     try {
       if (chosenShippingMethod) {
-        await cartShippingInformation(chosenShippingMethod.value.code, shippingDetails.value);
+        await cartShippingInformation(chosenShippingMethod.value.code!, shippingDetails.value);
       }
       shippingMethods.value = await cartShippingMethods(shippingDetails.value);
       paymentMethods.value = await cartPaymentMethods();
@@ -48,7 +48,7 @@ Ref<UserInfo>, Ref<UserAddress>, Ref<UserAddress>, Ref<PaymentMethod>, Ref<CartS
   });
 
   const placeOrder = async () => {
-    await cartShippingInformation(chosenShippingMethod.value.code, shippingDetails.value);
+    await cartShippingInformation(chosenShippingMethod.value.code!, shippingDetails.value);
     return await order({
       billingAddress: billingDetails.value,
       shippingAddress: shippingDetails.value,

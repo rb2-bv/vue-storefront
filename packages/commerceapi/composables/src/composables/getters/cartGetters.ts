@@ -6,56 +6,57 @@ import { formatPrice } from '../../helpers';
 import { priceWithTax } from '@vue-storefront/commerceapi-api';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItems = (cart: CartTotal): CartItem[] => cart ? cart.items : [];
+export const getCartItems = (cart: CartTotal): CartItem[] => cart?.items ? cart.items! : [];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemName = (product: CartItem): string => product.name;
+export const getCartItemName = (product: CartItem): string => product.name || "";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemImage = (product: CartItem): string => product.image;
+export const getCartItemImage = (product: CartItem): string => product.image || "";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItemPrice = (product: CartItem): AgnosticPrice => {
   return {
-    regular: priceWithTax ? product.priceInclTax : product.price,
-    special: priceWithTax ? product.specialPriceIncludingTax : product.specialPrice
+    regular: priceWithTax ? product.priceInclTax || 0 : product!.price || 0,
+    special: priceWithTax ? product.specialPriceIncludingTax || 0: product!.specialPrice || 0
   };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemQty = (product: CartItem): number => product.quantity;
+export const getCartItemQty = (product: CartItem): number => product.quantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItemAttributes = (product: CartItem, filterByAttributeName?: Array<string>) => {
   const o: Record<string, AgnosticAttribute | string> = {};
-  for (const el in product.properties) {
-    const prop = product.properties[el];
-    if (filterByAttributeName && -1 === filterByAttributeName.indexOf(prop.name)) continue;
-    o[prop.name] = {
-      label: prop.displayName,
-      name: prop.name,
-      value: prop.displayValue
+  for (var el = 0; el < product!.properties!.length; el++) 
+  {
+    const prop = product!.properties![el];
+    if (filterByAttributeName && -1 === filterByAttributeName.indexOf(prop!.name!)) continue;
+    o[prop!.name!] = {
+      label: prop.displayName!,
+      name: prop.name!,
+      value: prop.displayValue!
     };
   }
   return o;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemSku = (product: CartItem): string => product.sku;
+export const getCartItemSku = (product: CartItem): string => product.sku || "";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartTotals = (cart: CartTotal): AgnosticTotals => {
   return {
-    total: cart.grandTotal,
-    subtotal: cart.subTotal
+    total: cart.grandTotal || 0,
+    subtotal: cart.subTotal || 0
   };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartShippingPrice = (cart: CartTotal): number => cart.shippingIncludingTax;
+export const getCartShippingPrice = (cart: CartTotal): number => cart.shippingIncludingTax || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotalItems = (cart: CartTotal): number => cart.totalQuantity;
+export const getCartTotalItems = (cart: CartTotal): number => cart.totalQuantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFormattedPrice = (price: number) => formatPrice(price);

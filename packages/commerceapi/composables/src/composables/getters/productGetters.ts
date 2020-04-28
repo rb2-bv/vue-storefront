@@ -7,7 +7,7 @@ import {
   ProductGetters
 } from '@vue-storefront/core';
 import { ProductInfo } from '../../types';
-import { getVariantByAttributes, formatAttributeList, formatPrice } from 'composables/src/helpers';
+import { getVariantByAttributes, formatAttributeList, formatPrice } from '../../helpers';
 
 interface ProductInfoFilters {
   master?: boolean;
@@ -26,7 +26,7 @@ export const getProductPrice = (product: ProductInfo | Readonly<ProductInfo>): A
 };
 
 export const getProductGallery = (product: ProductInfo): AgnosticMediaGalleryItem[] =>
-  product?.images?.map(image => {
+  product?.images?.map((image: string) => {
     return {
       small: image,
       big: image,
@@ -42,7 +42,10 @@ export const getProductFiltered = (products: ProductInfo[], filters: ProductInfo
   }
 
   if (filters.attributes && Object.keys(filters.attributes).length > 0) {
-    return [getVariantByAttributes(products, filters.attributes)];
+    var variant = getVariantByAttributes(products, filters.attributes);
+    if (variant)
+      return [variant];
+    return [];
   }
 
   if (filters.master) {
@@ -61,34 +64,30 @@ export const getProductAttributes = (products: ProductInfo[] | ProductInfo, filt
   }
 
   const formatAttributes = (product: ProductInfo): AgnosticAttribute[] =>
-    formatAttributeList(product.properties).filter((attribute) => filterByAttributeName ? filterByAttributeName.includes(attribute.name) : attribute);
+    formatAttributeList(product.properties).filter((attribute) => filterByAttributeName ? filterByAttributeName.includes(attribute.name!) : attribute);
 
-  const reduceToUniques = (prev, curr) => {
-    const isAttributeExist = prev.some((el) => el.name === curr.name && el.value === curr.value);
-
-    if (!isAttributeExist) {
-      return [...prev, curr];
-    }
-
-    return prev;
-  };
-
-  const reduceByAttributeName = (prev, curr) => ({
-    ...prev,
-    [curr.name]: isSingleProduct ? curr.value : [
-      ...(prev[curr.name] || []),
-      {
-        value: curr.value,
-        label: curr.label
+  return (productList
+    .map((product) => formatAttributes(product)) as any)
+    .reduce((prev: any, curr: any) => [...prev, ...curr], [])
+    .reduce((prev: any, curr: any) => {
+      const isAttributeExist = prev.some((el: any) => el.name === curr.name && el.value === curr.value);
+  
+      if (!isAttributeExist) {
+        return [...prev, curr];
       }
-    ]
-  });
-
-  return productList
-    .map((product) => formatAttributes(product))
-    .reduce((prev, curr) => [...prev, ...curr], [])
-    .reduce(reduceToUniques, [])
-    .reduce(reduceByAttributeName, {});
+  
+      return prev;
+    }, [])
+    .reduce((prev: any, curr: any) => ({
+      ...prev,
+      [curr.name]: isSingleProduct ? curr.value : [
+        ...(prev[curr.name] || []),
+        {
+          value: curr.value,
+          label: curr.label
+        }
+      ]
+    }), {});
 };
 
 export const getProductDescription = (product: ProductInfo): any => (product as any)._description;

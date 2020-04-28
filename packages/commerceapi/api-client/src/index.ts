@@ -124,12 +124,7 @@ const cartClear = async () => {
   return (await methods.cartTotals(currentToken, currentCart)).data;
 };
 const catalogAttributes = async (req: CatalogAttributesRequest) => (await methods.catalogAttributes(currentToken, req.skip, req.take)).data;
-const catalogCategories = async (req: CatalogCategoryRequest) => {
-  console.log("Catalog request " + JSON.stringify(req));
-  let data = (await methods.catalogCategories(currentToken, req.levels, req.active, req.skip, req.take, req.parentId, req.slug, req.id, req.urlPath, req.sort, req.filter)).data;
-  console.log("Response: " + JSON.stringify(data));
-  return data;
-}
+const catalogCategories = async (req: CatalogCategoryRequest) =>  (await methods.catalogCategories(currentToken, req.levels, req.active, req.skip, req.take, req.parentId, req.slug, req.id, req.urlPath, req.sort, req.filter)).data;
 const catalogProducts = async (req: CatalogProductRequest) => (await methods.catalogProducts(currentToken, req.visibility, req.status, req.categoryId, req.filter, req.skip, req.take, req.urlpath, req.sort, req.sku, req.categoryKeywords, req.propertyFilters, req.aggregates, req.configurableChildren)).data;
 const catalogReviews = async (req: CatalogReviewRequest) => (await methods.catalogReviews(currentToken, req.productId, req.take, req.skip)).data;
 const stockCheck = methods.stockCheck;

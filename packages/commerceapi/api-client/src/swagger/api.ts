@@ -1654,6 +1654,25 @@ export interface Review {
 /**
  * 
  * @export
+ * @interface SearchProductsResponse
+ */
+export interface SearchProductsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchProductsResponse
+     */
+    total?: number;
+    /**
+     * 
+     * @type {Array<Product>}
+     * @memberof SearchProductsResponse
+     */
+    items?: Array<Product> | null;
+}
+/**
+ * 
+ * @export
  * @interface SearchStockItem
  */
 export interface SearchStockItem {
@@ -3229,7 +3248,7 @@ export const CatalogApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Product>> {
+        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchProductsResponse> {
             const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
@@ -3345,7 +3364,7 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): AxiosPromise<Array<Product>> {
+        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): AxiosPromise<SearchProductsResponse> {
             return CatalogApiFp(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, options)(axios, basePath);
         },
         /**
