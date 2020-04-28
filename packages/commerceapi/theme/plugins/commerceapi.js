@@ -1,4 +1,4 @@
-import { setup } from '@vue-storefront/commerce-api';
+import { setup } from '@vue-storefront/commerceapi-api';
 import { config } from './commerceapi-config';
 
 export default ({ app }) => {

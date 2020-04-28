@@ -30,7 +30,6 @@ export default {
     './plugins/commerceapi.js'
   ],
   router: {
-    middleware: 'commerceapi'
   },
   buildModules: [
     // to core
@@ -40,9 +39,11 @@ export default {
       useRawSource: {
         dev: [
           '@vue-storefront/commerceapi',
+          '@vue-storefront/commerceapi-api',
           '@vue-storefront/core'
         ],
         prod: [
+          '@vue-storefront/commerceapi-api',
           '@vue-storefront/commerceapi',
           '@vue-storefront/core'
         ]
@@ -59,6 +60,11 @@ export default {
     'vue-scrollto/nuxt'
   ],
   build: {
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    },
     transpile: [
       'vee-validate/dist/rules'
     ],
