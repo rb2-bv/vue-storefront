@@ -55,8 +55,8 @@
               </div>
             </div>
           </div>
-          <p class="product-details__description desktop-only" v-html="$md.render(productGetters.getProductSummary(product))">
-          </p>
+          <div class="product-details__description desktop-only" v-html="$md.render(productGetters.getProductSummary(product))">
+          </div>
           <div class="product-details__action">
             <SfButton class="sf-button--text color-secondary"
               >Size guide</SfButton
