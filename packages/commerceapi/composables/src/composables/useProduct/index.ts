@@ -2,7 +2,7 @@ import { useProductFactory, ProductsSearchResult } from '@vue-storefront/core';
 import { catalogProducts, priceWithTax, CatalogProductRequest, Product } from '@vue-storefront/commerceapi-api';
 import { ProductInfo } from '../../types';
 
-const productsSearch = async (params: any): Promise<ProductsSearchResult<ProductInfo>> => {
+const productsSearch = async (params: any): Promise<ProductsSearchResult<ProductInfo, any>> => {
   var req: CatalogProductRequest = {};
   if (params.slug) req.urlpath = params.slug;
   if (params.perPage)  {
@@ -73,4 +73,4 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
   return res;
 };
 
-export default useProductFactory<ProductInfo, any>({ productsSearch });
+export default useProductFactory<ProductInfo, any, any>({ productsSearch });

@@ -18,7 +18,6 @@ export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = 
     return await userCreate(firstName || "", lastName || "", email || "", password || "");
   },
   logIn: async ({ username, password }) => {
-    await useCart().refreshCart();
     if (await userLogin(username, password)) {
       return await userMe();
     }
