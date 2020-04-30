@@ -118,6 +118,9 @@ export const getReviewDetails = (product: ProductInfo | null) => product == null
     score: product?.ratings?.averageRating, 
     count: product?.numberOfReviews };
 
+export const getProductSummary = (product: ProductInfo): string => 
+    product?.shortDescription ?? "";
+
 const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getName: getProductName,
   getSlug: getProductSlug,
@@ -132,7 +135,8 @@ const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getProperties: getProductProperties,
   getBreadcrumbs: getBreadcrumbs,
   getFormattedPrice: getFormattedPrice,
-  getReviewDetails: getReviewDetails
+  getReviewDetails: getReviewDetails,
+  getProductSummary: getProductSummary
 };
 /*
     const properties = computed(() => productGetters.getProperties(product.value));

@@ -26,6 +26,7 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
         return [{
           id: product.id,
           name: product.label,
+          shortDescription: product.shortDescription,
           variant: false,
           sku: product.sku,
           price: priceWithTax ? product.priceInclTax : product.price,
@@ -48,6 +49,7 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
       return product.variants.map(variant => ({
         id: variant.variantId,
         name: product.label,
+        shortDescription: product.shortDescription,
         variant: variant.sku !== product.sku,
         sku: variant.sku,
         price: priceWithTax ? variant.priceInclTax : variant.price,

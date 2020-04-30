@@ -20,6 +20,7 @@ export interface ProductInfo {
     properties: ProductProperty[];
     ratings?: ProductRatingStatistics;
     numberOfReviews?: number;
+    shortDescription?: string;
 }
 
 export interface CreateUserInfo {
