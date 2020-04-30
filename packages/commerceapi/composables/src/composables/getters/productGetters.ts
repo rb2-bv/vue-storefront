@@ -32,11 +32,11 @@ export const getProductGallery = (product: ProductInfo): AgnosticMediaGalleryIte
       big: image,
       normal: image
     };
-  });
+  }) || [];
 
 export const getProductCoverImage = (product: ProductInfo): string => product?.image;
 
-export const getProductFiltered = (products: ProductInfo[], filters: ProductInfoFilters | any = {}): ProductInfo[] => {
+export const getProductFiltered = (products: ProductInfo[] | null, filters: ProductInfoFilters | any = {}): ProductInfo[] => {
   if (!products) {
     return [];
   }
@@ -55,7 +55,8 @@ export const getProductFiltered = (products: ProductInfo[], filters: ProductInfo
   return products;
 };
 
-export const getProductAttributes = (products: ProductInfo[] | ProductInfo, filterByAttributeName?: string[]): Record<string, AgnosticAttribute | string> => {
+export const getProductAttributes = (products: ProductInfo[] | ProductInfo | null, filterByAttributeName?: string[]): Record<string, AgnosticAttribute | string> | null => {
+  if (products == null) return null;
   const isSingleProduct = !Array.isArray(products);
   const productList = (isSingleProduct ? [products] : products) as ProductInfo[];
 
@@ -90,11 +91,11 @@ export const getProductAttributes = (products: ProductInfo[] | ProductInfo, filt
     }), {});
 };
 
-export const getProductDescription = (product: ProductInfo): any => (product as any)._description;
+export const getProductDescription = (product: ProductInfo): string => product?.description;
 
-export const getProductCategoryIds = (product: ProductInfo): string[] => (product as any)._categoriesRef;
+export const getProductCategoryIds = (product: ProductInfo): string[] => product?.categoryIds;
 
-export const getProductId = (product: ProductInfo): string => (product as any)._id;
+export const getProductId = (product: ProductInfo): string => product?.sku;
 
 export const getFormattedPrice = (price: number) => formatPrice(price);
 

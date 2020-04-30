@@ -4,7 +4,8 @@ import { CategoryGetters, AgnosticCategoryTree } from '@vue-storefront/core';
 import { Category, CategoryChildren } from './../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCategoryTree = (category: Category): AgnosticCategoryTree => {
+export const getCategoryTree = (category: Category): AgnosticCategoryTree | null => {
+  if (!category) return null;
   // we need to build a tree, and return the root.
   const mapChildren = (cat: CategoryChildren): AgnosticCategoryTree => ({
     items: cat.children ? cat.children.map(mapChildren) : [],
