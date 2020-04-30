@@ -21,7 +21,7 @@ export const getProductSlug = (product: ProductInfo | Readonly<ProductInfo>): st
 export const getProductPrice = (product: ProductInfo | Readonly<ProductInfo>): AgnosticPrice => {
   return {
     regular: product?.price || 0,
-    special: product?.specialPrice
+    special: product?.specialPrice || null
   };
 };
 

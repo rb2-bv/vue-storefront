@@ -22,8 +22,8 @@
         </nuxt-link>
       </SfHeaderNavigationItem>
       <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/woman')">
-          WOMAN
+        <nuxt-link :to="localePath('/c/women')">
+          WOMEN
         </nuxt-link>
       </SfHeaderNavigationItem>
       <SfHeaderNavigationItem>

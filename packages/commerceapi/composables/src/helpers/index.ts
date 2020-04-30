@@ -4,7 +4,7 @@ import { locale, currency, country } from '@vue-storefront/commerceapi-api';
 import { ProductInfo, ProductProperty } from '../types';
 import { AgnosticAttribute } from '@vue-storefront/core';
 
-export const formatPrice = (price: number) => new Intl.NumberFormat(`${locale}-${country}`, { style: 'currency', currency }).format(price);
+export const formatPrice = (price: number | null) =>  price ? new Intl.NumberFormat(`${locale}-${country}`, { style: 'currency', currency }).format(price) : null;
 
 export const formatAttributeList = (attributes: ProductProperty[]): AgnosticAttribute[] =>
   attributes.map((attr) => {
