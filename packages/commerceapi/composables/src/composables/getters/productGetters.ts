@@ -55,8 +55,8 @@ export const getProductFiltered = (products: ProductInfo[] | null, filters: Prod
   return products;
 };
 
-export const getProductAttributes = (products: ProductInfo[] | ProductInfo | null, filterByAttributeName?: string[]): Record<string, AgnosticAttribute | string> | null => {
-  if (products == null) return null;
+export const getProductAttributes = (products: ProductInfo[] | ProductInfo | null, filterByAttributeName?: string[]): Record<string, AgnosticAttribute | string> => {
+  if (products == null) return  {} as any;
   const isSingleProduct = !Array.isArray(products);
   const productList = (isSingleProduct ? [products] : products) as ProductInfo[];
 
@@ -91,13 +91,27 @@ export const getProductAttributes = (products: ProductInfo[] | ProductInfo | nul
     }), {});
 };
 
-export const getProductDescription = (product: ProductInfo): string => product?.description;
+export const getProductDescription = (product: ProductInfo): string => product?.description || "";
+
+export const getProductProperties = (product: ProductInfo): {name: string, value: string}[] => 
+  product?.properties == null ? [] : product!.properties!.map(e => ({
+    name: e.displayName,
+    value: e.displayValue
+  }));
+
+export const getBreadcrumbs = (product: ProductInfo): {text: string, route: {link: string}}[] => 
+  product == null ? [{text: "Home", route: {link: '/'}}] :
+  [
+    {text: "Home", route: {link: '/'}}, 
+    ...(product!.categories!.map(e => ({text: e.label, route: {link: '/c/' + e.slug}}))),
+    {text: product?.name, route: {link: '/p/' + product?.sku + '/' + product?.slug}}, 
+  ];
 
 export const getProductCategoryIds = (product: ProductInfo): string[] => product?.categoryIds;
 
 export const getProductId = (product: ProductInfo): string => product?.sku;
 
-export const getFormattedPrice = (price: number) => formatPrice(price);
+export const getFormattedPrice = (price: number): string => formatPrice(price);
 
 const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getName: getProductName,
@@ -110,7 +124,15 @@ const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getDescription: getProductDescription,
   getCategoryIds: getProductCategoryIds,
   getId: getProductId,
-  getFormattedPrice
+  getProperties: getProductProperties,
+  getBreadcrumbs: getBreadcrumbs,
+  getFormattedPrice: getFormattedPrice
 };
+/*
+    const properties = computed(() => productGetters.getProperties(product.value));
+    const categories = computed(() => productGetters.getCategoryIds(product.value));
+    const description = computed(() => productGetters.getDescription(product.value));
+    const breadcrumbs = computed(() => productGetters.getBreadcrumbs(product.value));
+*/
 
 export default productGetters;

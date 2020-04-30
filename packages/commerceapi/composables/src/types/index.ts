@@ -1,4 +1,4 @@
-import { ProductProperty } from '@vue-storefront/commerceapi-api';
+import { ProductProperty, ProductCategory } from '@vue-storefront/commerceapi-api';
 
 export * from '@vue-storefront/commerceapi-api';
 
@@ -15,6 +15,7 @@ export interface ProductInfo {
     description?: string;
     images?: string[];
     categoryIds?: string[];
+    categories?: ProductCategory[];
     variant: boolean;
     properties: ProductProperty[];
 }
