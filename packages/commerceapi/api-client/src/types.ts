@@ -5,7 +5,6 @@ export class CatalogAttributesRequest {
     public take?: number
 }
 export class CatalogCategoryRequest {
-    public token?: string
     public levels?: Array<number>
     public active?: boolean
     public skip?: number
@@ -19,7 +18,6 @@ export class CatalogCategoryRequest {
 }
 
 export class CatalogProductRequest {
-    public token?: string
     public visibility?: Array<number>
     public status?: Array<number>
     public categoryId?: Array<string>
@@ -36,7 +34,6 @@ export class CatalogProductRequest {
 }
 
 export class CatalogReviewRequest {
-    public token?: string
     public productId?: string
     public take?: number
     public skip?: number

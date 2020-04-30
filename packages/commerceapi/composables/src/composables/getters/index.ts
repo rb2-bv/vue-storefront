@@ -6,6 +6,7 @@ import checkoutGetters from './checkoutGetters';
 import orderGetters from './orderGetters';
 import productGetters from './productGetters';
 import userGetters from './userGetters';
+import reviewGetters from './ReviewGetters';
 
 export {
   cartGetters,
@@ -13,5 +14,6 @@ export {
   checkoutGetters,
   orderGetters,
   productGetters,
-  userGetters
+  userGetters,
+  reviewGetters
 };

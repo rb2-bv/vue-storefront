@@ -46,12 +46,12 @@
               class="product-details__sub-price"
             />
             <div class="product-details__sub-rating">
-              <SfRating :score="4" :max="5" />
+              <SfRating :score="productGetters.getReviewDetails(product).score" :max="5" />
               <div class="product-details__sub-reviews desktop-only">
-                Read all 1 review
+                <SfButton class="sf-button--text color-secondary" @click="showReviews">Read all {{productGetters.getReviewDetails(product).count}} review(s).</SfButton>
               </div>
               <div class="product-details__sub-reviews mobile-only">
-                (1)
+                ({{productGetters.getReviewDetails(product).count}})
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@
               >
             </div>
           </div>
-          <SfTabs class="product-details__tabs" :openTab="1">
+          <SfTabs class="product-details__tabs" ref="productDetailTabs">
             <SfTab title="Description">
               <div>
                 <div v-html="$md.render(description)"></div>
@@ -131,7 +131,7 @@
             <SfTab title="Read reviews">
               <SfReview
                 class="product-details__review"
-                v-for="(review, i) in reviews"
+                v-for="(review, i) in reviews.reviews.value"
                 :key="i"
                 :author="review.author"
                 :date="review.date"
@@ -215,8 +215,8 @@ import {
 
 import InstagramFeed from '~/components/InstagramFeed.vue';
 import RelatedProducts from '~/components/RelatedProducts.vue';
-import { ref, computed } from '@vue/composition-api';
-import { useProduct, useCart, productGetters } from '@vue-storefront/commerceapi';
+import { ref, computed, watch } from '@vue/composition-api';
+import { useProduct, useCart, productGetters, useReviews, reviewGetters } from '@vue-storefront/commerceapi';
 import { onSSR } from '@vue-storefront/core';
 
 export default {
@@ -236,6 +236,11 @@ export default {
     const categories = computed(() => productGetters.getCategoryIds(product.value));
     const description = computed(() => productGetters.getDescription(product.value));
     const breadcrumbs = computed(() => productGetters.getBreadcrumbs(product.value));
+    const reviews = useReviews();
+
+    watch(product, () => {
+      reviews.loadProduct(product.value);
+    })    
 
     onSSR(async () => {
       await search({ id });
@@ -255,6 +260,11 @@ export default {
       context.root.$router.push({path: r.link})
     }
 
+    function showReviews() {
+      context.refs.productDetailTabs.toggle(context.refs.productDetailTabs.$children[1]._uid);
+      context.refs.productDetailTabs.$el?.scrollIntoView();
+    }
+
     return {
       updateFilter,
       configuration,
@@ -269,7 +279,9 @@ export default {
       productGetters,
       description,
       breadcrumbs,
-      pushRoute
+      pushRoute,
+      showReviews,
+      reviews
     };
   },
   components: {
@@ -294,24 +306,7 @@ export default {
   },
   data() {
     return {
-      stock: 5,
-      reviews: [
-        {
-          author: 'Jane D.Smith',
-          date: 'April 2019',
-          message:
-            'I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can\'t comment on interlation as I had an electrition instal it. Would recommend',
-          rating: 4
-        },
-        {
-          author: 'Mari',
-          date: 'Jan 2018',
-          message:
-            'Excellent light output from this led fitting. Relatively easy to fix to the ceiling,but having two people makes it easier, to complete the installation. Unable to comment on reliability at this time, but I am hopeful of years of use with good light levels. Excellent light output from this led fitting. Relatively easy to fix to the ceiling,',
-          rating: 5
-        }
-      ],
-      detailsIsActive: true      
+      stock: 5
     };
   }
 };

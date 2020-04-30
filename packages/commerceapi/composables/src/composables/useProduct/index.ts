@@ -40,7 +40,10 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
           categoryIds: product.categories ? product.categories.map(e => e.id): [],
           properties: product.properties,
           slug: product.urlPath,
-          images: product.images ? product.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url) : []
+          images: product.images ? product.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url) : [],
+          
+          ratings: product.ratings,
+          numberOfReviews: product.numberOfReviews
         }];
       return product.variants.map(variant => ({
         id: variant.variantId,
@@ -59,7 +62,9 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
         categoryIds: product.categories ? product.categories.map(e => e.id): [],
         properties: variant.properties,
         slug: product.urlPath,
-        images: variant.images ? variant.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url): []
+        images: variant.images ? variant.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url): [],
+        ratings: product.ratings,
+        numberOfReviews: product.numberOfReviews
       }));
     })).reduce((prev: any, curr: any) => [...prev, ...curr], [])
   };

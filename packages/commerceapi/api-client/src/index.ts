@@ -1,6 +1,5 @@
 import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment, CreateReview, AggregateField } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
-import { userInfo } from 'os';
 
 export * from './swagger';
 export * from './types';

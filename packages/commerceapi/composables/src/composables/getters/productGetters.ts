@@ -9,7 +9,7 @@ import {
 import { ProductInfo } from '../../types';
 import { getVariantByAttributes, formatAttributeList, formatPrice } from '../../helpers';
 
-interface ProductInfoFilters {
+export interface ProductInfoFilters {
   master?: boolean;
   attributes?: Record<string, string>;
 }
@@ -113,6 +113,11 @@ export const getProductId = (product: ProductInfo): string => product?.sku;
 
 export const getFormattedPrice = (price: number): string => formatPrice(price);
 
+export const getReviewDetails = (product: ProductInfo | null) => product == null ? 
+  {score: 0, count: 0} : { 
+    score: product?.ratings?.averageRating, 
+    count: product?.numberOfReviews };
+
 const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getName: getProductName,
   getSlug: getProductSlug,
@@ -126,7 +131,8 @@ const productGetters: ProductGetters<ProductInfo, ProductInfoFilters> = {
   getId: getProductId,
   getProperties: getProductProperties,
   getBreadcrumbs: getBreadcrumbs,
-  getFormattedPrice: getFormattedPrice
+  getFormattedPrice: getFormattedPrice,
+  getReviewDetails: getReviewDetails
 };
 /*
     const properties = computed(() => productGetters.getProperties(product.value));

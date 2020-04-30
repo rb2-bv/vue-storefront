@@ -864,6 +864,12 @@ export interface Product {
      * @type {string}
      * @memberof Product
      */
+    shortDescription?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Product
+     */
     description?: string | null;
     /**
      * 
@@ -973,6 +979,18 @@ export interface Product {
      * @memberof Product
      */
     customOptions?: Array<ProductCustomOption> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Product
+     */
+    numberOfReviews?: number;
+    /**
+     * 
+     * @type {ProductRatingStatistics}
+     * @memberof Product
+     */
+    ratings?: ProductRatingStatistics;
 }
 /**
  * 
@@ -1391,6 +1409,67 @@ export interface ProductProperty {
 /**
  * 
  * @export
+ * @interface ProductRatingStatistics
+ */
+export interface ProductRatingStatistics {
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    averageRating?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    lowestRating?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    highestRating?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating0?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating1?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating2?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating3?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating4?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProductRatingStatistics
+     */
+    countRating5?: number;
+}
+/**
+ * 
+ * @export
  * @interface ProductVariant
  */
 export interface ProductVariant {
@@ -1650,6 +1729,12 @@ export interface Review {
      * @memberof Review
      */
     productId?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Review
+     */
+    score?: number;
 }
 /**
  * 
@@ -1669,6 +1754,25 @@ export interface SearchProductsResponse {
      * @memberof SearchProductsResponse
      */
     items?: Array<Product> | null;
+}
+/**
+ * 
+ * @export
+ * @interface SearchReviewsResponse
+ */
+export interface SearchReviewsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchReviewsResponse
+     */
+    total?: number;
+    /**
+     * 
+     * @type {Array<Review>}
+     * @memberof SearchReviewsResponse
+     */
+    items?: Array<Review> | null;
 }
 /**
  * 
@@ -3279,7 +3383,7 @@ export const CatalogApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogReviewsGet(token?: string, productId?: string, take?: number, skip?: number, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Review>> {
+        apiCatalogReviewsGet(token?: string, productId?: string, take?: number, skip?: number, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchReviewsResponse> {
             const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogReviewsGet(token, productId, take, skip, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
@@ -3387,7 +3491,7 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogReviewsGet(token?: string, productId?: string, take?: number, skip?: number, options?: any): AxiosPromise<Array<Review>> {
+        apiCatalogReviewsGet(token?: string, productId?: string, take?: number, skip?: number, options?: any): AxiosPromise<SearchReviewsResponse> {
             return CatalogApiFp(configuration).apiCatalogReviewsGet(token, productId, take, skip, options)(axios, basePath);
         },
     };
