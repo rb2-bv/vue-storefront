@@ -53,6 +53,9 @@ export function useMyCategoryFactory<CATEGORY, CATEGORYTREE, CATEGORY_SEARCH_PAR
     };
 
     const loadTree = async() => {
+      if (loadingTree.value) {
+        return;
+      }
       if (!initialState) {
         loadingTree.value = true;
       }

@@ -15,9 +15,9 @@ import {
   CartTotal
 } from '../../types';
 
-export const cart: Ref<CartTotal> = ref({});
+export const cart: Ref<CartTotal | null> = ref(null);
 
-const params: UseCartFactoryParams<CartTotal, CartItem, Product, string> = {
+const params: UseCartFactoryParams<CartTotal | null, CartItem, Product, string> = {
   cart,
   loadCart: async () => await cartLoad(),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,8 +29,8 @@ const params: UseCartFactoryParams<CartTotal, CartItem, Product, string> = {
   removeFromCart: async ({ currentCart, product }) => await cartDelete({itemId: product.itemId, sku: product.sku}),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updateQuantity: async ({ currentCart, product, quantity }) => await cartUpdate({
-    quantity: quantity,
-    ...product
+    ...product,
+    quantity: quantity
   }),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   clearCart: async ({ currentCart }) => await cartClear(),
@@ -58,4 +58,4 @@ const params: UseCartFactoryParams<CartTotal, CartItem, Product, string> = {
   }
 };
 
-export default useCartFactory<CartTotal, CartItem, Product, string>(params);
+export default useCartFactory<CartTotal | null, CartItem, Product, string>(params);

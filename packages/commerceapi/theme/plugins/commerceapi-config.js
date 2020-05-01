@@ -4,14 +4,14 @@ export const config = {
   currency: 'EUR',
   country: 'NL',
   countries: [
-    { name: 'US',
+    { code: 'US',
       label: 'United States' },
-    { name: 'AT',
+    { code: 'AT',
       label: 'Austria' },
-    { name: 'DE',
+    { code: 'DE',
       label: 'Germany' },
-    { name: 'NL',
-      label: 'Netherlands' }
+    { code: 'NL',
+      label: 'Nederland' }
   ],
   currencies: [
     { name: 'EUR',

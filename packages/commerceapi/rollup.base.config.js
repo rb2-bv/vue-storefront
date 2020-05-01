@@ -6,14 +6,10 @@ export function generateBaseConfig(pkg) {
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.main,
-        format: 'cjs',
-        sourceMap: 'inline'
+        file: pkg.main
       },
       {
-        file: pkg.module,
-        format: 'es',
-        sourceMap: 'inline'
+        file: pkg.module
       }
     ],
     external: [
