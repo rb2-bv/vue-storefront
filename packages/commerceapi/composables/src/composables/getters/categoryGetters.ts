@@ -34,8 +34,20 @@ export const getCategoryTree = (category: Category): AgnosticCategoryTree | null
   return res;
 };
 
+const getCategoryBreadcrumbs = (category: Category): { text: string, link: string}[] => {
+  let res: { text: string, link: string}[] = [{text: "Home", link:"/"}];
+  if (!category) return res;
+
+  for (let i = category!.parents!.length - 1; i >= 0; i--) { 
+    res.push({text: category.parents![i].label!, link: '/c/' + category.parents![i].urlPath!});
+  }
+  res.push({text: category.label!, link: '/c/' + category.urlPath});
+  return res;
+}
+
 const categoryGetters: CategoryGetters<Category> = {
-  getTree: getCategoryTree
+  getTree: getCategoryTree,
+  getBreadcrumbs: getCategoryBreadcrumbs,
 };
 
 export default categoryGetters;

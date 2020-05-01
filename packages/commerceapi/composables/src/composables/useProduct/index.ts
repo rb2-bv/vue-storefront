@@ -47,7 +47,7 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
           numberOfReviews: product.numberOfReviews
         }];
       return product.variants.map(variant => ({
-        id: variant.variantId,
+        id: product.id,
         name: product.label,
         shortDescription: product.shortDescription,
         variant: variant.sku !== product.sku,

@@ -99,12 +99,12 @@ export const getProductProperties = (product: ProductInfo): {name: string, value
     value: e.displayValue
   }));
 
-export const getBreadcrumbs = (product: ProductInfo): {text: string, route: {link: string}}[] => 
-  product == null ? [{text: "Home", route: {link: '/'}}] :
+export const getBreadcrumbs = (product: ProductInfo): {text: string, link: string}[] => 
+  product == null ? [{text: "Home", link: '/'}] :
   [
-    {text: "Home", route: {link: '/'}}, 
-    ...(product!.categories!.map(e => ({text: e.label, route: {link: '/c/' + e.slug}}))),
-    {text: product?.name, route: {link: '/p/' + product?.sku + '/' + product?.slug}}, 
+    {text: "Home", link: '/'}, 
+    ...(product!.categories!.map(e => ({text: e.label, link: '/c/' + e.slug}))),
+    {text: product?.name, link: '/p/' + product?.sku + '/' + product?.slug}, 
   ];
 
 export const getProductCategoryIds = (product: ProductInfo): string[] => product?.categoryIds;
