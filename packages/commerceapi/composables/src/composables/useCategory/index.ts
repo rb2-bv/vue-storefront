@@ -1,4 +1,4 @@
-import { UseCategory } from '@vue-storefront/core';
+import { UseCategory, onSSR } from '@vue-storefront/core';
 import { Category } from './../../types';
 import { Ref, ref, computed, watch } from '@vue/composition-api';
 import {  UseCategoryFactoryParams } from '@vue-storefront/core';
@@ -63,8 +63,9 @@ export function useMyCategoryFactory<CATEGORY, CATEGORYTREE, CATEGORY_SEARCH_PAR
       loadingTree.value = false;
     }
 
-
-    loadTree();
+    onSSR(() => {
+      loadTree();
+    });
 
     return {
       search,

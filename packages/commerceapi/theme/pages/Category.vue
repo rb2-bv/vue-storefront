@@ -437,7 +437,7 @@ export default {
   setup(props, context) {
     const { query } = context.root.$route;
 
-    const { categories, search, loading, tree, loadingTree } = useCategory('categories');
+    const { categories, search, loading, tree, loadingTree, loadTree } = useCategory('categories');
     const { products: categoryProducts, totalProducts, search: productsSearch, loading: productsLoading } = useProduct('categoryProducts');
     const currentPage = ref(parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
@@ -453,6 +453,8 @@ export default {
 
     watch([currentPage, itemsPerPage], () => {
       if (categories.value.length) {
+        loadTree();
+
         productsSearch({
           catId: categories.value[0].id,
           page: currentPage.value,
@@ -469,7 +471,7 @@ export default {
     const categoryTree = computed(() => categoryGetters.getTree(tree.value));
     const breadcrumbs = computed(() => categoryGetters.getBreadcrumbs ? categoryGetters.getBreadcrumbs(categories.value[0]): [{text: "Home", route: {link:"/"}}]);
 
-    const isCategorySelected = (slug) => slug === (categories.value && categories.value[0].slug);
+    const isCategorySelected = (slug) => slug === (categories.value && categories.value[0] && categories.value[0].slug);
 
     const sortBy = ref('price-up');
     const isGridView = ref(true);

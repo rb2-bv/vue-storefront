@@ -11,29 +11,9 @@
       </nuxt-link>
     </template>
     <template #navigation>
-      <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/brands')">
-          BRANDS
-        </nuxt-link>
-      </SfHeaderNavigationItem>
-      <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/men')">
-          MEN
-        </nuxt-link>
-      </SfHeaderNavigationItem>
-      <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/women')">
-          WOMEN
-        </nuxt-link>
-      </SfHeaderNavigationItem>
-      <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/sale')">
-          SALE
-        </nuxt-link>
-      </SfHeaderNavigationItem>
-      <SfHeaderNavigationItem>
-        <nuxt-link :to="localePath('/c/accessories')">
-          ACCESSORIES
+      <SfHeaderNavigationItem v-for="(x, i) in tree" :key="i">
+        <nuxt-link :to="'/c/'+ x.slug">
+          {{x.label}}
         </nuxt-link>
       </SfHeaderNavigationItem>
     </template>
@@ -43,7 +23,7 @@
 <script>
 import { SfHeader, SfImage } from '@storefront-ui/vue';
 import uiState from '~/assets/ui-state';
-import { useCart, useUser, cartGetters } from '@vue-storefront/commerceapi';
+import { useCart, useUser, cartGetters, useCategory, categoryGetters } from '@vue-storefront/commerceapi';
 import { computed } from '@vue/composition-api';
 const { toggleCartSidebar, toggleLoginModal } = uiState;
 
@@ -58,12 +38,19 @@ export default {
       isAuthenticated && isAuthenticated.value ? root.$router.push('/my-account') : toggleLoginModal();
     };
     const { cart } = useCart();
+    const { tree, loadingTree, loadTree } = useCategory('categories');
+
+    if (!root.$isServer)
+      loadTree();
+
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
       // TODO: remove once resolved by UI team: https://github.com/DivanteLtd/storefront-ui/issues/922
       return count ? count.toString() : null;
     });
     return {
+      tree: computed(() => categoryGetters.getTree(tree.value).items),
+      loadingTree,
       cartTotalItems,
       toggleLoginModal,
       onAccountClicked,
