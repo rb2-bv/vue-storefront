@@ -178,13 +178,13 @@ export interface CartItem {
      * @type {number}
      * @memberof CartItem
      */
-    specialPriceIncludingTax?: number;
+    specialPriceIncludingTax?: number | null;
     /**
      * 
      * @type {number}
      * @memberof CartItem
      */
-    specialPrice?: number;
+    specialPrice?: number | null;
     /**
      * 
      * @type {Array<ProductProperty>}
@@ -1739,6 +1739,25 @@ export interface Review {
 /**
  * 
  * @export
+ * @interface SearchCategoriesResponse
+ */
+export interface SearchCategoriesResponse {
+    /**
+     * 
+     * @type {Array<Category>}
+     * @memberof SearchCategoriesResponse
+     */
+    items?: Array<Category> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchCategoriesResponse
+     */
+    total?: number;
+}
+/**
+ * 
+ * @export
  * @interface SearchProductsResponse
  */
 export interface SearchProductsResponse {
@@ -2917,10 +2936,11 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
          * @param {string} [urlPath] 
          * @param {string} [sort] 
          * @param {string} [filter] 
+         * @param {boolean} [includeTree] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, options: any = {}): RequestArgs {
+        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, includeTree?: boolean, options: any = {}): RequestArgs {
             const localVarPath = `/api/Catalog/Categories`;
             const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
             let baseOptions;
@@ -2973,6 +2993,44 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
 
             if (filter !== undefined) {
                 localVarQueryParameter['Filter'] = filter;
+            }
+
+            if (includeTree !== undefined) {
+                localVarQueryParameter['IncludeTree'] = includeTree;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogCategoryTreeGet(token?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Catalog/CategoryTree`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
             }
 
 
@@ -3295,11 +3353,25 @@ export const CatalogApiFp = function(configuration?: Configuration) {
          * @param {string} [urlPath] 
          * @param {string} [sort] 
          * @param {string} [filter] 
+         * @param {boolean} [includeTree] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Category>> {
-            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, options);
+        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, includeTree?: boolean, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchCategoriesResponse> {
+            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, includeTree, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogCategoryTreeGet(token?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CategoryChildren>> {
+            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogCategoryTreeGet(token, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -3423,11 +3495,21 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          * @param {string} [urlPath] 
          * @param {string} [sort] 
          * @param {string} [filter] 
+         * @param {boolean} [includeTree] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, options?: any): AxiosPromise<Array<Category>> {
-            return CatalogApiFp(configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, options)(axios, basePath);
+        apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, includeTree?: boolean, options?: any): AxiosPromise<SearchCategoriesResponse> {
+            return CatalogApiFp(configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, includeTree, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogCategoryTreeGet(token?: string, options?: any): AxiosPromise<Array<CategoryChildren>> {
+            return CatalogApiFp(configuration).apiCatalogCategoryTreeGet(token, options)(axios, basePath);
         },
         /**
          * 
@@ -3530,12 +3612,24 @@ export class CatalogApi extends BaseAPI {
      * @param {string} [urlPath] 
      * @param {string} [sort] 
      * @param {string} [filter] 
+     * @param {boolean} [includeTree] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CatalogApi
      */
-    public apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, options?: any) {
-        return CatalogApiFp(this.configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, options)(this.axios, this.basePath);
+    public apiCatalogCategoriesGet(token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string, includeTree?: boolean, options?: any) {
+        return CatalogApiFp(this.configuration).apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter, includeTree, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CatalogApi
+     */
+    public apiCatalogCategoryTreeGet(token?: string, options?: any) {
+        return CatalogApiFp(this.configuration).apiCatalogCategoryTreeGet(token, options)(this.axios, this.basePath);
     }
 
     /**

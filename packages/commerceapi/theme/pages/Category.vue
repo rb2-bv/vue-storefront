@@ -112,14 +112,14 @@
                   <SfListItem class="list__item">
                     <SfMenuItem :label="cat.label">
                       <template #label>
-                        <nuxt-link :to="localePath(getCategoryPath(cat))" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
+                        <nuxt-link :to="'/c/'+cat.slug" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
                       </template>
                     </SfMenuItem>
                   </SfListItem>
                   <SfListItem class="list__item" v-for="(subCat, j) in cat.items" :key="j">
                     <SfMenuItem :label="subCat.label">
                       <template #label="{ label }">
-                        <nuxt-link :to="localePath(getCategoryPath(subCat))" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
+                        <nuxt-link :to="'/c/'+subCat.slug" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
                       </template>
                     </SfMenuItem>
                   </SfListItem>
@@ -437,7 +437,7 @@ export default {
   setup(props, context) {
     const { query } = context.root.$route;
 
-    const { categories, search, loading } = useCategory('categories');
+    const { categories, search, loading, tree, loadingTree } = useCategory('categories');
     const { products: categoryProducts, totalProducts, search: productsSearch, loading: productsLoading } = useProduct('categoryProducts');
     const currentPage = ref(parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
@@ -466,7 +466,7 @@ export default {
     });
 
     const products = computed(() => productGetters.getFiltered(categoryProducts.value, { master: true }));
-    const categoryTree = computed(() => categoryGetters.getTree(categories.value[0]));
+    const categoryTree = computed(() => categoryGetters.getTree(tree.value));
     const breadcrumbs = computed(() => categoryGetters.getBreadcrumbs ? categoryGetters.getBreadcrumbs(categories.value[0]): [{text: "Home", route: {link:"/"}}]);
 
     const isCategorySelected = (slug) => slug === (categories.value && categories.value[0].slug);
@@ -490,7 +490,7 @@ export default {
       categoryTree,
       getCategoryPath,
       isCategorySelected,
-      loading,
+      loading: loadingTree,
       productGetters,
       totalProducts,
       totalPages: computed(() => Math.ceil(totalProducts.value / itemsPerPage.value)),

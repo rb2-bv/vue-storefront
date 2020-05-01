@@ -41,6 +41,7 @@ let methods = {
   catalogCategories: (token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string) => catalogApi?.apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter),
   catalogProducts: (token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>) => catalogApi?.apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren),
   catalogReviews: (token?: string, productId?: string, take?: number, skip?: number) => catalogApi?.apiCatalogReviewsGet(token, productId, take, skip),
+  catalogCategoryTree: (token?: string) => catalogApi?.apiCatalogCategoryTreeGet(token),
   orderPaymentSubMethods: (method?: string) => orderApi?.apiOrderPaymentSubMethodsGet(method),
   order: (token?: string, cartId?: string, createOrderRequest?: CreateOrderRequest) => orderApi?.apiOrderOrderPost(token, cartId, createOrderRequest),
   orderStartPayment: (requestStartPayment?: RequestStartPayment) => orderApi?.apiOrderStartPaymentPost(requestStartPayment),
@@ -56,7 +57,7 @@ let methods = {
   userMeSet: (token?: string, info?: UserInfo) => userApi?.apiUserMePost(token, info),
   userOrderHistory: (token?: string, skip?: number) => userApi?.apiUserOrderHistoryGet(token, skip),
   userRefresh: (refreshToken?: string) => userApi?.apiUserRefreshPost(refreshToken),
-  userResetPassword: (email?: string) => userApi?.apiUserResetPasswordPost(email)
+  userResetPassword: (email?: string) => userApi?.apiUserResetPasswordPost(email),
 };
 
 function override(overrides: any) {
@@ -126,6 +127,7 @@ const catalogAttributes = async (req: CatalogAttributesRequest) => (await method
 const catalogCategories = async (req: CatalogCategoryRequest) =>  (await methods.catalogCategories(currentToken, req.levels, req.active, req.skip, req.take, req.parentId, req.slug, req.id, req.urlPath, req.sort, req.filter)).data;
 const catalogProducts = async (req: CatalogProductRequest) => (await methods.catalogProducts(currentToken, req.visibility, req.status, req.categoryId, req.filter, req.skip, req.take, req.urlpath, req.sort, req.sku, req.categoryKeywords, req.propertyFilters, req.aggregates, req.configurableChildren)).data;
 const catalogReviews = async (req: CatalogReviewRequest) => (await methods.catalogReviews(currentToken, req.productId, req.take, req.skip)).data;
+const catalogCategoryTree = async () => (await methods.catalogCategoryTree(currentToken)).data;
 const stockCheck = methods.stockCheck;
 const stockList = methods.stockList;
 const productRenderList = methods.productRenderList;
@@ -197,6 +199,7 @@ export {
   catalogCategories,
   catalogProducts,
   catalogReviews,
+  catalogCategoryTree,
   stockCheck,
   stockList,
   productRenderList,
