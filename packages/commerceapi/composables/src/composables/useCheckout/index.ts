@@ -2,9 +2,10 @@
 
 import { UseCheckout } from '@vue-storefront/core';
 import { ref, Ref, watch, computed } from '@vue/composition-api';
-import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order, CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo } from '@vue-storefront/commerceapi-api';
+import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order, CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo, cartLoad } from '@vue-storefront/commerceapi-api';
 import { PaymentMethod } from '../../types';
 import { strict } from 'assert';
+import { cart } from '../useCart';
 
 export interface EntryUserDetails {
   firstname?: string,
@@ -58,7 +59,7 @@ Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<Payment
     loading.value = true;
     try {
       if (chosenShippingMethod.value?.code) {
-        await cartShippingInformation(chosenShippingMethod.value.code!, {
+        cart.value = await cartShippingInformation(chosenShippingMethod.value.code!, {
           firstName: shippingDetails.value.firstName,
           lastName: shippingDetails.value.lastName,
           city: shippingDetails.value.city,
@@ -96,7 +97,7 @@ Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<Payment
       postCode: shippingDetails.value.postalCode,
       region: shippingDetails.value.state
     });
-    return await order({
+    var orderNo = await order({
       billingAddress: {
         firstName: billingDetails.value.firstName,
         lastName: billingDetails.value.lastName,
@@ -121,6 +122,9 @@ Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<Payment
       paymentMethodExtra: chosenPaymentMethod.value?.extraInfo,
       shippingMethod: chosenShippingMethod.value?.code
     });
+
+    cart.value = await cartLoad();
+    return orderNo;
   };
 
   return {

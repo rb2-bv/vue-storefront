@@ -19,36 +19,48 @@ export const cart: Ref<CartTotal | null> = ref(null);
 
 const params: UseCartFactoryParams<CartTotal | null, CartItem, Product, string> = {
   cart,
-  loadCart: async () => await cartLoad(),
+  loadCart: async () => {
+    cart.value = await cartLoad();
+    return cart.value;
+  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addToCart: async ({ currentCart, product, quantity }) => await cartUpdate({
+  addToCart: async ({ currentCart, product, quantity }) => {
+    cart.value = await cartUpdate({
     sku: product.sku,
     quantity: quantity
-  }),
+  });
+    return cart.value;
+  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeFromCart: async ({ currentCart, product }) => await cartDelete({itemId: product.itemId, sku: product.sku}),
+  removeFromCart: async ({ currentCart, product }) => {
+    cart.value = await cartDelete({itemId: product.itemId, sku: product.sku});
+    return cart.value;
+  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateQuantity: async ({ currentCart, product, quantity }) => await cartUpdate({
-    ...product,
-    quantity: quantity
-  }),
+  updateQuantity: async ({ currentCart, product, quantity }) => {
+    cart.value = await cartUpdate({
+      ...product,
+      quantity: quantity
+    });
+    return cart.value;
+  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   clearCart: async ({ currentCart }) => await cartClear(),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   applyCoupon: async ({ currentCart, coupon }) => {
     const ok = await cartApplyCoupon(coupon);
-    const cart: CartTotal = await cartLoad();
+    cart.value = await cartLoad();
     return {
-      updatedCart: cart,
+      updatedCart: cart.value,
       updatedCoupon: ok && coupon ? coupon : ''
     };
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeCoupon: async ({ currentCart }) => {
     const ok = await cartDeleteCoupon();
-    const cart: CartTotal = await cartLoad();
+    cart.value = await cartLoad();
     return {
-      updatedCart: cart,
+      updatedCart: cart.value,
       updatedCoupon: ok ? '' : ''
     };
   },
