@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="log-in desktop-only">
-      <SfButton class="log-in__button color-secondary"
+      <SfButton class="log-in__button color-secondary" @click="login()"
         >Log in to your account</SfButton
       >
       <p class="log-in__info">or fill the details below:</p>
@@ -64,10 +64,11 @@
         <SfButton class="color-secondary form__back-button" @click="$emit('prevStep')">
           Go back
         </SfButton>
-        <SfButton class="form__action-button" @click="$emit('nextStep')">
+        <SfButton class="form__action-button" @click="nextStep()">
           Continue to shipping
         </SfButton>
       </div>
+      <SfAlert :message="error" type="danger" v-if="error" />
     </div>
   </div>
 </template>
@@ -82,7 +83,9 @@ import {
   SfCharacteristic
 } from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
-import { useCheckout } from '<%= options.composables %>';
+import { useCheckout, useUser } from '<%= options.composables %>';
+import uiState from '~/assets/ui-state';
+
 
 export default {
   name: 'PersonalDetails',
@@ -99,11 +102,35 @@ export default {
     const { personalDetails } = useCheckout();
     const accountBenefits = ref(false);
     const createAccount = ref(false);
+    const error = ref(null);
+    const { isLoginModalOpen, toggleLoginModal } = uiState;
+    const { register } = useUser();
+
+    
+    const login = () => {
+      if (!isLoginModalOpen.value) toggleLoginModal();
+    }
+
+    const nextStep = async () => {
+      if (createAccount.value) {
+        try {
+          await register(personalDetails.value);
+        } catch(e)
+        {
+          error.value = e.message;
+          return;
+        }
+      }
+      context.emit('nextStep');
+    }
 
     return {
+      login,
       personalDetails,
       accountBenefits,
       createAccount,
+      nextStep,
+      error,
       characteristics: [
         { description: 'Faster checkout',
           icon: 'clock' },

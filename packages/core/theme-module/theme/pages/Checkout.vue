@@ -75,6 +75,13 @@ export default {
         currentStep.value = next;
     };
 
+    watch(isAuthenticated, () => {
+      if (isAuthenticated.value && currentStep.value == 0)
+      {
+        context.root.$router.push(STEPS[1].name);
+      }
+    });
+
     const handleNextStep = (nextStep) => {
       context.root.$router.push(nextStep < 0 ? '/' : nextStep < STEPS.length ? STEPS[nextStep].name : 'thank-you');
     };

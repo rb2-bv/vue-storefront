@@ -161,7 +161,7 @@ export default {
   },
   setup(props, context) {
     const form = ref({});
-    const isLogin = ref(false);
+    const isLogin = ref(true);
     const createAccount = ref(false);
     const rememberMe = ref(false);
     const error = ref(null);
