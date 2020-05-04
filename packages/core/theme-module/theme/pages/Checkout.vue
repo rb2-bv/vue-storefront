@@ -2,7 +2,7 @@
   <div id="checkout">
     <div class="checkout">
       <div class="checkout__main">
-        <SfSteps :active="currentStep" v-if="currentStep < 4" class="checkout__steps">
+        <SfSteps :active="currentStep" v-if="currentStep < STEPS.length" class="checkout__steps">
           <SfStep v-for="(step, index) in STEPS" :key="step.name" :name="step.label">
             <nuxt-child
               @showReview="handleShowReview"
@@ -28,7 +28,7 @@
 import { SfSteps, SfButton } from '@storefront-ui/vue';
 import CartPreview from '~/components/checkout/CartPreview';
 import OrderReview from '~/components/checkout/OrderReview';
-import { ref } from '@vue/composition-api';
+import { ref, watch } from '@vue/composition-api';
 import { useUser } from '<%= options.composables %>';
 
 const STEPS = [
@@ -76,7 +76,7 @@ export default {
     };
 
     const handleNextStep = (nextStep) => {
-      context.root.$router.push(nextStep < 0 ? '/' : nextStep < 4 ? STEPS[nextStep].name : 'thank-you');
+      context.root.$router.push(nextStep < 0 ? '/' : nextStep < STEPS.length ? STEPS[nextStep].name : 'thank-you');
     };
 
     return {

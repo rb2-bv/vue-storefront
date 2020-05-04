@@ -1,4 +1,4 @@
-import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment, CreateReview, AggregateField } from './swagger/index';
+import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment, CreateReview, AggregateField, LoginResponse } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
 
 export * from './swagger';
@@ -67,8 +67,9 @@ function override(overrides: any) {
 
 function setup(setupConfig: any) {
   const config = new Configuration({
-    basePath: setupConfig.basePath || 'http://localhost:9999'
+    basePath: setupConfig.basePath || 'http://localhost:9999',
   });
+
 
   locale = setupConfig.locale || locale;
   currency = setupConfig.currency || currency;
@@ -100,13 +101,23 @@ const cartLoad = async() =>{
     currentCart = (await methods.cartCreate(currentToken)).data;
     cartChanged(currentCart);
   }
-  let data = await methods.cartTotals(currentToken, currentCart);
-  if (data.status === 404) {
-    currentCart = (await methods.cartCreate(currentToken)).data;
-    data = await methods.cartTotals(currentToken, currentCart);
-    cartChanged(currentCart);
+  try {
+    let data = await methods.cartTotals(currentToken, currentCart);
+    if (data.status === 404) {
+      
+    }
+    return data.data;
+  } catch (e) {
+    if (e.response.status == 404) {
+      console.log("Retry");
+      currentCart = (await methods.cartCreate(currentToken)).data;
+      let data = await methods.cartTotals(currentToken, currentCart);
+      cartChanged(currentCart);
+      return data.data;
+    } else 
+      throw e;
   }
-  return data.data;
+  
 };
 const cartUpdate = async(item: CartItem) => {
   await methods.cartUpdate(currentToken, currentCart, item);
@@ -137,8 +148,13 @@ const userResetPassword = async (email: string) => (await methods.userResetPassw
 const userCreatePassword = async (email: string, newPassword: string, resetToken: string) => (await methods.userCreatePassword(email, newPassword, resetToken)).data;
 const userCreate = async(firstName: string, lastName: string, email: string, password: string) => (await (methods.userCreate(firstName, lastName, email, password))).data;
 const userLogin = async (email: string, password: string) => {
-  const newTok = (await (methods.userLogin(email, password))).data;
-  if (!newTok) return false;
+  let newTok: LoginResponse;
+  try {
+    newTok = (await (methods.userLogin(email, password))).data;
+    if (!newTok) return false;
+  } catch {
+    return false;
+  }
   const oldId = currentCart;
   const cartContent = await cartLoad();
 
@@ -174,7 +190,14 @@ const cartPaymentMethods = async () => (await methods.cartPaymentMethods(current
 const cartShippingInformation = async(carrierCode: string, userAddress: UserAddress) => (await methods.cartShippingInformation(currentToken, currentCart, carrierCode, userAddress)).data;
 const cartShippingMethods = async(address: UserAddress) => (await methods.cartShippingMethods(currentToken, currentCart, address)).data;
 const orderPaymentSubMethods = async(method: string) => (await methods.orderPaymentSubMethods(method)).data;
-const order = async(data: CreateOrderRequest) => (await methods.order(currentToken, currentCart, data)).data;
+const order = async(data: CreateOrderRequest) => {
+  let res = (await methods.order(currentToken, currentCart, data)).data;
+
+  currentCart = undefined;
+  await cartLoad();
+
+  return res;
+}
 const orderStartPayment = async(data: RequestStartPayment) => (await methods.orderStartPayment(data)).data;
 
 /* const catalogCmsBlock = methods.catalogCmsBlock;

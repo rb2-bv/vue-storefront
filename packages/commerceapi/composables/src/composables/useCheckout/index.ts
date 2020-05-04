@@ -34,23 +34,7 @@ export const chosenPaymentMethod: Ref<PaymentMethod> = ref({});
 export const chosenShippingMethod: Ref<CartShippingMethod> = ref({});
 const loading = ref(false);
 
-/*
-export interface UseCheckout<PAYMENT_METHODS, SHIPPING_METHODS, PERSONAL_DETAILS, SHIPPING_DETAILS,
-BILLING_DETAILS, CHOOSEN_PAYMENT_METHOD, CHOOSEN_SHIPPING_METHOD, PLACE_ORDER> {
-    paymentMethods: Ref<PAYMENT_METHODS>;
-    shippingMethods: Ref<SHIPPING_METHODS>;
-    personalDetails: PERSONAL_DETAILS;
-    shippingDetails: SHIPPING_DETAILS;
-    billingDetails: BILLING_DETAILS;
-    chosenPaymentMethod: CHOOSEN_PAYMENT_METHOD;
-    chosenShippingMethod: CHOOSEN_SHIPPING_METHOD;
-    placeOrder: PLACE_ORDER;
-    loading: ComputedProperty<boolean>;
-}
 
-*/
-
-// TODO(CHECKOUT): selecting payment method
 export default function useCheckout(): UseCheckout<CartPaymentMethod[], CartShippingMethod[],
 Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<PaymentMethod>, Ref<CartShippingMethod>, () => Promise<string>> {
 
@@ -122,7 +106,7 @@ Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<Payment
       paymentMethodExtra: chosenPaymentMethod.value?.extraInfo,
       shippingMethod: chosenShippingMethod.value?.code
     });
-
+    // This ensures we have a clean & new cart.
     cart.value = await cartLoad();
     return orderNo;
   };
