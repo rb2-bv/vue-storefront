@@ -57,8 +57,14 @@
       />
       <SfProperty
         name="Subtotal"
-        :value="checkoutGetters.getFormattedPrice(totals.subtotal)"
+        :value="checkoutGetters.getFormattedPrice(totals.subtotal + (totals.discount || 0))"
         class="sf-property--full-width sf-property--large property"
+      />
+      <SfProperty
+        name="Discount"
+        :value="checkoutGetters.getFormattedPrice(totals.discount)"
+        class="sf-property--full-width sf-property--large property"
+        v-if="totals.discount && totals.discount > 0"
       />
       <SfProperty
         name="Shipping"

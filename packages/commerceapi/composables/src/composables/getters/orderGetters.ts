@@ -5,7 +5,7 @@ import { CartTotal, CartItem } from '../../types';
 import { formatPrice } from '../../helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getDate = (order: CartTotal): string => order?.orderDate;
+export const getDate = (order: CartTotal): string => new Date(order?.orderDate as any).toLocaleDateString();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getId = (order: CartTotal): string => order?.orderId;
