@@ -50,8 +50,9 @@ import LoyaltyCard from './MyAccount/LoyaltyCard';
 import MyNewsletter from './MyAccount/MyNewsletter';
 import OrderHistory from './MyAccount/OrderHistory';
 import MyReviews from './MyAccount/MyReviews';
+import { useUser } from '<%= options.composables %>';
 
-// TODO: protect this route: https://github.com/DivanteLtd/next/issues/379
+
 export default {
   name: 'MyAccount',
   components: {
@@ -63,6 +64,12 @@ export default {
     MyNewsletter,
     OrderHistory,
     MyReviews
+  },
+  setup(props, context) {
+    const { isAuthenticated } = useUser();
+    if (!isAuthenticated.value) {
+      context.root.$router.push('/');
+    }
   },
   data() {
     return {
