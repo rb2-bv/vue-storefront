@@ -54,6 +54,7 @@
             Don't have and account yet?
             <SfButton class="sf-button--text color-secondary" @click="isLogin = false">Register today?</SfButton>
           </div>
+          <SfAlert :message="error" type="danger" v-if="error" />
         </div>
         <div v-else key="sign-up" class="form">
           <ValidationObserver v-slot="{ handleSubmit }">
@@ -120,6 +121,7 @@
             or
             <SfButton class="sf-button--text color-secondary" @click="isLogin = true">login in to your account</SfButton>
           </div>
+          <SfAlert :message="error" type="danger" v-if="error" />
         </div>
       </transition>
     </SfModal>
@@ -157,11 +159,12 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
-  setup() {
+  setup(props, context) {
     const form = ref({});
     const isLogin = ref(false);
     const createAccount = ref(false);
     const rememberMe = ref(false);
+    const error = ref(null);
     const { register, login, loading } = useUser();
 
     watch(isLoginModalOpen, () => {
@@ -171,7 +174,13 @@ export default {
     });
 
     const handleForm = (fn) => async () => {
-      await fn(form.value);
+      try {
+        await fn(form.value);
+      } catch(e)
+      {
+        error.value = e.message;
+        return;
+      }
       toggleLoginModal();
     };
 
@@ -183,6 +192,7 @@ export default {
       form,
       loading,
       isLogin,
+      error,
       createAccount,
       rememberMe,
       isLoginModalOpen,
