@@ -146,7 +146,13 @@ const productRenderList = methods.productRenderList;
 const userChangePassword = async (currentPassword: string, newPassword: string) => (await methods.userChangePassword(currentToken, currentPassword, newPassword)).data;
 const userResetPassword = async (email: string) => (await methods.userResetPassword(email)).data;
 const userCreatePassword = async (email: string, newPassword: string, resetToken: string) => (await methods.userCreatePassword(email, newPassword, resetToken)).data;
-const userCreate = async(firstName: string, lastName: string, email: string, password: string) => (await (methods.userCreate(firstName, lastName, email, password))).data;
+const userCreate = async(firstName: string, lastName: string, email: string, password: string) => {
+  let res = (await methods.userCreate(firstName, lastName, email, password)).data;
+  if (res) {
+    await userLogin(email, password);
+  }
+  return res;
+}
 const userLogin = async (email: string, password: string) => {
   let newTok: LoginResponse;
   try {
