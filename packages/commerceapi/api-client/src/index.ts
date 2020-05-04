@@ -158,8 +158,8 @@ const userLogin = async (email: string, password: string) => {
   const oldId = currentCart;
   const cartContent = await cartLoad();
 
-  currentRefreshToken = newTok.refresh;
-  currentToken = newTok.token;
+  currentRefreshToken = newTok.refresh!;
+  currentToken = newTok.token!;
   tokenChanged(currentToken, currentRefreshToken);
 
   await cartLoad();

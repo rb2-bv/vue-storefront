@@ -1,5 +1,5 @@
 import {UseUserFactoryParams} from '@vue-storefront/core';
-import { UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo } from '../../types';
+import { UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo, UserAddress } from '../../types';
 import useCart from '../useCart';
 import { shippingDetails, billingDetails, personalDetails } from '../useCheckout';
 import { ADDRCONFIG } from 'dns';
@@ -7,37 +7,37 @@ import { ADDRCONFIG } from 'dns';
 function loadProfile(profile: UserInfo | null) {
   if (profile) {
     personalDetails.value = {
-      email: profile.email,
-      firstname: profile.firstName,      
-      lastname: profile.lastName
+      email: profile.email || undefined,
+      firstname: profile.firstName || undefined,
+      lastname: profile.lastName || undefined
     };
 
-    let address = profile.addresses.find(e => e.defaultShipping);
+    let address = profile?.addresses?.find((e: UserAddress) => e.defaultShipping);
     if (address) {
       shippingDetails.value = {
-        firstName: address.firstName,
-        lastName: address.lastName,
-        postalCode: address.postCode,
-        country: address.countryCode,
-        city: address.city,
-        state: address.lastName,
-        streetName: address.addressLine1,
-        apartment: address.addressLine2
+        firstName: address.firstName || undefined,
+        lastName: address.lastName || undefined,
+        postalCode: address.postCode || undefined,
+        country: address.countryCode || undefined,
+        city: address.city || undefined,
+        state: address.lastName || undefined,
+        streetName: address.addressLine1 || undefined,
+        apartment: address.addressLine2 || undefined
       }
     } else {
       shippingDetails.value = {};
     }
-    address = profile.addresses.find(e => e.defaultBilling);
+    address = profile?.addresses?.find((e: UserAddress) => e.defaultBilling);
     if (address) {
       billingDetails.value = {
-        firstName: address.firstName,
-        lastName: address.lastName,
-        postalCode: address.postCode,
-        country: address.countryCode,
-        city: address.city,
-        state: address.lastName,
-        streetName: address.addressLine1,
-        apartment: address.addressLine2
+        firstName: address.firstName || undefined,
+        lastName: address.lastName || undefined,
+        postalCode: address.postCode || undefined,
+        country: address.countryCode || undefined,
+        city: address.city || undefined,
+        state: address.lastName || undefined,
+        streetName: address.addressLine1 || undefined,
+        apartment: address.addressLine2 || undefined
       }
     } else {
       billingDetails.value = {};
@@ -73,7 +73,7 @@ export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = 
       loadProfile(res);
       return res;
     }
-    return null;
+    throw "Invalid username or password";
   },
   changePassword: async function changePassword({currentPassword, newPassword}) {
     await userChangePassword(currentPassword, newPassword);
