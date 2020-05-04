@@ -93,17 +93,26 @@
       <div class="form__element payment-methods">
         <SfRadio
           v-for="item in paymentMethods"
-          :key="item.value"
-          v-model="chosenPaymentMethod"
-          :label="item.label"
-          :value="item.value"
-          name="paymentMethod"
-          :description="item.description"
-          class="form__radio payment-method"
+          :key="checkoutGetters.getPaymentMethodName(item)"
+          :label="checkoutGetters.getPaymentMethodName(item)"
+          :value="checkoutGetters.getPaymentMethodId(item)"
+          :selected="checkoutGetters.getPaymentMethodId(chosenPaymentMethod)"
+          @input="() => chosenPaymentMethod = item"
+          name="PaymentMethod"
+          :description="checkoutGetters.getPaymentMethodDescription(item)"
+          class="form__radio payment"
         >
-          <template #label>
-            <div class="sf-radio__label">
-              {{ item.label }}
+          <template #label="{label}">
+            <div class="sf-radio__label payment__label">
+              <div>{{ label }} </div>
+              <div v-if="checkoutGetters.getShippingMethodPrice(item) != 0">${{ checkoutGetters.getShippingMethodPrice(item) }}</div>
+            </div>
+          </template>
+          <template #description="{description}">
+            <div class="sf-radio__description payment__description">
+              <div class="payment__info">
+                {{ description }}
+              </div>
             </div>
           </template>
         </SfRadio>
@@ -133,7 +142,7 @@ import {
   SfCheckbox
 } from '@storefront-ui/vue';
 import { ref, watch, computed } from '@vue/composition-api';
-import { useLocale, useCheckout } from '<%= options.composables %>';
+import { useLocale, useCheckout, checkoutGetters } from '@vue-storefront/commerceapi';
 
 
 export default {
@@ -170,6 +179,7 @@ export default {
       paymentMethods,
       chosenPaymentMethod,
       sameAsShipping,
+      checkoutGetters,
       COUNTRIES: computed(() => loc.availableCountries.value)
     };
   }

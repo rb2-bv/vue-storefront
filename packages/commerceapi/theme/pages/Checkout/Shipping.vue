@@ -132,7 +132,7 @@ import {
   SfSelect,
   SfRadio
 } from '@storefront-ui/vue';
-import { useLocale,useCheckout, checkoutGetters } from '<%= options.composables %>';
+import { useLocale, useCheckout, checkoutGetters } from '@vue-storefront/commerceapi';
 import { computed } from '@vue/composition-api';
 
 
