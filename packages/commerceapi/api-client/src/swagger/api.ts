@@ -1628,43 +1628,6 @@ export interface RequestPaymentSubMethodsResponse {
 /**
  * 
  * @export
- * @interface RequestStartPayment
- */
-export interface RequestStartPayment {
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    cartID?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    orderID?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    methodName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    subMethodName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    redirectURL?: string | null;
-}
-/**
- * 
- * @export
  * @interface RequestStartPaymentResponse
  */
 export interface RequestStartPaymentResponse {
@@ -1969,6 +1932,44 @@ export interface UserInfo {
      * @memberof UserInfo
      */
     vatId?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface WishList
+ */
+export interface WishList {
+    /**
+     * 
+     * @type {string}
+     * @memberof WishList
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {Array<CartItem>}
+     * @memberof WishList
+     */
+    list?: Array<CartItem> | null;
+}
+/**
+ * 
+ * @export
+ * @interface WishListSummary
+ */
+export interface WishListSummary {
+    /**
+     * 
+     * @type {string}
+     * @memberof WishListSummary
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof WishListSummary
+     */
+    numberOfEntries?: number;
 }
 
 /**
@@ -3796,11 +3797,15 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {RequestStartPayment} [requestStartPayment] 
+         * @param {string} [cartID] 
+         * @param {string} [orderID] 
+         * @param {string} [methodName] 
+         * @param {string} [subMethodName] 
+         * @param {string} [redirectURL] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiOrderStartPaymentPost(requestStartPayment?: RequestStartPayment, options: any = {}): RequestArgs {
+        apiOrderStartPaymentPost(cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string, options: any = {}): RequestArgs {
             const localVarPath = `/api/Order/start-payment`;
             const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
             let baseOptions;
@@ -3811,17 +3816,33 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            if (cartID !== undefined) {
+                localVarQueryParameter['cartID'] = cartID;
+            }
+
+            if (orderID !== undefined) {
+                localVarQueryParameter['orderID'] = orderID;
+            }
+
+            if (methodName !== undefined) {
+                localVarQueryParameter['methodName'] = methodName;
+            }
+
+            if (subMethodName !== undefined) {
+                localVarQueryParameter['subMethodName'] = subMethodName;
+            }
+
+            if (redirectURL !== undefined) {
+                localVarQueryParameter['redirectURL'] = redirectURL;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
             // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
             delete localVarUrlObj.search;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            const needsSerialization = (typeof requestStartPayment !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
-            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(requestStartPayment !== undefined ? requestStartPayment : {}) : (requestStartPayment || "");
 
             return {
                 url: globalImportUrl.format(localVarUrlObj),
@@ -3867,12 +3888,16 @@ export const OrderApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {RequestStartPayment} [requestStartPayment] 
+         * @param {string} [cartID] 
+         * @param {string} [orderID] 
+         * @param {string} [methodName] 
+         * @param {string} [subMethodName] 
+         * @param {string} [redirectURL] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiOrderStartPaymentPost(requestStartPayment?: RequestStartPayment, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<RequestStartPaymentResponse> {
-            const localVarAxiosArgs = OrderApiAxiosParamCreator(configuration).apiOrderStartPaymentPost(requestStartPayment, options);
+        apiOrderStartPaymentPost(cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<RequestStartPaymentResponse> {
+            const localVarAxiosArgs = OrderApiAxiosParamCreator(configuration).apiOrderStartPaymentPost(cartID, orderID, methodName, subMethodName, redirectURL, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -3909,12 +3934,16 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {RequestStartPayment} [requestStartPayment] 
+         * @param {string} [cartID] 
+         * @param {string} [orderID] 
+         * @param {string} [methodName] 
+         * @param {string} [subMethodName] 
+         * @param {string} [redirectURL] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiOrderStartPaymentPost(requestStartPayment?: RequestStartPayment, options?: any): AxiosPromise<RequestStartPaymentResponse> {
-            return OrderApiFp(configuration).apiOrderStartPaymentPost(requestStartPayment, options)(axios, basePath);
+        apiOrderStartPaymentPost(cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string, options?: any): AxiosPromise<RequestStartPaymentResponse> {
+            return OrderApiFp(configuration).apiOrderStartPaymentPost(cartID, orderID, methodName, subMethodName, redirectURL, options)(axios, basePath);
         },
     };
 };
@@ -3952,13 +3981,17 @@ export class OrderApi extends BaseAPI {
 
     /**
      * 
-     * @param {RequestStartPayment} [requestStartPayment] 
+     * @param {string} [cartID] 
+     * @param {string} [orderID] 
+     * @param {string} [methodName] 
+     * @param {string} [subMethodName] 
+     * @param {string} [redirectURL] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public apiOrderStartPaymentPost(requestStartPayment?: RequestStartPayment, options?: any) {
-        return OrderApiFp(this.configuration).apiOrderStartPaymentPost(requestStartPayment, options)(this.axios, this.basePath);
+    public apiOrderStartPaymentPost(cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string, options?: any) {
+        return OrderApiFp(this.configuration).apiOrderStartPaymentPost(cartID, orderID, methodName, subMethodName, redirectURL, options)(this.axios, this.basePath);
     }
 
 }
@@ -5090,6 +5123,691 @@ export class UserApi extends BaseAPI {
      */
     public apiUserResetPasswordPost(email?: string, options?: any) {
         return UserApiFp(this.configuration).apiUserResetPasswordPost(email, options)(this.axios, this.basePath);
+    }
+
+}
+
+
+/**
+ * WishlistApi - axios parameter creator
+ * @export
+ */
+export const WishlistApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAdditemPost(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/additem`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof cartItem !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(cartItem !== undefined ? cartItem : {}) : (cartItem || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAnonidPost(options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/anonid`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistClearDelete(token?: string, anonid?: string, name?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/clear`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistCreatePut(token?: string, anonid?: string, name?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/create`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistDeleteDelete(token?: string, anonid?: string, name?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/delete`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistGetGet(token?: string, anonid?: string, name?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/get`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistListGet(token?: string, anonid?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/list`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistRemoveitemDelete(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Wishlist/removeitem`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (anonid !== undefined) {
+                localVarQueryParameter['anonid'] = anonid;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof cartItem !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(cartItem !== undefined ? cartItem : {}) : (cartItem || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * WishlistApi - functional programming interface
+ * @export
+ */
+export const WishlistApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAdditemPost(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<WishList> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistAdditemPost(token, anonid, name, cartItem, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAnonidPost(options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<string> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistAnonidPost(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistClearDelete(token?: string, anonid?: string, name?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistClearDelete(token, anonid, name, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistCreatePut(token?: string, anonid?: string, name?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<WishList> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistCreatePut(token, anonid, name, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistDeleteDelete(token?: string, anonid?: string, name?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistDeleteDelete(token, anonid, name, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistGetGet(token?: string, anonid?: string, name?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<WishList> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistGetGet(token, anonid, name, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistListGet(token?: string, anonid?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WishListSummary>> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistListGet(token, anonid, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistRemoveitemDelete(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<WishList> {
+            const localVarAxiosArgs = WishlistApiAxiosParamCreator(configuration).apiWishlistRemoveitemDelete(token, anonid, name, cartItem, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * WishlistApi - factory interface
+ * @export
+ */
+export const WishlistApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAdditemPost(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any): AxiosPromise<WishList> {
+            return WishlistApiFp(configuration).apiWishlistAdditemPost(token, anonid, name, cartItem, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistAnonidPost(options?: any): AxiosPromise<string> {
+            return WishlistApiFp(configuration).apiWishlistAnonidPost(options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistClearDelete(token?: string, anonid?: string, name?: string, options?: any): AxiosPromise<void> {
+            return WishlistApiFp(configuration).apiWishlistClearDelete(token, anonid, name, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistCreatePut(token?: string, anonid?: string, name?: string, options?: any): AxiosPromise<WishList> {
+            return WishlistApiFp(configuration).apiWishlistCreatePut(token, anonid, name, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistDeleteDelete(token?: string, anonid?: string, name?: string, options?: any): AxiosPromise<void> {
+            return WishlistApiFp(configuration).apiWishlistDeleteDelete(token, anonid, name, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistGetGet(token?: string, anonid?: string, name?: string, options?: any): AxiosPromise<WishList> {
+            return WishlistApiFp(configuration).apiWishlistGetGet(token, anonid, name, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistListGet(token?: string, anonid?: string, options?: any): AxiosPromise<Array<WishListSummary>> {
+            return WishlistApiFp(configuration).apiWishlistListGet(token, anonid, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [anonid] 
+         * @param {string} [name] 
+         * @param {CartItem} [cartItem] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiWishlistRemoveitemDelete(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any): AxiosPromise<WishList> {
+            return WishlistApiFp(configuration).apiWishlistRemoveitemDelete(token, anonid, name, cartItem, options)(axios, basePath);
+        },
+    };
+};
+
+/**
+ * WishlistApi - object-oriented interface
+ * @export
+ * @class WishlistApi
+ * @extends {BaseAPI}
+ */
+export class WishlistApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {CartItem} [cartItem] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistAdditemPost(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistAdditemPost(token, anonid, name, cartItem, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistAnonidPost(options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistAnonidPost(options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistClearDelete(token?: string, anonid?: string, name?: string, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistClearDelete(token, anonid, name, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistCreatePut(token?: string, anonid?: string, name?: string, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistCreatePut(token, anonid, name, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistDeleteDelete(token?: string, anonid?: string, name?: string, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistDeleteDelete(token, anonid, name, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistGetGet(token?: string, anonid?: string, name?: string, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistGetGet(token, anonid, name, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistListGet(token?: string, anonid?: string, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistListGet(token, anonid, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [anonid] 
+     * @param {string} [name] 
+     * @param {CartItem} [cartItem] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WishlistApi
+     */
+    public apiWishlistRemoveitemDelete(token?: string, anonid?: string, name?: string, cartItem?: CartItem, options?: any) {
+        return WishlistApiFp(this.configuration).apiWishlistRemoveitemDelete(token, anonid, name, cartItem, options)(this.axios, this.basePath);
     }
 
 }

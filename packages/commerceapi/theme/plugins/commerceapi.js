@@ -12,7 +12,8 @@ export default ({ app }) => {
     currentToken: app.$cookies.get(config.cookies.tokenCookieName),
     currentRefreshToken: app.$cookies.get(config.cookies.refreshTokenCookieName),
     currentCart: app.$cookies.get(config.cookies.cartCookieName),
-    tokenChanged: (token, refresh) => {
+    anonid: app.$cookies.get(config.cookies.anonIdCookieName),
+    tokenChanged: (token, refresh, anonid) => {
       if (!token || token === '') {
         app.$cookies.remove(config.cookies.tokenCookieName);
       } else {
@@ -22,6 +23,11 @@ export default ({ app }) => {
         app.$cookies.remove(config.cookies.refreshTokenCookieName);
       } else {
         app.$cookies.set(config.cookies.refreshTokenCookieName, refresh);
+      }
+      if (!anonid || anonid === '') {
+        app.$cookies.remove(config.cookies.anonIdCookieName);
+      } else {
+        app.$cookies.set(config.cookies.anonIdCookieName, anonid);
       }
     },
     cartChanged: (id) => {

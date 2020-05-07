@@ -1,4 +1,4 @@
-import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, RequestStartPayment, CreateReview, AggregateField, LoginResponse } from './swagger/index';
+import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, CreateReview, AggregateField, LoginResponse, WishlistApi } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
 
 export * from './swagger';
@@ -11,6 +11,7 @@ let productApi: ProductApi | null = null;
 let stockApi: StockApi | null = null;
 let reviewApi: ReviewApi | null = null;
 let userApi: UserApi | null = null;
+let wishlistApi: WishlistApi | null = null;
 
 let priceWithTax = true;
 let locale = 'en';
@@ -19,9 +20,10 @@ let country = 'nl';
 let currencies = [{code: 'EUR', label: 'Euro', prefixSign: true, sign: '€'}];
 let countries = [{code: 'nl', label: 'Nederland'}];
 let locales = [{code: 'en', label: 'English' }];
-let tokenChanged: (token?: string, refresh?: string) => void = () => {};
+let tokenChanged: (token?: string, refresh?: string, anonid?: string) => void = () => {};
 let cartChanged: (cartId?: string) => void = () => {};
 export let currentToken: string | undefined = undefined;
+export let anonid: string | undefined = undefined;
 export let currentRefreshToken: string | undefined = undefined;
 export let currentCart: string | undefined = undefined;
 
@@ -44,7 +46,7 @@ let methods = {
   catalogCategoryTree: (token?: string) => catalogApi?.apiCatalogCategoryTreeGet(token),
   orderPaymentSubMethods: (method?: string) => orderApi?.apiOrderPaymentSubMethodsGet(method),
   order: (token?: string, cartId?: string, createOrderRequest?: CreateOrderRequest) => orderApi?.apiOrderOrderPost(token, cartId, createOrderRequest),
-  orderStartPayment: (requestStartPayment?: RequestStartPayment) => orderApi?.apiOrderStartPaymentPost(requestStartPayment),
+  orderStartPayment: (cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string) => orderApi?.apiOrderStartPaymentPost(cartID, orderID, methodName, subMethodName, redirectURL),
   reviewCreate: (token?: string, createReview?: CreateReview) => reviewApi?.apiReviewCreatePost(token, createReview),
   stockCheck: (sku?: string) => stockApi?.apiStockCheckGet(sku),
   stockList: (sku?: string) => stockApi?.apiStockListGet(sku),
@@ -58,6 +60,11 @@ let methods = {
   userOrderHistory: (token?: string, skip?: number) => userApi?.apiUserOrderHistoryGet(token, skip),
   userRefresh: (refreshToken?: string) => userApi?.apiUserRefreshPost(refreshToken),
   userResetPassword: (email?: string) => userApi?.apiUserResetPasswordPost(email),
+  wishlistAdditem: (token?: string, anonid?: string, name?: string, cartItem?: CartItem) => wishlistApi?.apiWishlistAdditemPost(token, anonid, name, cartItem),
+  wishlistCreateAnonid:() => wishlistApi?.apiWishlistAnonidPost(),
+  wishlistClear: (token?: string, anonid?: string, name?: string) => wishlistApi?.apiWishlistClearDelete(token, anonid, name),
+  wishlistGetCreate: (token?: string, anonid?: string, name?: string) => wishlistApi?.apiWishlistCreatePut(token, anonid, name),
+  wishlistRemoveitem: (token?: string, anonid?: string, name?: string, cartItem?: CartItem) => wishlistApi?.apiWishlistRemoveitemDelete(token,anonid, name, cartItem)
 };
 
 function override(overrides: any) {
@@ -70,6 +77,7 @@ function setup(setupConfig: any) {
   currency = setupConfig.currency || currency;
   country = setupConfig.country || country;
   currentToken = setupConfig.currentToken || currentToken;
+  anonid = setupConfig.anonid || anonid;
   currentRefreshToken = setupConfig.currentRefreshToken || currentRefreshToken;
   currentCart = setupConfig.currentCart || currentCart;
   priceWithTax = setupConfig.priceWithTax || priceWithTax;
@@ -96,6 +104,7 @@ function setup(setupConfig: any) {
   stockApi = new StockApi(config);
   reviewApi = new ReviewApi(config);
   userApi = new UserApi(config);
+  wishlistApi = new WishlistApi(config);
 }
 
 const cartApplyCoupon = async (coupon: string) => (await methods.cartApplyCoupon(currentToken, currentCart, coupon)).data;
@@ -168,16 +177,23 @@ const userLogin = async (email: string, password: string) => {
   }
   const oldId = currentCart;
   const cartContent = await cartLoad();
+  const oldWishlist = anonid != null ? await wishlistGetCreate("default") : null;
 
   currentRefreshToken = newTok.refresh!;
   currentToken = newTok.token!;
-  tokenChanged(currentToken, currentRefreshToken);
+  anonid = undefined;
+  tokenChanged(currentToken, currentRefreshToken, undefined);
 
   await cartLoad();
   if (currentCart !== oldId) {
     for (let i = 0; i < cartContent.items.length; i++) {
       await cartUpdate(cartContent.items[i]);
     }
+  }
+  // push the wishlist items into the customer wishlist after login.
+  if (oldWishlist?.list && oldWishlist.list.length > 0) {
+    for(let i = 0; i < oldWishlist.list.length; i++)
+      await wishlistAdditem("default", oldWishlist.list[i]);
   }
   return true;
 };
@@ -209,7 +225,21 @@ const order = async(data: CreateOrderRequest) => {
 
   return res;
 }
-const orderStartPayment = async(data: RequestStartPayment) => (await methods.orderStartPayment(data)).data;
+const orderStartPayment = async(cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string) => (await methods.orderStartPayment(cartID, orderID, methodName, subMethodName, redirectURL)).data;
+const getAnonId = async() => {
+  if (currentToken == null) {
+    if (anonid == null) {
+      anonid = (await methods.wishlistCreateAnonid()).data;
+      tokenChanged(currentToken, currentRefreshToken, anonid);
+    }
+    return anonid;
+  }
+  return undefined;
+}
+const wishlistAdditem = async(name?: string, cartItem?: CartItem) => (await methods.wishlistAdditem(currentToken, await getAnonId(), name, cartItem)).data;
+const wishlistRemoveitem = async (name?: string, cartItem?: CartItem) => (await methods.wishlistRemoveitem(currentToken, await getAnonId(), name, cartItem)).data;
+const wishlistClear = async(name?: string) => (await methods.wishlistClear(currentToken, await getAnonId(), name)).data;
+const wishlistGetCreate = async(name?: string) =>(await methods.wishlistGetCreate(currentToken, await getAnonId(), name)).data;
 
 /* const catalogCmsBlock = methods.catalogCmsBlock;
 const catalogCmsPage = methods.catalogCmsPage;
@@ -254,6 +284,12 @@ export {
   orderPaymentSubMethods,
   order,
   orderStartPayment,
+  
+  wishlistAdditem,
+  wishlistClear,
+  wishlistRemoveitem,
+  wishlistGetCreate,
+
 
   // catalogCmsBlock,
   // catalogCmsPage,

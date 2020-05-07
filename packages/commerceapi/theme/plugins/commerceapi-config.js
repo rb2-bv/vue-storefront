@@ -29,6 +29,7 @@ export const config = {
     currencyCookieName: 'vsf-currency',
     countryCookieName: 'vsf-country',
     localeCookieName: 'vsf-locale',
+    anonIdCookieName: 'vsf-anonid',
     cartCookieName: 'vsf-cart',
     tokenCookieName: 'vsf-token',
     refreshTokenCookieName: 'vsf-refresh'

@@ -7,6 +7,7 @@ import useProduct from './composables/useProduct';
 import useUser from './composables/useUser';
 import useReviews from './composables/useReviews';
 import useUserOrders from './composables/useUserOrders';
+import useWishlist from "./composables/useWishlist";
 import { cartGetters, userGetters, categoryGetters, productGetters, checkoutGetters, orderGetters, reviewGetters } from './composables/getters/';
 export * from "./types"
 

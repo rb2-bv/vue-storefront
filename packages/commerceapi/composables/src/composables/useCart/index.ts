@@ -12,12 +12,20 @@ import {
   cartApplyCoupon,
   cartDeleteCoupon,
   cartClear,
-  CartTotal
+  CartTotal,
+  ProductInfo
 } from '../../types';
 
 export const cart: Ref<CartTotal | null> = ref(null);
 
-const params: UseCartFactoryParams<CartTotal | null, CartItem, Product, string> = {
+export const cartItemFromProduct = (product: ProductInfo, quantity: number): CartItem => {
+  return {
+    sku: product.sku,
+    quantity: quantity
+  }
+}
+
+const params: UseCartFactoryParams<CartTotal | null, CartItem, ProductInfo, string> = {
   cart,
   loadCart: async () => {
     cart.value = await cartLoad();
@@ -25,10 +33,7 @@ const params: UseCartFactoryParams<CartTotal | null, CartItem, Product, string> 
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addToCart: async ({ currentCart, product, quantity }) => {
-    cart.value = await cartUpdate({
-    sku: product.sku,
-    quantity: quantity
-  });
+    cart.value = await cartUpdate(cartItemFromProduct(product, quantity));
     return cart.value;
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,4 +75,4 @@ const params: UseCartFactoryParams<CartTotal | null, CartItem, Product, string> 
   }
 };
 
-export default useCartFactory<CartTotal | null, CartItem, Product, string>(params);
+export default useCartFactory<CartTotal | null, CartItem, ProductInfo, string>(params);
