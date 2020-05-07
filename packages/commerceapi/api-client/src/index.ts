@@ -66,11 +66,6 @@ function override(overrides: any) {
 }
 
 function setup(setupConfig: any) {
-  const config = new Configuration({
-    basePath: setupConfig.basePath || 'http://localhost:9999',
-  });
-
-
   locale = setupConfig.locale || locale;
   currency = setupConfig.currency || currency;
   country = setupConfig.country || country;
@@ -80,9 +75,19 @@ function setup(setupConfig: any) {
   priceWithTax = setupConfig.priceWithTax || priceWithTax;
   currencies = setupConfig.currencies || currencies;
   countries = setupConfig.countries || countries;
-  locales = setupConfig.locale || locales;
+  locales = setupConfig.locales || locales;
   tokenChanged = setupConfig.tokenChanged || tokenChanged;
   cartChanged = setupConfig.cartChanged || cartChanged;
+  const config = new Configuration({
+    basePath: setupConfig.basePath || 'http://localhost:9999',
+    baseOptions: {
+      headers: {
+        Country: country,
+        Currency: currency,
+        Language: locale
+      }
+    }
+  });
 
   cartApi = new CartApi(config);
   catalogApi = new CatalogApi(config);
