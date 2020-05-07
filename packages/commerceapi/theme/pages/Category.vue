@@ -101,7 +101,7 @@
     <div class="main section">
       <div class="sidebar desktop-only">
         <SfLoader :class="{ loading }" :loading="loading">
-          <SfAccordion :firstOpen="true" :showChevron="false">
+          <SfAccordion :open="selectedRootCategory" :showChevron="false">
             <SfAccordionItem
               v-for="(cat, i) in categoryTree && categoryTree.items"
               :key="i"
@@ -472,6 +472,7 @@ export default {
     const breadcrumbs = computed(() => categoryGetters.getBreadcrumbs ? categoryGetters.getBreadcrumbs(categories.value[0]): [{text: "Home", route: {link:"/"}}]);
 
     const isCategorySelected = (slug) => slug === (categories.value && categories.value[0] && categories.value[0].slug);
+    const selectedRootCategory = computed(() => (categories.value && categories.value[0]?.parents && categories.value[0]?.parents[0]?.label) || categories?.value && categories?.value[0]?.label);
 
     const sortBy = ref('price-up');
     const isGridView = ref(true);
@@ -488,6 +489,7 @@ export default {
 
     return {
       products,
+      selectedRootCategory,
       productsLoading,
       categoryTree,
       getCategoryPath,
