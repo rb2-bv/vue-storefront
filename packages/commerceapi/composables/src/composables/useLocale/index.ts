@@ -13,7 +13,6 @@ import { UseLocale, AgnosticLocale, AgnosticCountry, AgnosticCurrency } from '@v
 import { computed, Ref, ref } from '@vue/composition-api';
 
 export default function useLocale() : UseLocale {
-  console.log(" Locales: "+JSON.stringify(locales));
   const currentLocale: Ref<AgnosticLocale> = ref(locales.find(e => e.code == locale));
   const currentCountry: Ref<AgnosticCountry> = ref(countries.find(e => e.code == country));
   const currentCurrency: Ref<AgnosticCurrency> = ref(countries.find(e => e.code == currency));
