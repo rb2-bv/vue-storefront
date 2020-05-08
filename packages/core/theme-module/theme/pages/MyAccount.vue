@@ -5,6 +5,7 @@
       :breadcrumbs="breadcrumbs"
     />
     <SfContentPages
+      data-cy="my-account_content-pages"
       title="My Account"
       :active="activePage"
       class="my-account"
@@ -43,14 +44,15 @@
   </div>
 </template>
 <script>
-import { SfBreadcrumbs, SfContentPages } from '@storefront-ui/vue';
+import { SfBreadcrumbs, SfContentPages, SfButton } from '@storefront-ui/vue';
+import { computed } from '@vue/composition-api';
+import { useUser } from '<%= options.composables %>';
 import MyProfile from './MyAccount/MyProfile';
 import ShippingDetails from './MyAccount/ShippingDetails';
 import LoyaltyCard from './MyAccount/LoyaltyCard';
 import MyNewsletter from './MyAccount/MyNewsletter';
 import OrderHistory from './MyAccount/OrderHistory';
 import MyReviews from './MyAccount/MyReviews';
-import { useUser } from '<%= options.composables %>';
 
 
 export default {
@@ -58,6 +60,7 @@ export default {
   components: {
     SfBreadcrumbs,
     SfContentPages,
+    SfButton,
     MyProfile,
     ShippingDetails,
     LoyaltyCard,
@@ -66,24 +69,29 @@ export default {
     MyReviews
   },
   setup(props, context) {
-    const { logout, isAuthenticated } = useUser();
-    if (!isAuthenticated.value) {
-      context.root.$router.push('/');
-      return;
-    }
+    const { $router, $route } = context.root;
+    const { logout } = useUser();
+    const activePage = computed(() => {
+      const { pageName } = $route.params;
 
-    const changeActivePage = (title) => {
+      if (pageName) {
+        return (pageName.charAt(0).toUpperCase() + pageName.slice(1)).replace('-', ' ');
+      }
+
+      return 'My profile';
+    });
+
+    const changeActivePage = async (title) => {
       if (title === 'Log out') {
-        logout();
-        context.root.$router.push('/');
+        await logout();
+        $router.push('/');
         return;
       }
 
-      context.root.$router.push(`/my-account/${title.toLowerCase().replace(' ', '-')}`);
-    }
-    return {
-      changeActivePage
-    }
+      $router.push(`/my-account/${title.toLowerCase().replace(' ', '-')}`);
+    };
+
+    return { changeActivePage, activePage };
   },
   data() {
     return {
@@ -138,17 +146,6 @@ export default {
         ]
       }
     };
-  },
-  computed: {
-    activePage() {
-      const { pageName } = this.$route.params;
-
-      if (pageName) {
-        return (pageName.charAt(0).toUpperCase() + pageName.slice(1)).replace('-', ' ');
-      }
-
-      return 'My profile';
-    }
   }
 };
 </script>

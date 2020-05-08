@@ -2106,44 +2106,52 @@
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
 
-"@storefront-ui/shared@^0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@storefront-ui/shared/-/shared-0.6.4.tgz#8e8582673d7739df76cce044ef2a12bec0ec1694"
-  integrity sha512-gqv+l6Yl/55RtaQc26Ek0W6LW+s5Hhn7n13mC0qdtwkhmfwFnnr6wjonrvwcS5K2NvfRNug5Q1/At4UXGb6LHw==
+"@storefront-ui/shared@^0.7.7":
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/@storefront-ui/shared/-/shared-0.7.7.tgz#3da2e1d78098febbe790de6e173d63cc3a691fd7"
+  integrity sha512-PMJg9viJ/iDWT/3+pO03SbBToJnzufkU+L7MIoETR0WLR56bNR49ETg7LfxutP/tdycaKYn8PR3ddD0VS7t33Q==
 
-"@storefront-ui/shared@^0.7.5":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@storefront-ui/shared/-/shared-0.7.5.tgz#a4663c985ab1d1eb4ea7793d77c57ab539a4ca0f"
-  integrity sha512-3/JlkAwJOsvqObqgtrBCzAaqcdGYi2Ootua4jm+Brh3W1y5WZfZavhCsuyKc8//pG/R3M1XUmO0eodZgGFfbFw==
-
-"@storefront-ui/vue@^0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@storefront-ui/vue/-/vue-0.6.4.tgz#ada7b8c7bbc2e0aa9ac9398ecfb551411cd4e552"
-  integrity sha512-ZZHC2RD67HJc/YIOs7BYUfLEX2w414EPSuTzpfxvsUfj/UxEE7Dei7nSuPL81mYri6ZfbR6Kcda3CgDNwidM3g==
-  dependencies:
-    "@glidejs/glide" "^3.3.0"
-    "@storefront-ui/shared" "^0.6.4"
-    "@vue/babel-preset-app" "^4.0.0-alpha.1"
-    body-scroll-lock "^2.6.4"
-    core-js "^3.1.3"
-    hammerjs "^2.0.8"
-    leaflet "^1.5.1"
-    lozad "^1.9.0"
-    node-sass "^4.12.0"
-    sass-loader "^7.1.0"
-    simplebar-vue "^1.4.0"
-    vue-drag-drop "^1.1.4"
-    vue-fragment "^1.5.1"
-    vue2-leaflet "^2.1.1"
-    webpack-dev-middleware "3.6.0"
+"@storefront-ui/shared@^0.7.8":
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/@storefront-ui/shared/-/shared-0.7.8.tgz#7bacdf3e072a88d9e92853d8021135402376fcec"
+  integrity sha512-H8Ckkbb799e891CiS/PKf9M/VaiMyswSru3Oh7vbAcvE1uqO7Zsry5SwhPZL+yrKi3BCHWJxTdyT0DnmGVd3tA==
 
 "@storefront-ui/vue@^0.7.5":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@storefront-ui/vue/-/vue-0.7.5.tgz#f74bd44586efbb14fc2d7f1deb9ea46ebc4a6d17"
-  integrity sha512-ORV+oIcOYASa0cvLgdU0FzKKIcdwgxyJ4Wx8SwzVtDcFUvuBRI9pnmQyi0KfpkGt4RpIMoRXcLxWXLKdfxACmg==
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/@storefront-ui/vue/-/vue-0.7.8.tgz#f657014295b16d237ee9a8443a957ed58a69db8f"
+  integrity sha512-OyUu6xEeV8OSe1KyICWwgNRjr3pFVoRTljn28bqHhrJWB7NV0qwqiw7iOcfcP+qE+Zm3mzcm8fm+85xH0v9IfQ==
   dependencies:
     "@glidejs/glide" "^3.3.0"
-    "@storefront-ui/shared" "^0.7.5"
+    "@storefront-ui/shared" "^0.7.8"
+    "@storybook/addon-storysource" "^5.3.18"
+    "@storybook/addon-viewport" "^5.3.18"
+    "@types/jest" "^25.2.1"
+    "@vue/babel-preset-app" "^4.3.1"
+    "@vuepress/plugin-register-components" "^1.4.1"
+    babel-eslint "^10.1.0"
+    babel-loader "^8.1.0"
+    body-scroll-lock "^3.0.1"
+    core-js "^3.6.5"
+    hammerjs "^2.0.8"
+    leaflet "^1.5.1"
+    lint-staged "^10.1.3"
+    lozad "^1.9.0"
+    node-sass "^4.12.0"
+    sass-loader "^8.0.2"
+    simplebar-vue "^1.4.0"
+    storybook-addon-vue-info "^1.4.2"
+    vue-drag-drop "^1.1.4"
+    vue-fragment "^1.5.1"
+    vue2-leaflet "^2.5.2"
+    webpack-dev-middleware "3.7.2"
+
+"@storefront-ui/vue@^0.7.7":
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/@storefront-ui/vue/-/vue-0.7.7.tgz#e81aad65817fd98735820daa2e6f158b13def47f"
+  integrity sha512-Xk6DSGxGMSmlNXyR8xmVUoDYqHYwxVp8ZDi2DXWqB3rPppsM1NFQJPQ85SUkce+UYrrP3lasIsYQp6OOMjsqrw==
+  dependencies:
+    "@glidejs/glide" "^3.3.0"
+    "@storefront-ui/shared" "^0.7.7"
     "@storybook/addon-storysource" "^5.3.18"
     "@storybook/addon-viewport" "^5.3.18"
     "@types/jest" "^25.2.1"
@@ -2777,6 +2785,14 @@
     "@vue/composition-api" "^0.4.0"
     vue "^2.6.11"
 
+"@vue-storefront/core@^2.0.1-prealpha.429":
+  version "2.0.1-prealpha.429"
+  resolved "https://registry.yarnpkg.com/@vue-storefront/core/-/core-2.0.1-prealpha.429.tgz#a9604cd37504d75283bf90c74c00b734df810cb1"
+  integrity sha512-pSz9/q6nduyj7RXh3f0M+/D/OzudUgUgJ+0vLanbZ6d6Yd8dxeosrkCLrX8emgahCTG+hagIVEt9UIUI5Sclxw==
+  dependencies:
+    "@vue/composition-api" "^0.4.0"
+    vue "^2.6.11"
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.0.0.tgz#048fe579958da408fb7a8b2a3ec050b50a661040"
@@ -2792,7 +2808,7 @@
     lodash.kebabcase "^4.1.1"
     svg-tags "^1.0.0"
 
-"@vue/babel-preset-app@^4.0.0-alpha.1", "@vue/babel-preset-app@^4.1.2", "@vue/babel-preset-app@^4.3.1":
+"@vue/babel-preset-app@^4.1.2", "@vue/babel-preset-app@^4.3.1":
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-4.3.1.tgz#bb67aae562983067c5b242c27fb7de17f40cf109"
   dependencies:
@@ -3497,7 +3513,7 @@ apollo-link-schema@^1.2.4:
     apollo-link "^1.2.13"
     tslib "^1.9.3"
 
-apollo-link@^1.0.0, apollo-link@^1.2.13:
+apollo-link@^1.0.0, apollo-link@^1.2.13, apollo-link@^1.2.3:
   version "1.2.13"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.13.tgz#dff00fbf19dfcd90fddbc14b6a3f9a771acac6c4"
   dependencies:
@@ -3505,16 +3521,6 @@ apollo-link@^1.0.0, apollo-link@^1.2.13:
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
     zen-observable-ts "^0.8.20"
-
-apollo-link@^1.2.3:
-  version "1.2.14"
-  resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.14.tgz#3feda4b47f9ebba7f4160bef8b977ba725b684d9"
-  integrity sha512-p67CMEFP7kOG1JZ0ZkYZwRDa369w5PIjtMjvrQd/HnIV8FRsHRqLqK+oAZQnFa1DDdZtOtHTi+aMIW6EatC2jg==
-  dependencies:
-    apollo-utilities "^1.3.0"
-    ts-invariant "^0.4.0"
-    tslib "^1.9.3"
-    zen-observable-ts "^0.8.21"
 
 apollo-utilities@1.3.3, apollo-utilities@^1.0.1, apollo-utilities@^1.3.0, apollo-utilities@^1.3.3:
   version "1.3.3"
@@ -3960,11 +3966,6 @@ body-parser@1.19.0:
     qs "6.7.0"
     raw-body "2.4.0"
     type-is "~1.6.17"
-
-body-scroll-lock@^2.6.4:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-2.7.1.tgz#caf3f9c91773af1ffb684cd66ed9137b5b737014"
-  integrity sha512-hS53SQ8RhM0e4DsQ3PKz6Gr2O7Kpdh59TWU98GHjaQznL7y4dFycEPk7pFQAikqBaUSCArkc5E3pe7CWIt2fZA==
 
 body-scroll-lock@^3.0.1:
   version "3.0.1"
@@ -5033,7 +5034,7 @@ core-js@^3.0.1, core-js@^3.6.4:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
 
-core-js@^3.1.3, core-js@^3.6.5:
+core-js@^3.6.5:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
   integrity sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==
@@ -8894,7 +8895,7 @@ loader-utils@^0.2.16:
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
-loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4.0:
+loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.0.tgz#c579b5e34cb34b1a74edc6c1fb36bfa371d5a613"
   dependencies:
@@ -11613,7 +11614,7 @@ randomfill@^1.0.3:
     randombytes "^2.0.5"
     safe-buffer "^5.1.0"
 
-range-parser@^1.0.3, range-parser@^1.2.1, range-parser@~1.2.1:
+range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
 
@@ -12326,17 +12327,6 @@ sass-graph@^2.2.4:
     lodash "^4.0.0"
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
-
-sass-loader@^7.1.0:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-7.3.1.tgz#a5bf68a04bcea1c13ff842d747150f7ab7d0d23f"
-  integrity sha512-tuU7+zm0pTCynKYHpdqaPpe+MMTQ76I9TPZ7i4/5dZsigE350shQWe5EZNl5dBidM49TPET75tNqRbcsUZWeNA==
-  dependencies:
-    clone-deep "^4.0.1"
-    loader-utils "^1.0.1"
-    neo-async "^2.5.0"
-    pify "^4.0.1"
-    semver "^6.3.0"
 
 sass-loader@^8.0.2:
   version "8.0.2"
@@ -14183,7 +14173,7 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
 
-vue2-leaflet@^2.1.1, vue2-leaflet@^2.5.2:
+vue2-leaflet@^2.5.2:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/vue2-leaflet/-/vue2-leaflet-2.5.2.tgz#b89c056fe741c7ce7cb9df5aca90809092e5eb8d"
 
@@ -14309,16 +14299,6 @@ webpack-chain@^6.0.0:
   dependencies:
     deepmerge "^1.5.2"
     javascript-stringify "^2.0.1"
-
-webpack-dev-middleware@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-3.6.0.tgz#71f1b04e52ff8d442757af2be3a658237d53a3e5"
-  integrity sha512-oeXA3m+5gbYbDBGo4SvKpAHJJEGMoekUbHgo1RK7CP1sz7/WOSeu/dWJtSTk+rzDCLkPwQhGocgIq6lQqOyOwg==
-  dependencies:
-    memory-fs "^0.4.1"
-    mime "^2.3.1"
-    range-parser "^1.0.3"
-    webpack-log "^2.0.0"
 
 webpack-dev-middleware@3.7.2, webpack-dev-middleware@^3.7.2:
   version "3.7.2"
@@ -14861,14 +14841,6 @@ yn@3.1.1:
 zen-observable-ts@^0.8.20:
   version "0.8.20"
   resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.20.tgz#44091e335d3fcbc97f6497e63e7f57d5b516b163"
-  dependencies:
-    tslib "^1.9.3"
-    zen-observable "^0.8.0"
-
-zen-observable-ts@^0.8.21:
-  version "0.8.21"
-  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.21.tgz#85d0031fbbde1eba3cd07d3ba90da241215f421d"
-  integrity sha512-Yj3yXweRc8LdRMrCC8nIc4kkjWecPAUVh0TI0OUrWXx6aX790vLcDlWca6I4vsyCGH3LpWxq0dJRcMOFoVqmeg==
   dependencies:
     tslib "^1.9.3"
     zen-observable "^0.8.0"
