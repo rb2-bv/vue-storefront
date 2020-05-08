@@ -28,6 +28,8 @@ export const getItemName = (item: CartItem): string => item?.name || '';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getItemQty = (item: CartItem): number => item?.quantity || 0;
 
+export const getItemPrice = (item: CartItem): number => item?.totalInclTax || 0;
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFormattedPrice = (price: number) => formatPrice(price);
 
@@ -40,7 +42,8 @@ const orderGetters: UserOrderGetters<CartTotal, CartItem> = {
   getItemSku,
   getItemName,
   getItemQty,
-  getFormattedPrice
+  getFormattedPrice,
+  getItemPrice
 };
 
 export default orderGetters;
