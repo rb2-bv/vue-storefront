@@ -76,8 +76,12 @@ export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = 
     throw "Invalid username or password";
   },
   changePassword: async function changePassword({currentPassword, newPassword}) {
-    await userChangePassword(currentPassword, newPassword);
-    return await userMe();
+    try {
+      await userChangePassword(currentPassword, newPassword);
+      return await userMe();
+    } catch {
+      throw "Original password does not match"
+    }
   },
   forgotPassword: async (params: { username: string; }) => {
     await userResetPassword(params.username);
