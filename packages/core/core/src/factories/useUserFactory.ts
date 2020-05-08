@@ -13,7 +13,7 @@ export type UseUserFactoryParams<USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS>
   createPassword?: (params: { username: string, token: string, newPassword: string}) => Promise<void>;
 };
 
-export function useUserFactory<USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS extends { email: string; password: string }>(
+export function useUserFactory<USER, UPDATE_USER_PARAMS extends { email: string, firstName: string, lastName: string }, REGISTER_USER_PARAMS extends { email: string; password: string }>(
   factoryParams: UseUserFactoryParams<USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS>
 ) {
   const user: Ref<USER> = ref(null);
