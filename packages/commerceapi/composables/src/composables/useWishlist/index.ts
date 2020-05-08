@@ -10,13 +10,13 @@ import { useSSR, onSSR } from '@vue-storefront/core/lib/src/utils/ssr/default';
 // Those inetrfaces are just recommendations.
 // Feel free to update them to match your platform specification.
 type AddToWishlist = (product: ProductInfo, quantity: number) => Promise<void>
-type RemoveFromWishlist = (product: ProductInfo) => Promise<void>
+type RemoveFromWishlist = (product: CartItem) => Promise<void>
 type IsOnWishlist = (product: ProductInfo) => ComputedProperty<boolean>
 type ClearWishlist = () => Promise<void>
 type RefreshWishlist = () => Promise<void>
 
 // This state will be shared between all 'useCart` instances.
-const wishlist: Ref<WishList> = ref<WishList>(null);
+const wishlist: Ref<WishList | null> = ref<WishList | null>(null);
 const loading: Ref<boolean> = ref<boolean>(true);
 const error: Ref<any> = ref<any>(null);
 const wishlistName = "default";
@@ -26,16 +26,16 @@ const addToWishlist: AddToWishlist = async (product) => {
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeFromWishlist: RemoveFromWishlist = async (product) => {
-  wishlistRemoveitem(wishlistName, cartItemFromProduct(product, 1));
+  wishlistRemoveitem(wishlistName, product);
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const isOnWishlist: IsOnWishlist = (product) => computed(() => wishlist?.value && wishlist.value.list.find(a => a.sku == product.sku) != null);
+const isOnWishlist: IsOnWishlist = (product) => computed<boolean>(() => !! wishlist?.value?.list?.find((a: CartItem) => a.sku == product.sku) );
 
 const clearWishlist: ClearWishlist = async () => {
   wishlistClear(wishlistName);
 }
 
-const useWishlist: () => UseWishlist<WishList, ProductInfo, CartItem> = () => {
+const useWishlist: () => UseWishlist<WishList | null, ProductInfo, CartItem> = () => {
 
   const { initialState, saveToInitialState } = useSSR('vsf-wishlist');
   wishlist.value = initialState || null;
