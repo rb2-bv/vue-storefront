@@ -6,7 +6,7 @@
       class="modal"
       @close="toggleLoginModal">
       <transition name="fade" mode="out-in">
-        <div v-if="isLogin" key="log-in">
+        <div v-if="isLogin == 1" key="log-in">
           <ValidationObserver v-slot="{ handleSubmit }">
             <form class="form" @submit.prevent="handleSubmit(handleLogin)">
               <ValidationProvider rules="required|email" v-slot="{ errors }">
@@ -50,13 +50,59 @@
             </form>
           </ValidationObserver>
           <div class="action">
-            <SfButton data-cy="login-btn_forgot-password" class="sf-button--text color-secondary">Forgotten password?</SfButton>
+            <SfButton data-cy="login-btn_forgot-password" class="sf-button--text color-secondary" @click="isLogin = 2">Forgotten password?</SfButton>
           </div>
           <div class="bottom">
             Don't have and account yet?
-            <SfButton data-cy="login-btn_sign-up" class="sf-button--text color-secondary" @click="isLogin = false">Register today?</SfButton>
+            <SfButton data-cy="login-btn_sign-up" class="sf-button--text color-secondary" @click="isLogin = 0">Register today?</SfButton>
           </div>
           <SfAlert :message="error" type="danger" v-if="error" />
+        </div>
+        <div v-else-if="isLogin == 2" key="forgot">
+          <ValidationObserver v-slot="{ handleSubmit }">
+            <form class="form" @submit.prevent="handleSubmit(handleForgot)">
+              <ValidationProvider rules="required|email" v-slot="{ errors }">
+                <SfInput
+                  data-cy="login-input_email"
+                  v-model="form.username"
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+                  name="email"
+                  label="Your email"
+                  class="form__element"
+                />
+              </ValidationProvider>
+              <SfButton data-cy="login-btn_submit"
+                type="submit"
+                class="sf-button--full-width form__button"
+                :disabled="loading"
+              >
+                <SfLoader :class="{ loader: loading }" :loading="loading">
+                  <div>Reset password</div>
+                </SfLoader>
+              </SfButton>
+            </form>
+          </ValidationObserver>
+          <div class="action">
+            <SfButton data-cy="login-btn_login-into-account" class="sf-button--text color-secondary" @click="isLogin = 1">login in to your account</SfButton>
+          </div>
+          <div class="bottom">
+            Don't have and account yet?
+            <SfButton data-cy="login-btn_sign-up" class="sf-button--text color-secondary" @click="isLogin = 0">Register today?</SfButton>
+          </div>
+          <SfAlert :message="error" type="danger" v-if="error" />
+        </div>
+        <div v-else-if="isLogin == 3" key="forgot-done">
+          <div>
+            We've sent password reset instructions to your email. Check your inbox and follow the link.
+          </div>
+          <div class="action">
+            <SfButton data-cy="login-btn_login-into-account" class="sf-button--text color-secondary" @click="isLogin = 1">login in to your account</SfButton>
+          </div>
+          <div class="bottom">
+            Don't have and account yet?
+            <SfButton data-cy="login-btn_sign-up" class="sf-button--text color-secondary" @click="isLogin = 0">Register today?</SfButton>
+          </div>
         </div>
         <div v-else key="sign-up" class="form">
           <ValidationObserver v-slot="{ handleSubmit }">
@@ -125,7 +171,7 @@
           </ValidationObserver>
           <div class="action">
             or
-            <SfButton data-cy="login-btn_login-into-account" class="sf-button--text color-secondary" @click="isLogin = true">login in to your account</SfButton>
+            <SfButton data-cy="login-btn_login-into-account" class="sf-button--text color-secondary" @click="isLogin = 1">login in to your account</SfButton>
           </div>
           <SfAlert :message="error" type="danger" v-if="error" />
         </div>
@@ -167,11 +213,11 @@ export default {
   },
   setup(props, context) {
     const form = ref({});
-    const isLogin = ref(true);
+    const isLogin = ref(1);
     const createAccount = ref(false);
     const rememberMe = ref(false);
     const error = ref(null);
-    const { register, login, loading } = useUser();
+    const { register, login, forgotPassword, loading } = useUser();
 
     watch(isLoginModalOpen, () => {
       if (isLoginModalOpen) {
@@ -187,12 +233,18 @@ export default {
         error.value = e.message;
         return;
       }
-      toggleLoginModal();
+      // forgot.
+      if (isLogin.value == 2) 
+        isLogin.value = 3;
+      else
+        toggleLoginModal();
     };
 
-    const handleRegister = async () => handleForm(register)();
+    const handleRegister = async () => handleForm(forgotPassword)();
 
     const handleLogin = async () => handleForm(login)();
+
+    const handleForgot = async () => handleForm(forgotPassword)();
 
     return {
       form,
@@ -204,7 +256,8 @@ export default {
       isLoginModalOpen,
       toggleLoginModal,
       handleLogin,
-      handleRegister
+      handleRegister,
+      handleForgot
     };
   }
 };
