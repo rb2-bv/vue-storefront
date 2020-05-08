@@ -66,9 +66,23 @@ export default {
     MyReviews
   },
   setup(props, context) {
-    const { isAuthenticated } = useUser();
+    const { logout, isAuthenticated } = useUser();
     if (!isAuthenticated.value) {
       context.root.$router.push('/');
+      return;
+    }
+
+    const changeActivePage = (title) => {
+      if (title === 'Log out') {
+        logout();
+        context.root.$router.push('/');
+        return;
+      }
+
+      context.root.$router.push(`/my-account/${title.toLowerCase().replace(' ', '-')}`);
+    }
+    return {
+      changeActivePage
     }
   },
   data() {
@@ -134,15 +148,6 @@ export default {
       }
 
       return 'My profile';
-    }
-  },
-  methods: {
-    changeActivePage(title) {
-      if (title === 'Log out') {
-        return;
-      }
-
-      this.$router.push(`/my-account/${title.toLowerCase().replace(' ', '-')}`);
     }
   }
 };
