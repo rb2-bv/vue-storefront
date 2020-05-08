@@ -1,5 +1,5 @@
 import {UseUserFactoryParams} from '@vue-storefront/core';
-import { UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo, UserAddress } from '../../types';
+import { UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo, UserAddress, userResetPassword, userCreatePassword } from '../../types';
 import useCart from '../useCart';
 import { shippingDetails, billingDetails, personalDetails } from '../useCheckout';
 import { ADDRCONFIG } from 'dns';
@@ -78,6 +78,12 @@ export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = 
   changePassword: async function changePassword({currentPassword, newPassword}) {
     await userChangePassword(currentPassword, newPassword);
     return await userMe();
+  },
+  forgotPassword: async (params: { username: string; }) => {
+    await userResetPassword(params.username);
+  },
+  createPassword: async(params: { username: string; token: string; newPassword: string }) => {
+    await userCreatePassword(params.username, params.newPassword, params.token);
   }
 };
 
