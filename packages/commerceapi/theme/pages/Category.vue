@@ -383,9 +383,10 @@ import { onSSR } from '@vue-storefront/core';
 const perPageOptions = [20, 40, 100];
 
 const sortByOptions = [
-  { value: 'latest', label: 'Latest' },
-  { value: 'price-up', label: 'Price from low to high' },
-  { value: 'price-down', label: 'Price from high to low' }
+  { value: 'recommended', label: 'Recommended' },
+  { value: 'created_at:desc', label: 'Latest' },
+  { value: 'final_price:asc', label: 'Price from low to high' },
+  { value: 'final_price:desc', label: 'Price from high to low' }
 ];
 
 // TODO: to be implemented in https://github.com/DivanteLtd/next/issues/200
@@ -441,24 +442,27 @@ export default {
     const { products: categoryProducts, totalProducts, search: productsSearch, loading: productsLoading } = useProduct('categoryProducts');
     const currentPage = ref(parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
+    const sortBy = ref('recommended');
 
     onSSR(async () => {
       await search(getCategorySearchParameters(context));
       await productsSearch({
         catId: (categories.value[0] || {}).id,
         page: currentPage.value,
-        perPage: itemsPerPage.value
+        perPage: itemsPerPage.value,
+        sortBy: sortBy.value
       });
     });
 
-    watch([currentPage, itemsPerPage], () => {
+    watch([currentPage, itemsPerPage, sortBy], () => {
       if (categories.value.length) {
         loadTree();
 
         productsSearch({
           catId: categories.value[0].id,
           page: currentPage.value,
-          perPage: itemsPerPage.value
+          perPage: itemsPerPage.value,
+          sortBy: sortBy.value
         });
         context.root.$router.push({ query: {
           items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
@@ -474,7 +478,6 @@ export default {
     const isCategorySelected = (slug) => slug === (categories.value && categories.value[0] && categories.value[0].slug);
     const selectedRootCategory = computed(() => (categories.value && categories.value[0]?.parents && categories.value[0]?.parents[0]?.label) || categories?.value && categories?.value[0]?.label);
 
-    const sortBy = ref('price-up');
     const isGridView = ref(true);
     const isFilterSidebarOpen = ref(false);
 

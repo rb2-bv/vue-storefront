@@ -13,7 +13,7 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
     req.categoryId  = [params.catId];
   if (params.id)
     req.sku = params.id;
-  
+  req.sort = params.sortBy;
   
   const productResponse = await catalogProducts(req);
 
