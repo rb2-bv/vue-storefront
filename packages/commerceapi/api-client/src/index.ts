@@ -41,7 +41,7 @@ let methods = {
   cartUpdate: (token?: string, cartId?: string, cartItem?: CartItem) => cartApi?.apiCartUpdatePost(token, cartId, cartItem),
   catalogAttributes: (token?: string, skip?: number, take?: number) => catalogApi?.apiCatalogAttributesGet(token, skip, take),
   catalogCategories: (token?: string, levels?: Array<number>, active?: boolean, skip?: number, take?: number, parentId?: string, slug?: string, id?: Array<string>, urlPath?: string, sort?: string, filter?: string) => catalogApi?.apiCatalogCategoriesGet(token, levels, active, skip, take, parentId, slug, id, urlPath, sort, filter),
-  catalogProducts: (token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>) => catalogApi?.apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren),
+  catalogProducts: (token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>) => catalogApi?.apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren),
   catalogReviews: (token?: string, productId?: string, take?: number, skip?: number) => catalogApi?.apiCatalogReviewsGet(token, productId, take, skip),
   catalogCategoryTree: (token?: string) => catalogApi?.apiCatalogCategoryTreeGet(token),
   orderPaymentSubMethods: (method?: string) => orderApi?.apiOrderPaymentSubMethodsGet(method),
@@ -150,7 +150,16 @@ const cartClear = async () => {
 };
 const catalogAttributes = async (req: CatalogAttributesRequest) => (await methods.catalogAttributes(currentToken, req.skip, req.take)).data;
 const catalogCategories = async (req: CatalogCategoryRequest) =>  (await methods.catalogCategories(currentToken, req.levels, req.active, req.skip, req.take, req.parentId, req.slug, req.id, req.urlPath, req.sort, req.filter)).data;
-const catalogProducts = async (req: CatalogProductRequest) => (await methods.catalogProducts(currentToken, req.visibility, req.status, req.categoryId, req.filter, req.skip, req.take, req.urlpath, req.sort, req.sku, req.categoryKeywords, req.propertyFilters, req.aggregates, req.configurableChildren)).data;
+const catalogProducts = async (req: CatalogProductRequest) => {
+  var fil: string[] | undefined = undefined;
+  if (req.propertyFilters) {
+    fil = [];
+    for (let key in req.propertyFilters) {
+      fil.push(key + '=' + req.propertyFilters[key].join(','));
+    }
+  }
+  return (await methods.catalogProducts(currentToken, req.visibility, req.status, req.categoryId, req.filter, req.skip, req.take, req.urlpath, req.sort, req.sku, req.categoryKeywords, fil, req.aggregates, req.configurableChildren)).data;
+}
 const catalogReviews = async (req: CatalogReviewRequest) => (await methods.catalogReviews(currentToken, req.productId, req.take, req.skip)).data;
 const catalogCategoryTree = async () => (await methods.catalogCategoryTree(currentToken)).data;
 const stockCheck = methods.stockCheck;

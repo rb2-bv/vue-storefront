@@ -28,7 +28,7 @@ export class CatalogProductRequest {
     public sort?: string
     public sku?: Array<string>
     public categoryKeywords?: Array<string>
-    public propertyFilters?: { [key: string]: Array<number> }
+    public propertyFilters?: { [key: string]: Array<string> }
     public aggregates?: Array<AggregateField>
     public configurableChildren?: Array<string>
 }

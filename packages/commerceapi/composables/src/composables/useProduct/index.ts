@@ -1,8 +1,80 @@
 import { useProductFactory, ProductsSearchResult } from '@vue-storefront/core';
-import { catalogProducts, priceWithTax, CatalogProductRequest, Product } from '@vue-storefront/commerceapi-api';
+import { catalogProducts, priceWithTax, CatalogProductRequest, Product, AggregateResponse, SearchProductsResponse, AggregateField, AttributeOption, AggregateResponseBucket } from '@vue-storefront/commerceapi-api';
 import { ProductInfo } from '../../types';
 
-const productsSearch = async (params: any): Promise<ProductsSearchResult<ProductInfo, any>> => {
+interface FilterData {
+  name: string;
+  label: string;
+  options: FilterOption[];
+}
+
+interface FilterOption 
+{
+  count: number;
+  selected: boolean;
+  label: string;
+  value: string;
+}
+
+const getFiltersFromResponse = (prod: SearchProductsResponse, req?: Record<string, FilterData>): Record<string, FilterData> => {
+  let res: Record<string, FilterData> = {};
+  if (prod.minimumPrice && prod.maximumPrice) {
+    res['price'] = {
+      name: 'price',
+      label: 'Price',
+      options: [
+        {
+          count: prod.minimumPrice,
+          selected: false,
+          value: 'min',
+          label: 'min'
+        },
+        {
+          count: prod.maximumPrice,
+          selected: false,
+          value: 'max',
+          label: 'max'
+        }
+      ]
+    }
+  }
+
+  if (prod.aggregates) {
+    for(let i = 0; i < prod.aggregates.length; i++)
+    {
+      var el = prod.aggregates[i];
+      if (!el.attribute) continue;
+      var selected: string[] = [];
+      if (req && req[el.aggregateName || ""]?.options) {
+        selected = req![el.aggregateName || ""]?.options.filter((e: FilterOption) => e.selected).map((e: FilterOption) => e.value);
+      }
+      res[el.aggregateName || ""] = {
+        label: el.attribute.label || el.aggregateName || "",
+        name: el.aggregateName || "",
+        options: el?.buckets?.map((e: AggregateResponseBucket) => ({
+          count: e.count,
+          selected: selected.indexOf(e.filterKey || "") >= 0,
+          label: e.filterKey,
+          value: el?.attribute?.options?.find((o: AttributeOption) => String(o.value) == e.filterKey)?.label || e.filterKey 
+        })) || []
+      }
+    }
+  }
+
+  return res;
+};
+
+interface ProductSearchParameters {
+  slug?: string;
+  perPage?: number;
+  page?: number;
+  catId?: string;
+  id?: string;
+  sortBy: string;
+  filters?: Record<string, FilterData>;
+}
+
+const productsSearch = async (params: ProductSearchParameters): Promise<ProductsSearchResult<ProductInfo, Record<string, FilterData>>> => {
   var req: CatalogProductRequest = {};
   if (params.slug) req.urlpath = params.slug;
   if (params.perPage)  {
@@ -12,13 +84,27 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
   if (params.catId)
     req.categoryId  = [params.catId];
   if (params.id)
-    req.sku = params.id;
+    req.sku = [params.id];
   req.sort = params.sortBy;
+  if (params.filters) {
+    req.propertyFilters = {};
+    for(let key in params.filters) {
+      var sel = params.filters[key].options?.find((e: FilterOption) => e.selected);
+      if (sel) {
+        if (req.propertyFilters[params.filters[key].name]) {
+          req.propertyFilters[params.filters[key].name].push(sel.value);
+        } else 
+          req.propertyFilters[params.filters[key].name] = [sel.value];
+      }
+    }
+  }
   
   const productResponse = await catalogProducts(req);
 
   var res = {
+    availableFilters: getFiltersFromResponse(productResponse),
     total: productResponse.total,
+    
     data: (productResponse.items.map((product: Product) => {
       // two options; no variants, or multiple variants.
 
@@ -68,7 +154,8 @@ const productsSearch = async (params: any): Promise<ProductsSearchResult<Product
         ratings: product.ratings,
         numberOfReviews: product.numberOfReviews
       }));
-    })).reduce((prev: any, curr: any) => [...prev, ...curr], [])
+    })).reduce((prev: any, curr: any) => [...prev, ...curr], []),
+
   };
   return res;
 };

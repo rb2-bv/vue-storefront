@@ -57,8 +57,14 @@ export default {
   modules: [
     'nuxt-i18n',
     'cookie-universal-nuxt',
-    'vue-scrollto/nuxt'
+    'vue-scrollto/nuxt',
+    '@nuxtjs/markdownit'
   ],
+  markdownit: {
+    injected: true,
+    breaks:       true,
+    linkify:      true
+  },
   build: {
     extend(config, ctx) {
       if (ctx.isDev) {

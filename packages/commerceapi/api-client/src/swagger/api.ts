@@ -41,6 +41,68 @@ export interface AggregateField {
 /**
  * 
  * @export
+ * @interface AggregateResponse
+ */
+export interface AggregateResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof AggregateResponse
+     */
+    aggregateName?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof AggregateResponse
+     */
+    otherDocCount?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AggregateResponse
+     */
+    errorUpperBound?: number;
+    /**
+     * 
+     * @type {Array<AggregateResponseBucket>}
+     * @memberof AggregateResponse
+     */
+    buckets?: Array<AggregateResponseBucket> | null;
+    /**
+     * 
+     * @type {Attribute}
+     * @memberof AggregateResponse
+     */
+    attribute?: Attribute;
+}
+/**
+ * 
+ * @export
+ * @interface AggregateResponseBucket
+ */
+export interface AggregateResponseBucket {
+    /**
+     * 
+     * @type {number}
+     * @memberof AggregateResponseBucket
+     */
+    key?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AggregateResponseBucket
+     */
+    count?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AggregateResponseBucket
+     */
+    filterKey?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface Attribute
  */
 export interface Attribute {
@@ -1628,6 +1690,49 @@ export interface RequestPaymentSubMethodsResponse {
 /**
  * 
  * @export
+ * @interface RequestStartPayment
+ */
+export interface RequestStartPayment {
+    /**
+     * 
+     * @type {string}
+     * @memberof RequestStartPayment
+     */
+    cartID?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RequestStartPayment
+     */
+    orderID?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RequestStartPayment
+     */
+    methodName?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RequestStartPayment
+     */
+    subMethodName?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RequestStartPayment
+     */
+    redirectURL?: string | null;
+    /**
+     * 
+     * @type {Scope}
+     * @memberof RequestStartPayment
+     */
+    scope?: Scope;
+}
+/**
+ * 
+ * @export
  * @interface RequestStartPaymentResponse
  */
 export interface RequestStartPaymentResponse {
@@ -1702,6 +1807,37 @@ export interface Review {
 /**
  * 
  * @export
+ * @interface Scope
+ */
+export interface Scope {
+    /**
+     * 
+     * @type {string}
+     * @memberof Scope
+     */
+    language?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Scope
+     */
+    store?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Scope
+     */
+    currency?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Scope
+     */
+    country?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface SearchCategoriesResponse
  */
 export interface SearchCategoriesResponse {
@@ -1736,6 +1872,24 @@ export interface SearchProductsResponse {
      * @memberof SearchProductsResponse
      */
     items?: Array<Product> | null;
+    /**
+     * 
+     * @type {Array<AggregateResponse>}
+     * @memberof SearchProductsResponse
+     */
+    aggregates?: Array<AggregateResponse> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchProductsResponse
+     */
+    maximumPrice?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchProductsResponse
+     */
+    minimumPrice?: number;
 }
 /**
  * 
@@ -3138,13 +3292,15 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
          * @param {string} [sort] 
          * @param {Array<string>} [sku] 
          * @param {Array<string>} [categoryKeywords] 
-         * @param {{ [key: string]: Array<number>; }} [propertyFilters] 
+         * @param {Array<string>} [propertyFilters] 
          * @param {Array<AggregateField>} [aggregates] 
          * @param {Array<string>} [configurableChildren] 
+         * @param {number} [minPrice] 
+         * @param {number} [maxPrice] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options: any = {}): RequestArgs {
+        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, minPrice?: number, maxPrice?: number, options: any = {}): RequestArgs {
             const localVarPath = `/api/Catalog/Products`;
             const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
             let baseOptions;
@@ -3199,7 +3355,7 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['CategoryKeywords'] = categoryKeywords;
             }
 
-            if (propertyFilters !== undefined) {
+            if (propertyFilters) {
                 localVarQueryParameter['PropertyFilters'] = propertyFilters;
             }
 
@@ -3209,6 +3365,14 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
 
             if (configurableChildren) {
                 localVarQueryParameter['ConfigurableChildren'] = configurableChildren;
+            }
+
+            if (minPrice !== undefined) {
+                localVarQueryParameter['MinPrice'] = minPrice;
+            }
+
+            if (maxPrice !== undefined) {
+                localVarQueryParameter['MaxPrice'] = maxPrice;
             }
 
 
@@ -3419,14 +3583,16 @@ export const CatalogApiFp = function(configuration?: Configuration) {
          * @param {string} [sort] 
          * @param {Array<string>} [sku] 
          * @param {Array<string>} [categoryKeywords] 
-         * @param {{ [key: string]: Array<number>; }} [propertyFilters] 
+         * @param {Array<string>} [propertyFilters] 
          * @param {Array<AggregateField>} [aggregates] 
          * @param {Array<string>} [configurableChildren] 
+         * @param {number} [minPrice] 
+         * @param {number} [maxPrice] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchProductsResponse> {
-            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, options);
+        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, minPrice?: number, maxPrice?: number, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchProductsResponse> {
+            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, minPrice, maxPrice, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -3545,14 +3711,16 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          * @param {string} [sort] 
          * @param {Array<string>} [sku] 
          * @param {Array<string>} [categoryKeywords] 
-         * @param {{ [key: string]: Array<number>; }} [propertyFilters] 
+         * @param {Array<string>} [propertyFilters] 
          * @param {Array<AggregateField>} [aggregates] 
          * @param {Array<string>} [configurableChildren] 
+         * @param {number} [minPrice] 
+         * @param {number} [maxPrice] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any): AxiosPromise<SearchProductsResponse> {
-            return CatalogApiFp(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, options)(axios, basePath);
+        apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, minPrice?: number, maxPrice?: number, options?: any): AxiosPromise<SearchProductsResponse> {
+            return CatalogApiFp(configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, minPrice, maxPrice, options)(axios, basePath);
         },
         /**
          * 
@@ -3670,15 +3838,17 @@ export class CatalogApi extends BaseAPI {
      * @param {string} [sort] 
      * @param {Array<string>} [sku] 
      * @param {Array<string>} [categoryKeywords] 
-     * @param {{ [key: string]: Array<number>; }} [propertyFilters] 
+     * @param {Array<string>} [propertyFilters] 
      * @param {Array<AggregateField>} [aggregates] 
      * @param {Array<string>} [configurableChildren] 
+     * @param {number} [minPrice] 
+     * @param {number} [maxPrice] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CatalogApi
      */
-    public apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: { [key: string]: Array<number>; }, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, options?: any) {
-        return CatalogApiFp(this.configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, options)(this.axios, this.basePath);
+    public apiCatalogProductsGet(token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>, minPrice?: number, maxPrice?: number, options?: any) {
+        return CatalogApiFp(this.configuration).apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren, minPrice, maxPrice, options)(this.axios, this.basePath);
     }
 
     /**
