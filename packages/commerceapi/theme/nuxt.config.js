@@ -34,6 +34,7 @@ export default {
   buildModules: [
     // to core
     '@nuxt/typescript-build',
+    '@nuxtjs/pwa',
     '~/modules/simple.js',
     ['@vue-storefront/nuxt', {
       coreDevelopment: true,
