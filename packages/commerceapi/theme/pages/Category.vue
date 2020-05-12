@@ -189,7 +189,6 @@
           v-show="totalPages > 1"
           class="products__pagination"
           :current="currentPage"
-          @click="goToPage"
           :total="totalPages"
           :visible="5"
         />
@@ -275,11 +274,12 @@ export default {
       availableFilters
     } = useProduct('categoryProducts');
 
-    const currentPage = ref(parseInt(query.page, 10) || 1);
+    const currentPage = computed(() => parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
     const sortBy = ref('recommended');
     const filters = ref(null);
-
+    const isGridView = ref(query.gridview != "false");
+    
     const productsSearchParams = computed(() => ({
       catId: (categories.value[0] || {}).id,
       page: currentPage.value,
@@ -294,15 +294,21 @@ export default {
       filters.value = getFiltersFromUrl(context, availableFilters.value);
       await productsSearch(productsSearchParams.value);
     });
-
-    watch([currentPage, itemsPerPage, filters, sortBy], () => {
+    let skip = true;
+    watch([currentPage, itemsPerPage, filters, sortBy, isGridView], async () => {
+      if (skip) {
+        skip = false;
+        return;
+      }
       if (categories.value.length) {
-        productsSearch(productsSearchParams.value);
         context.root.$router.push({ query: {
+          gridview: isGridView.value ? undefined : "false",
           items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
           page: currentPage.value !== 1 ? currentPage.value : undefined,
           ...getFiltersForUrl(filters.value)
         }});
+        await productsSearch(productsSearchParams.value);
+        context.root.$scrollTo(context.root.$el, 2000);
       }
     }, { deep: true });
 
@@ -313,17 +319,11 @@ export default {
     const isCategorySelected = (slug) => slug === (categories.value && categories.value[0] && categories.value[0].slug);
     const selectedRootCategory = computed(() => (categories.value && categories.value[0]?.parents && categories.value[0]?.parents[0]?.label) || categories?.value && categories?.value[0]?.label);
 
-    const isGridView = ref(true);
     const isFilterSidebarOpen = ref(false);
 
     function toggleWishlist(index) {
       products.value[index].isOnWishlist = !this.products.value[index].isOnWishlist;
     }
-
-    const goToPage = (pageNumber) => {
-      currentPage.value = pageNumber;
-      context.root.$scrollTo(context.root.$el, 2000);
-    };
 
     const applyFilters = (updatedFilters) => {
       filters.value = updatedFilters;
@@ -352,8 +352,7 @@ export default {
       breadcrumbs,
       applyFilters,
       toggleWishlist,
-      isGridView,
-      goToPage
+      isGridView
     };
   },
   components: {
