@@ -276,7 +276,7 @@ export default {
 
     const currentPage = computed(() => parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
-    const sortBy = ref('recommended');
+    const sortBy = ref(query.sort || 'recommended');
     const filters = ref(null);
     const isGridView = ref(query.gridview != "false");
     
@@ -301,6 +301,7 @@ export default {
           gridview: isGridView.value ? undefined : "false",
           items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
           page: currentPage.value !== 1 ? currentPage.value : undefined,
+          sort: sortBy.value,
           ...getFiltersForUrl(filters.value)
         }});
         await productsSearch(productsSearchParams.value);
