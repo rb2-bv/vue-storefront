@@ -111,24 +111,22 @@
               :key="i"
               :header="cat.label"
             >
-              <template>
-                <SfList class="list">
-                  <SfListItem class="list__item">
-                    <SfMenuItem :data-cy="`category-link_subcategory_${cat.slug}`" :label="cat.label">
-                      <template #label>
-                        <nuxt-link :to="localePath(getCategoryPath(cat))" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
-                      </template>
-                    </SfMenuItem>
-                  </SfListItem>
-                  <SfListItem class="list__item" v-for="(subCat, j) in cat.items" :key="j">
-                    <SfMenuItem :data-cy="`category-link_subcategory_${subCat.slug}`" :label="subCat.label">
-                      <template #label="{ label }">
-                        <nuxt-link :to="localePath(getCategoryPath(subCat))" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
-                      </template>
-                    </SfMenuItem>
-                  </SfListItem>
-                </SfList>
-              </template>
+              <SfList class="list">
+                <SfListItem class="list__item">
+                  <SfMenuItem :data-cy="`category-link_subcategory_${cat.slug}`" :label="cat.label">
+                    <template #label>
+                      <nuxt-link :to="localePath(getCategoryPath(cat))" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
+                    </template>
+                  </SfMenuItem>
+                </SfListItem>
+                <SfListItem class="list__item" v-for="(subCat, j) in cat.items" :key="j">
+                  <SfMenuItem :data-cy="`category-link_subcategory_${subCat.slug}`" :label="subCat.label">
+                    <template #label="{ label }">
+                      <nuxt-link :to="localePath(getCategoryPath(subCat))" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
+                    </template>
+                  </SfMenuItem>
+                </SfListItem>
+              </SfList>
             </SfAccordionItem>
           </SfAccordion>
         </SfLoader>
@@ -189,7 +187,6 @@
           v-show="totalPages > 1"
           class="products__pagination"
           :current="currentPage"
-          @click="goToPage"
           :total="totalPages"
           :visible="5"
         />
@@ -220,7 +217,47 @@
       <Filters
         :filters="filters"
         @click:apply-filters="applyFilters"
-      ></Filters>
+      >
+        <template #categories-mobile>
+          <SfAccordionItem
+            header="Category"
+            class="filters__accordion-item"
+          >
+            <SfAccordion class="categories mobile-only">
+              <SfAccordionItem
+                v-for="cat in categoryTree && categoryTree.items"
+                :key="`category-${cat.slug}`"
+                :header="cat.label"
+              >
+                <SfList class="list">
+                  <SfListItem class="list__item">
+                    <SfMenuItem
+                      :data-cy="`category-link_subcategory_${cat.slug}`"
+                      :label="cat.label"
+                      icon=""
+                    >
+                      <template #label>
+                        <nuxt-link :to="localePath(getCategoryPath(cat))" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
+                      </template>
+                    </SfMenuItem>
+                  </SfListItem>
+                  <SfListItem class="list__item" v-for="subCat in cat.items" :key="`subcat-${subCat.slug}`">
+                    <SfMenuItem
+                      :data-cy="`category-link_subcategory_${subCat.slug}`"
+                      :label="subCat.label"
+                      icon=""
+                    >
+                      <template #label="{ label }">
+                        <nuxt-link :to="localePath(getCategoryPath(subCat))" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
+                      </template>
+                    </SfMenuItem>
+                  </SfListItem>
+                </SfList>
+              </SfAccordionItem>
+            </SfAccordion>
+          </SfAccordionItem>
+        </template>
+      </Filters>
     </SfSidebar>
   </div>
 </template>
@@ -243,7 +280,7 @@ import {
   SfLoader,
   SfColor
 } from '@storefront-ui/vue';
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed, ref, watch, onMounted } from '@vue/composition-api';
 import { useCategory, useProduct, productGetters, categoryGetters } from '<%= options.composables %>';
 import { getCategorySearchParameters, getCategoryPath } from '~/helpers/category';
 import { getFiltersFromUrl, getFiltersForUrl } from '~/helpers/filters';
@@ -268,6 +305,7 @@ export default {
   transition: 'fade',
   setup(props, context) {
     const { query } = context.root.$route;
+    onMounted(() => context.root.$scrollTo(context.root.$el, 2000));
 
     const { categories, search, loading } = useCategory('categories');
     const {
@@ -296,13 +334,13 @@ export default {
       await productsSearch(productsSearchParams.value);
     });
 
-    watch([currentPage, itemsPerPage, filters], () => {
+    watch([itemsPerPage, filters], () => {
       if (categories.value.length) {
         productsSearch(productsSearchParams.value);
         context.root.$router.push({ query: {
-          items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
-          page: currentPage.value !== 1 ? currentPage.value : undefined,
-          ...getFiltersForUrl(filters.value)
+          ...context.root.$route.query,
+          ...getFiltersForUrl(filters.value),
+          items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined
         }});
       }
     }, { deep: true });
@@ -319,11 +357,6 @@ export default {
     function toggleWishlist(index) {
       products.value[index].isOnWishlist = !this.products.value[index].isOnWishlist;
     }
-
-    const goToPage = (pageNumber) => {
-      currentPage.value = pageNumber;
-      context.root.$scrollTo(context.root.$el, 2000);
-    };
 
     const applyFilters = (updatedFilters) => {
       filters.value = updatedFilters;
@@ -351,8 +384,7 @@ export default {
       breadcrumbs: computed(() => breadcrumbs),
       applyFilters,
       toggleWishlist,
-      isGridView,
-      goToPage
+      isGridView
     };
   },
   components: {
@@ -614,6 +646,12 @@ export default {
     --button-background: var(--c-light);
     --button-color: var(--c-dark-variant);
     margin: var(--spacer-xs) 0 0 0;
+  }
+  .categories {
+    padding-left: var(--spacer-sm);
+    .sf-accordion-item__content {
+      padding-left: var(--spacer-sm);
+    }
   }
 }
 </style>

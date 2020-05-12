@@ -16,7 +16,7 @@
               {{ personalDetails.email }}
             </p>
           </div>
-          <SfButton data-cy="order-review-btn_personal-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 0)">Edit</SfButton>
+          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 0)">Edit</SfButton>
         </div>
       </SfAccordionItem>
       <SfAccordionItem header="Shipping address">
@@ -30,7 +30,7 @@
             </p>
             <p class="content">{{ shippingDetails.phoneNumber }}</p>
           </div>
-          <SfButton data-cy="order-review-btn_shippin-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 1)">Edit</SfButton
+          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 1)">Edit</SfButton
           >
         </div>
       </SfAccordionItem>
@@ -50,7 +50,7 @@
               <p class="content">{{ billingDetails.phoneNumber }}</p>
             </template>
           </div>
-          <SfButton data-cy="order-review-btn_billing-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
+          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
         </div>
       </SfAccordionItem>
       <SfAccordionItem header="Payment method">
@@ -58,7 +58,7 @@
           <div class="accordion__content">
             <p class="content">{{ chosenPaymentMethod.label }}</p>
           </div>
-          <SfButton data-cy="order-review-btn_payment-edit2" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
+          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
         </div>
       </SfAccordionItem>
     </SfAccordion>
@@ -102,7 +102,6 @@
         </SfTableData>
         <SfTableData class="table__action">
           <SfIcon
-            data-cy="order-review-icon_remove-from-cart"
             icon="cross"
             size="xxs"
             color="#BEBFC4"
@@ -118,19 +117,19 @@
         <div class="summary__total">
           <SfProperty
             name="Subtotal"
-            :value="cartGetters.getFormattedPrice(totals.subtotal)"
+            :value="totals.subtotal"
             class="sf-property--full-width property"
           />
           <SfProperty
             name="Shipping"
-            :value="cartGetters.getFormattedPrice(checkoutGetters.getShippingMethodPrice(chosenShippingMethod))"
+            :value="checkoutGetters.getFormattedPrice(checkoutGetters.getShippingMethodPrice(chosenShippingMethod))"
             class="sf-property--full-width property"
           />
         </div>
         <SfDivider />
         <SfProperty
           name="Total price"
-          :value="cartGetters.getFormattedPrice(totals.total)"
+          :value="totals.total"
           class="sf-property--full-width sf-property--large summary__property-total"
         />
         <SfCheckbox v-model="terms" name="terms" class="summary__terms">
@@ -141,12 +140,9 @@
           </template>
         </SfCheckbox>
           <div class="summary__action">
-          <!-- TODO: add nuxt link for navigating back and forward -->
-          <SfButton data-cy="order-review-btn_summary-back" class="color-secondary summary__back-button" @click="$emit('prevStep')">
-            Go back
-          </SfButton>
-          <SfButton data-cy="order-review-btn_summary-conitnue" class="summary__action-button" @click="$emit('nextStep')">
-            Continue to shipping
+          <nuxt-link to="/checkout/payment" class="sf-button color-secondary summary__back-button">Go back</nuxt-link>
+          <SfButton class="summary__action-button" @click="processOrder" :disabled="loading.order">
+            Make an order
           </SfButton>
         </div>
       </div>
@@ -169,7 +165,8 @@ import {
   SfAccordion
 } from '@storefront-ui/vue';
 import { ref, computed } from '@vue/composition-api';
-import { useCheckout, useCart, cartGetters, checkoutGetters } from '<%= options.composables %>';
+import { useCheckout, useCart, cartGetters, checkoutGetters } from '@vue-storefront/commercetools';
+import { onSSR } from '@vue-storefront/core';
 
 export default {
   name: 'ReviewOrder',
@@ -186,7 +183,6 @@ export default {
     SfAccordion
   },
   setup(props, context) {
-    context.emit('changeStep', 3);
     const billingSameAsShipping = ref(false);
     const terms = ref(false);
     const { cart, removeFromCart } = useCart();
@@ -198,15 +194,22 @@ export default {
       billingDetails,
       chosenShippingMethod,
       chosenPaymentMethod,
-      placeOrder
+      loadShippingMethods,
+      placeOrder,
+      loading
     } = useCheckout();
 
+    onSSR(async () => {
+      loadShippingMethods();
+    });
+
     const processOrder = async () => {
-      await placeOrder();
-      context.emit('nextStep');
+      const order = await placeOrder();
+      context.root.$router.push(`/checkout/thank-you?order=${order.id}`);
     };
 
     return {
+      loading,
       products,
       personalDetails,
       shippingDetails,
@@ -363,6 +366,11 @@ export default {
   }
   &__back-button {
     margin: 0 var(--spacer-xl) 0 0;
+    color:  white;
+
+    &:hover {
+      color:  white;
+    }
   }
   &__property-total {
     margin: var(--spacer-xl) 0 0 0;
