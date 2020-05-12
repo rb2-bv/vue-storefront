@@ -7,28 +7,10 @@
     />
     <div class="product">
       <div class="product__gallery">
-        <!-- TODO: replace example images with the getter, wait for SfGallery fix by SFUI team: https://github.com/DivanteLtd/storefront-ui/issues/1074 -->
-        <!-- <SfGallery
-          class="gallery-mobile mobile-only"
-          :images="[
-            {
-              mobile: { url: '/productpage/productM.jpg' },
-              desktop: { url: '/productpage/productM.jpg' },
-              big: { url: '/productpage/productM.jpg' }
-            },
-            {
-              mobile: { url: '/productpage/productM.jpg' },
-              desktop: { url: '/productpage/productM.jpg' },
-              big: { url: '/productpage/productM.jpg' }
-            }
-          ]"
-        /> -->
-        <SfImage
-          v-for="(image, i) in productGetters.getGallery(product).splice(0, 2)" :key="i"
-          :src="image.big"
-          :width="590"
-          :height="700"
-        />
+        <SfGallery
+          class="gallery"
+          :images="images"
+        />        
       </div>
       <div class="product__description">
         <SfSticky class="product-details">
@@ -231,6 +213,15 @@ export default {
     const description = computed(() => productGetters.getDescription(product.value));
     const breadcrumbs = computed(() => productGetters.getBreadcrumbs(product.value));
     const reviews = useReviews();
+    const images = computed(() => productGetters.getGallery(product.value).map(
+      a => {
+        return {
+          alt: productGetters.getDescription(product.value),
+          mobile: {url: a.small},
+          desktop: {url: a.normal},
+          zoom: {url: a.big}
+        }
+      }));
 
     watch(product, () => {
       reviews.loadProduct(product.value);
@@ -275,7 +266,8 @@ export default {
       breadcrumbs,
       pushRoute,
       showReviews,
-      reviews
+      reviews,
+      images
     };
   },
   components: {
