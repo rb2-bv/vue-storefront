@@ -192,7 +192,7 @@ import {
 import InstagramFeed from '~/components/InstagramFeed.vue';
 import RelatedProducts from '~/components/RelatedProducts.vue';
 import { ref, computed, watch } from '@vue/composition-api';
-import { useProduct, useCart, productGetters, useReviews, reviewGetters } from '@vue-storefront/commerceapi';
+import { useProduct, useStock, useCart, productGetters, useReviews, reviewGetters } from '@vue-storefront/commerceapi';
 import { onSSR } from '@vue-storefront/core';
 
 export default {
@@ -204,6 +204,7 @@ export default {
     const { products, search } = useProduct('products');
     const { products: relatedProducts, search: searchRelatedProducts, loading: relatedLoading } = useProduct('relatedProducts');
     const { addToCart, loading } = useCart();
+    const { loadingStock, loadStockForSkus, getStock } = useStock();
 
     const product = computed(() => productGetters.getFiltered(products.value, { master: true, attributes: context.root.$route.query })[0]);
     const options = computed(() => productGetters.getAttributes(product.value, ['color', 'size']));
@@ -213,6 +214,7 @@ export default {
     const description = computed(() => productGetters.getDescription(product.value));
     const breadcrumbs = computed(() => productGetters.getBreadcrumbs(product.value));
     const reviews = useReviews();
+    const stock = ref(0);
     const images = computed(() => productGetters.getGallery(product.value).map(
       a => {
         return {
@@ -224,8 +226,16 @@ export default {
       }));
 
     watch(product, () => {
+      loadStockForSkus(products.value.map(e => e.sku));
       reviews.loadProduct(product.value);
     })    
+
+    watch([products, loadingStock], () => {
+       if (!loadingStock.value && product.value)
+        stock.value = getStock(product.value.sku);
+      else 
+        stock.value = null;
+    });
 
     onSSR(async () => {
       await search({ id });
@@ -267,7 +277,8 @@ export default {
       pushRoute,
       showReviews,
       reviews,
-      images
+      images,
+      stock
     };
   },
   components: {
@@ -289,11 +300,6 @@ export default {
     SfButton,
     InstagramFeed,
     RelatedProducts
-  },
-  data() {
-    return {
-      stock: 5
-    };
   }
 };
 </script>

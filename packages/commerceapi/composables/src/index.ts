@@ -8,6 +8,7 @@ import useUser from './composables/useUser';
 import useReviews from './composables/useReviews';
 import useUserOrders from './composables/useUserOrders';
 import useWishlist from "./composables/useWishlist";
+import useStock from "./composables/useStock";
 import { cartGetters, userGetters, categoryGetters, productGetters, checkoutGetters, orderGetters, reviewGetters } from './composables/getters/';
 export * from "./types"
 
@@ -20,6 +21,8 @@ export {
   useLocale,
   useUserOrders,
   useReviews,
+  useWishlist,
+  useStock,
   cartGetters,
   categoryGetters,
   checkoutGetters,

@@ -4,7 +4,7 @@ import { ComputedProperty, UseWishlist } from '@vue-storefront/core';
 import { computed, Ref, ref } from '@vue/composition-api';
 import { ProductInfo, WishList, CartItem, wishlistGetCreate, wishlistAdditem, wishlistRemoveitem, wishlistClear } from '../../types';
 import { cartItemFromProduct } from '../useCart';
-import { useSSR, onSSR } from '@vue-storefront/core/lib/src/utils/ssr/default';
+import { useSSR, onSSR } from '@vue-storefront/core';
 
 // ishlist-specific typings.
 // Those inetrfaces are just recommendations.
