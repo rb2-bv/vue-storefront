@@ -34,6 +34,7 @@ export default {
   buildModules: [
     // to core
     '@nuxt/typescript-build',
+    '~/modules/simple.js',
     ['@vue-storefront/nuxt', {
       coreDevelopment: true,
       useRawSource: {
