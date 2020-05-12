@@ -123,7 +123,6 @@ const cartLoad = async() =>{
     return data.data;
   } catch (e) {
     if (e.response.status == 404) {
-      console.log("Retry");
       currentCart = (await methods.cartCreate(currentToken)).data;
       let data = await methods.cartTotals(currentToken, currentCart);
       cartChanged(currentCart);

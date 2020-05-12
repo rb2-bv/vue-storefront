@@ -1,5 +1,5 @@
 import { Ref, ref } from '@vue/composition-api';
-import { stockList } from '@vue-storefront/commerceapi-api';
+import { stockList, SearchStockItem } from '@vue-storefront/commerceapi-api';
 
 export interface Stock {
     sku: string,
@@ -48,7 +48,7 @@ export function useStockFactory(params: UseStockFactoryParams) {
 ;
 
 const useStock: (id: string) => UseStock = useStockFactory({
-    loadStock: async(skus) => (await stockList(skus.join(','))).data.map(e => ({
+    loadStock: async(skus) => (await stockList(skus.join(','))).data.map((e: SearchStockItem) => ({
         sku: e.sku,
         stock: e.stock
     }))
