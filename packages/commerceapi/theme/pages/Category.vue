@@ -294,14 +294,10 @@ export default {
       filters.value = getFiltersFromUrl(context, availableFilters.value);
       await productsSearch(productsSearchParams.value);
     });
-    let skip = true;
     watch([currentPage, itemsPerPage, filters, sortBy, isGridView], async () => {
-      if (skip) {
-        skip = false;
-        return;
-      }
       if (categories.value.length) {
         context.root.$router.push({ query: {
+          ...context.root.$route.query,
           gridview: isGridView.value ? undefined : "false",
           items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
           page: currentPage.value !== 1 ? currentPage.value : undefined,
