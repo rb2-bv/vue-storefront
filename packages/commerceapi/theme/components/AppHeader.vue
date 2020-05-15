@@ -3,7 +3,9 @@
     active-sidebar="activeSidebar"
     @click:cart="toggleCartSidebar"
     @click:account="onAccountClicked"
+    @enter:search="onEnterSearch"
     :cartItemsQty="cartTotalItems"
+    :searchValue="$route.query.search"
     >
     <template #logo>
       <nuxt-link :to="localePath('/')" class="sf-header__logo">
@@ -48,13 +50,19 @@ export default {
       // TODO: remove once resolved by UI team: https://github.com/DivanteLtd/storefront-ui/issues/922
       return count ? count.toString() : null;
     });
+
+    const onEnterSearch = (search) => {
+      root.$router.push({path: "/c", query: { search }});
+    }
+
     return {
       tree: computed(() => categoryGetters.getTree(tree.value).items),
       loadingTree,
       cartTotalItems,
       toggleLoginModal,
       onAccountClicked,
-      toggleCartSidebar
+      toggleCartSidebar,
+      onEnterSearch
     };
   }
 };

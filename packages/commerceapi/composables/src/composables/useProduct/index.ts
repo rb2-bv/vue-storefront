@@ -72,10 +72,14 @@ interface ProductSearchParameters {
   id?: string;
   sortBy: string;
   filters?: Record<string, FilterData>;
+  search?: string;
 }
 
 const productsSearch = async (params: ProductSearchParameters): Promise<ProductsSearchResult<ProductInfo, Record<string, FilterData>>> => {
   var req: CatalogProductRequest = {};
+  if (params.search) {
+    req.filter = params.search;
+  }
   if (params.slug) req.urlpath = params.slug;
   if (params.perPage)  {
     if (params.page) req.skip = params.perPage * (params.page -1);
@@ -160,4 +164,6 @@ const productsSearch = async (params: ProductSearchParameters): Promise<Products
   return res;
 };
 
-export default useProductFactory<ProductInfo, any, any>({ productsSearch });
+
+
+export default useProductFactory<ProductInfo, ProductSearchParameters, Record<string, FilterData>>({ productsSearch });

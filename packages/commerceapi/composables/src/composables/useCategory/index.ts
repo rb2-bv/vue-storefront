@@ -8,6 +8,7 @@ import { useSSR } from '@vue-storefront/core';
 
 const params: UseMyCategoryFactoryParams<Category, CategoryChildren, CatalogCategoryRequest> = {
   categorySearch: async (params) => {
+    if (!params.slug && !params.filter && !params.urlPath) return [];
     return (await catalogCategories(params)).items;
   },
   treeSearch: async () => {

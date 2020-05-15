@@ -285,7 +285,8 @@ export default {
       page: currentPage.value,
       perPage: itemsPerPage.value,
       filters: filters.value,
-      sortBy: sortBy.value
+      sortBy: sortBy.value,
+      search: query.search
     }));
 
     onSSR(async () => {
