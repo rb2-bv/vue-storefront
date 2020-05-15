@@ -1,0 +1,4 @@
+@import "~@storefront-ui/vue/styles";
+#__nuxt {
+    @include assign-color-variants(--c-primary, --_c-blue-primary);
+}

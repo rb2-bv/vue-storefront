@@ -10,7 +10,7 @@ export default {
     host: '0.0.0.0'
   },
   head: {
-    title: process.env.npm_package_name || '',
+    title: 'CommerceAPI - Test',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport',
@@ -98,5 +98,8 @@ export default {
       cookieKey: config.cookies.localeCookieName,
       alwaysRedirect: true
     }
-  }
+  },
+  css: [
+    '@/assets/scss/main.scss'
+  ]
 };
