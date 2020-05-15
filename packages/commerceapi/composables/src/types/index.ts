@@ -28,6 +28,7 @@ export interface CreateUserInfo {
   lastName?: string;
   email?: string;
   password?: string;
+  [x: string]: any;
 }
 
 export interface SearchOrderHistory {

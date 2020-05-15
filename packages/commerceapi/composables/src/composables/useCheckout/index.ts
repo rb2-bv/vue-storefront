@@ -6,6 +6,7 @@ import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order
 import { PaymentMethod } from '../../types';
 import { strict } from 'assert';
 import { cart } from '../useCart';
+import { AgnosticAddress } from '../useUser/factoryParams';
 
 export interface EntryUserDetails {
   firstname?: string,
@@ -14,56 +15,46 @@ export interface EntryUserDetails {
   password?: string
 }
 
-export interface EntryUserAddress {
-  firstName?: string,
-  lastName?: string,
-  streetName?: string,
-  apartment?: string,
-  city?: string,
-  state?: string,
-  postalCode?: string,
-  country?: string
-}
-
 export const paymentMethods: Ref<CartPaymentMethod[]> = ref([]);
 export const shippingMethods: Ref<CartShippingMethod[]> = ref([]);
 export const personalDetails: Ref<EntryUserDetails> = ref({});
-export const shippingDetails: Ref<EntryUserAddress> = ref({});
-export const billingDetails: Ref<EntryUserAddress> = ref({});
+export const shippingDetails: Ref<AgnosticAddress> = ref({});
+export const billingDetails: Ref<AgnosticAddress> = ref({});
 export const chosenPaymentMethod: Ref<PaymentMethod> = ref({});
 export const chosenShippingMethod: Ref<CartShippingMethod> = ref({});
 const loading = ref(false);
 
+export function agnosticAddressToAddress(address: AgnosticAddress): UserAddress {
+  return {
+    firstName: address.firstName,
+    lastName: address.lastName,
+    city: address.city,
+    email: address.email as string,
+    countryCode: address.country,
+    addressLine1: address.streetName +" "+address.apartment,
+    postCode: address.postalCode,
+    addressLine2: address.apartment,
+    company: address.company,
+    region: address.state,
+    phone: address.phoneNumber,
+    vatId: address.vatid,
+    defaultBilling: address.defaultBilling,
+    defaultShipping: address.defaultShipping,
+    id: address.id
+  }
+}
 
 export default function useCheckout(): UseCheckout<CartPaymentMethod[], CartShippingMethod[],
-Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<PaymentMethod>, Ref<CartShippingMethod>, () => Promise<string>> {
+Ref<EntryUserDetails>, Ref<AgnosticAddress>, Ref<AgnosticAddress>, Ref<PaymentMethod>, Ref<CartShippingMethod>, () => Promise<string>> {
 
   watch(chosenShippingMethod, async () => {
     if (loading.value) return;
     loading.value = true;
     try {
       if (chosenShippingMethod.value?.code) {
-        cart.value = await cartShippingInformation(chosenShippingMethod.value.code!, {
-          firstName: shippingDetails.value.firstName,
-          lastName: shippingDetails.value.lastName,
-          city: shippingDetails.value.city,
-          email: personalDetails.value.email,
-          countryCode: shippingDetails.value.country,
-          addressLine1: shippingDetails.value.streetName +" "+shippingDetails.value.apartment,
-          postCode: shippingDetails.value.postalCode,
-          region: shippingDetails.value.state
-        });
+        cart.value = await cartShippingInformation(chosenShippingMethod.value.code!, agnosticAddressToAddress(shippingDetails.value));
       }
-      shippingMethods.value = await cartShippingMethods( {
-        firstName: shippingDetails.value.firstName,
-        lastName: shippingDetails.value.lastName,
-        city: shippingDetails.value.city,
-        email: personalDetails.value.email,
-        countryCode: shippingDetails.value.country,
-        addressLine1: shippingDetails.value.streetName +" "+shippingDetails.value.apartment,
-        postCode: shippingDetails.value.postalCode,
-        region: shippingDetails.value.state
-      });
+      shippingMethods.value = await cartShippingMethods( agnosticAddressToAddress(shippingDetails.value));
       paymentMethods.value = await cartPaymentMethods();
     } finally {
       loading.value = false;
@@ -71,37 +62,9 @@ Ref<EntryUserDetails>, Ref<EntryUserAddress>, Ref<EntryUserAddress>, Ref<Payment
   });
 
   const placeOrder = async () => {
-    await cartShippingInformation(chosenShippingMethod.value.code!,  {
-      firstName: shippingDetails.value.firstName,
-      lastName: shippingDetails.value.lastName,
-      city: shippingDetails.value.city,
-      email: personalDetails.value.email,
-      countryCode: shippingDetails.value.country,
-      addressLine1: shippingDetails.value.streetName +" "+shippingDetails.value.apartment,
-      postCode: shippingDetails.value.postalCode,
-      region: shippingDetails.value.state
-    });
-    var orderNo = await order({
-      billingAddress: {
-        firstName: billingDetails.value.firstName,
-        lastName: billingDetails.value.lastName,
-        city: billingDetails.value.city,
-        email: personalDetails.value.email,
-        countryCode: billingDetails.value.country,
-        addressLine1: billingDetails.value.streetName +" "+billingDetails.value.apartment,
-        postCode: billingDetails.value.postalCode,
-        region: billingDetails.value.state
-      },
-      shippingAddress: {
-        firstName: shippingDetails.value.firstName,
-        lastName: shippingDetails.value.lastName,
-        city: shippingDetails.value.city,
-        email: personalDetails.value.email,
-        countryCode: shippingDetails.value.country,
-        addressLine1: shippingDetails.value.streetName +" "+shippingDetails.value.apartment,
-        postCode: shippingDetails.value.postalCode,
-        region: shippingDetails.value.state
-      },
+    await cartShippingInformation(chosenShippingMethod.value.code!, agnosticAddressToAddress(shippingDetails.value));
+    var orderNo = await order({ billingAddress: agnosticAddressToAddress(billingDetails.value),
+      shippingAddress: agnosticAddressToAddress(shippingDetails.value),
       paymentMethod: chosenPaymentMethod.value?.methodName,
       paymentMethodExtra: chosenPaymentMethod.value?.extraInfo,
       shippingMethod: chosenShippingMethod.value?.code

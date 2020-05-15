@@ -1940,7 +1940,62 @@ export interface SearchStockItem {
      * @memberof SearchStockItem
      */
     stock?: number;
+    /**
+     * 
+     * @type {Array<StockLeadTime>}
+     * @memberof SearchStockItem
+     */
+    leadTimes?: Array<StockLeadTime> | null;
 }
+/**
+ * 
+ * @export
+ * @interface StockLeadTime
+ */
+export interface StockLeadTime {
+    /**
+     * 
+     * @type {number}
+     * @memberof StockLeadTime
+     */
+    quantity?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof StockLeadTime
+     */
+    days?: number;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateAddressRequestData
+ */
+export interface UpdateAddressRequestData {
+    /**
+     * 
+     * @type {UserAddress}
+     * @memberof UpdateAddressRequestData
+     */
+    info?: UserAddress;
+    /**
+     * 
+     * @type {UpdateUserAction}
+     * @memberof UpdateAddressRequestData
+     */
+    action?: UpdateUserAction;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+export enum UpdateUserAction {
+    NUMBER_0 = 0,
+    NUMBER_1 = 1,
+    NUMBER_2 = 2
+}
+
 /**
  * 
  * @export
@@ -4836,6 +4891,45 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} [token] 
+         * @param {UpdateAddressRequestData} [updateAddressRequestData] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserMyAddressPost(token?: string, updateAddressRequestData?: UpdateAddressRequestData, options: any = {}): RequestArgs {
+            const localVarPath = `/api/User/my-address`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof updateAddressRequestData !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(updateAddressRequestData !== undefined ? updateAddressRequestData : {}) : (updateAddressRequestData || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5039,6 +5133,20 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} [token] 
+         * @param {UpdateAddressRequestData} [updateAddressRequestData] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserMyAddressPost(token?: string, updateAddressRequestData?: UpdateAddressRequestData, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserInfo> {
+            const localVarAxiosArgs = UserApiAxiosParamCreator(configuration).apiUserMyAddressPost(token, updateAddressRequestData, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5151,6 +5259,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @param {string} [token] 
+         * @param {UpdateAddressRequestData} [updateAddressRequestData] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserMyAddressPost(token?: string, updateAddressRequestData?: UpdateAddressRequestData, options?: any): AxiosPromise<UserInfo> {
+            return UserApiFp(configuration).apiUserMyAddressPost(token, updateAddressRequestData, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5259,6 +5377,18 @@ export class UserApi extends BaseAPI {
      */
     public apiUserMePost(token?: string, userInfo?: UserInfo, options?: any) {
         return UserApiFp(this.configuration).apiUserMePost(token, userInfo, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {UpdateAddressRequestData} [updateAddressRequestData] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserMyAddressPost(token?: string, updateAddressRequestData?: UpdateAddressRequestData, options?: any) {
+        return UserApiFp(this.configuration).apiUserMyAddressPost(token, updateAddressRequestData, options)(this.axios, this.basePath);
     }
 
     /**

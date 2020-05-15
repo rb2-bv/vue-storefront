@@ -1,4 +1,4 @@
-import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, CreateReview, AggregateField, LoginResponse, WishlistApi } from './swagger/index';
+import { CartApi, CatalogApi, OrderApi, ProductApi, StockApi, ReviewApi, UserApi, Configuration, CartItem, UserInfo, UserAddress, CreateOrderRequest, CreateReview, AggregateField, LoginResponse, WishlistApi, UpdateAddressRequestData } from './swagger/index';
 import { CatalogAttributesRequest, CatalogCategoryRequest, CatalogReviewRequest, CatalogProductRequest } from './types';
 
 export * from './swagger';
@@ -57,6 +57,7 @@ let methods = {
   userLogin: (username?: string, password?: string) => userApi?.apiUserLoginPost(username, password),
   userMe: (token?: string) => userApi?.apiUserMeGet(token),
   userMeSet: (token?: string, info?: UserInfo) => userApi?.apiUserMePost(token, info),
+  userUpdateAddress: (token?: string, data?: UpdateAddressRequestData) => userApi?.apiUserMyAddressPost(token, data),
   userOrderHistory: (token?: string, skip?: number) => userApi?.apiUserOrderHistoryGet(token, skip),
   userRefresh: (refreshToken?: string) => userApi?.apiUserRefreshPost(refreshToken),
   userResetPassword: (email?: string) => userApi?.apiUserResetPasswordPost(email),
@@ -215,6 +216,7 @@ const userRefresh = async () => {
   tokenChanged(currentToken, currentRefreshToken);
 };
 const userOrderHistory = async (skip: number) => (await methods.userOrderHistory(currentToken, skip)).data;
+const userUpdateAddress = async (data?: UpdateAddressRequestData) => (await methods.userUpdateAddress(currentToken, data)).data;
 const userLogout = async() => {
   currentToken = undefined;
   currentRefreshToken = undefined;
@@ -248,6 +250,7 @@ const wishlistAdditem = async(name?: string, cartItem?: CartItem) => (await meth
 const wishlistRemoveitem = async (name?: string, cartItem?: CartItem) => (await methods.wishlistRemoveitem(currentToken, await getAnonId(), name, cartItem)).data;
 const wishlistClear = async(name?: string) => (await methods.wishlistClear(currentToken, await getAnonId(), name)).data;
 const wishlistGetCreate = async(name?: string) =>(await methods.wishlistGetCreate(currentToken, await getAnonId(), name)).data;
+
 
 /* const catalogCmsBlock = methods.catalogCmsBlock;
 const catalogCmsPage = methods.catalogCmsPage;
@@ -285,6 +288,7 @@ export {
   userRefresh,
   userResetPassword,
   userLogout,
+  userUpdateAddress,
 
   cartPaymentMethods,
   cartShippingInformation,
