@@ -17,6 +17,13 @@ export function generateBaseConfig(pkg) {
     ],
     plugins: [
       typescript({
+        tsconfigOverride: {
+          compilerOptions: {
+              sourceMap: true,
+              inlineSourceMap: true,
+              module: "ES2015"
+          }
+        },        
         // eslint-disable-next-line global-require
         typescript: require('typescript')
       }),

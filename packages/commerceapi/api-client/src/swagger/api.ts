@@ -576,41 +576,10 @@ export interface Category {
     sortOrder?: number;
     /**
      * 
-     * @type {Array<CategoryChildren>}
+     * @type {Array<Category>}
      * @memberof Category
      */
-    children?: Array<CategoryChildren> | null;
-}
-/**
- * 
- * @export
- * @interface CategoryChildren
- */
-export interface CategoryChildren {
-    /**
-     * 
-     * @type {string}
-     * @memberof CategoryChildren
-     */
-    id?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CategoryChildren
-     */
-    label?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CategoryChildren
-     */
-    urlPath?: string | null;
-    /**
-     * 
-     * @type {Array<CategoryChildren>}
-     * @memberof CategoryChildren
-     */
-    children?: Array<CategoryChildren> | null;
+    children?: Array<Category> | null;
 }
 /**
  * 
@@ -630,6 +599,12 @@ export interface CategoryParent {
      * @memberof CategoryParent
      */
     label?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryParent
+     */
+    slug?: string | null;
     /**
      * 
      * @type {string}
@@ -1690,49 +1665,6 @@ export interface RequestPaymentSubMethodsResponse {
 /**
  * 
  * @export
- * @interface RequestStartPayment
- */
-export interface RequestStartPayment {
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    cartID?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    orderID?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    methodName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    subMethodName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestStartPayment
-     */
-    redirectURL?: string | null;
-    /**
-     * 
-     * @type {Scope}
-     * @memberof RequestStartPayment
-     */
-    scope?: Scope;
-}
-/**
- * 
- * @export
  * @interface RequestStartPaymentResponse
  */
 export interface RequestStartPaymentResponse {
@@ -1755,6 +1687,42 @@ export interface RequestStartPaymentResponse {
      */
     redirectURL?: string | null;
 }
+/**
+ * 
+ * @export
+ * @interface ResolveUrlResult
+ */
+export interface ResolveUrlResult {
+    /**
+     * 
+     * @type {ResolveUrlResultType}
+     * @memberof ResolveUrlResult
+     */
+    type?: ResolveUrlResultType;
+    /**
+     * 
+     * @type {Category}
+     * @memberof ResolveUrlResult
+     */
+    category?: Category;
+    /**
+     * 
+     * @type {Product}
+     * @memberof ResolveUrlResult
+     */
+    product?: Product;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+export enum ResolveUrlResultType {
+    NUMBER_0 = 0,
+    NUMBER_1 = 1,
+    NUMBER_2 = 2
+}
+
 /**
  * 
  * @export
@@ -1803,37 +1771,6 @@ export interface Review {
      * @memberof Review
      */
     score?: number;
-}
-/**
- * 
- * @export
- * @interface Scope
- */
-export interface Scope {
-    /**
-     * 
-     * @type {string}
-     * @memberof Scope
-     */
-    language?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Scope
-     */
-    store?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Scope
-     */
-    currency?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Scope
-     */
-    country?: string | null;
 }
 /**
  * 
@@ -3490,6 +3427,45 @@ export const CatalogApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} [token] 
+         * @param {string} [url] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogResolveSlugGet(token?: string, url?: string, options: any = {}): RequestArgs {
+            const localVarPath = `/api/Catalog/ResolveSlug`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (url !== undefined) {
+                localVarQueryParameter['url'] = url;
+            }
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
          * @param {string} [productId] 
          * @param {number} [take] 
          * @param {number} [skip] 
@@ -3590,7 +3566,7 @@ export const CatalogApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogCategoryTreeGet(token?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CategoryChildren>> {
+        apiCatalogCategoryTreeGet(token?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Category>> {
             const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogCategoryTreeGet(token, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
@@ -3671,6 +3647,20 @@ export const CatalogApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} [token] 
+         * @param {string} [url] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogResolveSlugGet(token?: string, url?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResolveUrlResult> {
+            const localVarAxiosArgs = CatalogApiAxiosParamCreator(configuration).apiCatalogResolveSlugGet(token, url, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} [token] 
          * @param {string} [productId] 
          * @param {number} [take] 
          * @param {number} [skip] 
@@ -3730,7 +3720,7 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiCatalogCategoryTreeGet(token?: string, options?: any): AxiosPromise<Array<CategoryChildren>> {
+        apiCatalogCategoryTreeGet(token?: string, options?: any): AxiosPromise<Array<Category>> {
             return CatalogApiFp(configuration).apiCatalogCategoryTreeGet(token, options)(axios, basePath);
         },
         /**
@@ -3787,6 +3777,16 @@ export const CatalogApiFactory = function (configuration?: Configuration, basePa
          */
         apiCatalogRelatedProductsGet(token?: string, categories?: Array<string>, sku?: string, options?: any): AxiosPromise<Array<Product>> {
             return CatalogApiFp(configuration).apiCatalogRelatedProductsGet(token, categories, sku, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @param {string} [token] 
+         * @param {string} [url] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCatalogResolveSlugGet(token?: string, url?: string, options?: any): AxiosPromise<ResolveUrlResult> {
+            return CatalogApiFp(configuration).apiCatalogResolveSlugGet(token, url, options)(axios, basePath);
         },
         /**
          * 
@@ -3917,6 +3917,18 @@ export class CatalogApi extends BaseAPI {
      */
     public apiCatalogRelatedProductsGet(token?: string, categories?: Array<string>, sku?: string, options?: any) {
         return CatalogApiFp(this.configuration).apiCatalogRelatedProductsGet(token, categories, sku, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @param {string} [token] 
+     * @param {string} [url] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CatalogApi
+     */
+    public apiCatalogResolveSlugGet(token?: string, url?: string, options?: any) {
+        return CatalogApiFp(this.configuration).apiCatalogResolveSlugGet(token, url, options)(this.axios, this.basePath);
     }
 
     /**
@@ -4504,32 +4516,32 @@ export const StockApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [sku] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiStockListGet(sku?: string, options: any = {}): RequestArgs {
+        apiStockListPost(body?: string, options: any = {}): RequestArgs {
             const localVarPath = `/api/Stock/list`;
             const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
             let baseOptions;
             if (configuration) {
                 baseOptions = configuration.baseOptions;
             }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (sku !== undefined) {
-                localVarQueryParameter['sku'] = sku;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
             // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
             delete localVarUrlObj.search;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
 
             return {
                 url: globalImportUrl.format(localVarUrlObj),
@@ -4560,12 +4572,12 @@ export const StockApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [sku] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiStockListGet(sku?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SearchStockItem>> {
-            const localVarAxiosArgs = StockApiAxiosParamCreator(configuration).apiStockListGet(sku, options);
+        apiStockListPost(body?: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SearchStockItem>> {
+            const localVarAxiosArgs = StockApiAxiosParamCreator(configuration).apiStockListPost(body, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -4591,12 +4603,12 @@ export const StockApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {string} [sku] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiStockListGet(sku?: string, options?: any): AxiosPromise<Array<SearchStockItem>> {
-            return StockApiFp(configuration).apiStockListGet(sku, options)(axios, basePath);
+        apiStockListPost(body?: string, options?: any): AxiosPromise<Array<SearchStockItem>> {
+            return StockApiFp(configuration).apiStockListPost(body, options)(axios, basePath);
         },
     };
 };
@@ -4621,13 +4633,13 @@ export class StockApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} [sku] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof StockApi
      */
-    public apiStockListGet(sku?: string, options?: any) {
-        return StockApiFp(this.configuration).apiStockListGet(sku, options)(this.axios, this.basePath);
+    public apiStockListPost(body?: string, options?: any) {
+        return StockApiFp(this.configuration).apiStockListPost(body, options)(this.axios, this.basePath);
     }
 
 }

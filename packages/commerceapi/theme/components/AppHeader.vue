@@ -14,7 +14,7 @@
     </template>
     <template #navigation>
       <SfHeaderNavigationItem v-for="(x, i) in tree" :key="i">
-        <nuxt-link :to="'/c/'+ x.slug">
+        <nuxt-link :to="'/'+x.slug">
           {{x.label}}
         </nuxt-link>
       </SfHeaderNavigationItem>

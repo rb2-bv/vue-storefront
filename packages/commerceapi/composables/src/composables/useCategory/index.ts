@@ -2,11 +2,11 @@ import { UseCategory, onSSR } from '@vue-storefront/core';
 import { Category } from './../../types';
 import { Ref, ref, computed, watch } from '@vue/composition-api';
 import {  UseCategoryFactoryParams } from '@vue-storefront/core';
-import { catalogCategoryTree, catalogCategories, CatalogCategoryRequest, CategoryChildren } from '@vue-storefront/commerceapi-api';
+import { catalogCategoryTree, catalogCategories, CatalogCategoryRequest } from '@vue-storefront/commerceapi-api';
 import { useSSR } from '@vue-storefront/core';
 
 
-const params: UseMyCategoryFactoryParams<Category, CategoryChildren, CatalogCategoryRequest> = {
+const params: UseMyCategoryFactoryParams<Category, Category, CatalogCategoryRequest> = {
   categorySearch: async (params) => {
     if (!params.slug && !params.filter && !params.urlPath) return [];
     return (await catalogCategories(params)).items;
@@ -82,6 +82,6 @@ export function useMyCategoryFactory<CATEGORY, CATEGORYTREE, CATEGORY_SEARCH_PAR
   };
 }
 
-const useCategory: (id: string) => UseCategory<Category> = useMyCategoryFactory<Category, CategoryChildren, CatalogCategoryRequest>(params);
+const useCategory: (id: string) => UseCategory<Category> = useMyCategoryFactory<Category, Category, CatalogCategoryRequest>(params);
 
 export default useCategory;

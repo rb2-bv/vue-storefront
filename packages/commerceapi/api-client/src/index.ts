@@ -44,12 +44,13 @@ let methods = {
   catalogProducts: (token?: string, visibility?: Array<number>, status?: Array<number>, categoryId?: Array<string>, filter?: string, skip?: number, take?: number, urlpath?: string, sort?: string, sku?: Array<string>, categoryKeywords?: Array<string>, propertyFilters?: Array<string>, aggregates?: Array<AggregateField>, configurableChildren?: Array<string>) => catalogApi?.apiCatalogProductsGet(token, visibility, status, categoryId, filter, skip, take, urlpath, sort, sku, categoryKeywords, propertyFilters, aggregates, configurableChildren),
   catalogReviews: (token?: string, productId?: string, take?: number, skip?: number) => catalogApi?.apiCatalogReviewsGet(token, productId, take, skip),
   catalogCategoryTree: (token?: string) => catalogApi?.apiCatalogCategoryTreeGet(token),
+  catalogResolveSlugGet: (token?: string, url?: string) => catalogApi?.apiCatalogResolveSlugGet(token, url),
   orderPaymentSubMethods: (method?: string) => orderApi?.apiOrderPaymentSubMethodsGet(method),
   order: (token?: string, cartId?: string, createOrderRequest?: CreateOrderRequest) => orderApi?.apiOrderOrderPost(token, cartId, createOrderRequest),
   orderStartPayment: (cartID?: string, orderID?: string, methodName?: string, subMethodName?: string, redirectURL?: string) => orderApi?.apiOrderStartPaymentPost(cartID, orderID, methodName, subMethodName, redirectURL),
   reviewCreate: (token?: string, createReview?: CreateReview) => reviewApi?.apiReviewCreatePost(token, createReview),
   stockCheck: (sku?: string) => stockApi?.apiStockCheckGet(sku),
-  stockList: (sku?: string) => stockApi?.apiStockListGet(sku),
+  stockList: (sku?: string) => stockApi?.apiStockListPost(sku),
   productRenderList: (skus?: string, currencyCode?: string, storeId?: number, token?: string) => productApi?.apiProductRenderListGet(skus, currencyCode, storeId, token),
   userChangePassword: (token?: string, currentPassword?: string, newPassword?: string) => userApi?.apiUserChangePasswordPost(token, currentPassword, newPassword),
   userCreatePassword: (email?: string, newPassword?: string, resetToken?: string) => userApi?.apiUserCreatePasswordPost(email, newPassword, resetToken),
@@ -162,6 +163,7 @@ const catalogProducts = async (req: CatalogProductRequest) => {
 }
 const catalogReviews = async (req: CatalogReviewRequest) => (await methods.catalogReviews(currentToken, req.productId, req.take, req.skip)).data;
 const catalogCategoryTree = async () => (await methods.catalogCategoryTree(currentToken)).data;
+const catalogResolveSlug = async (url?: string) => (await methods.catalogResolveSlugGet(currentToken, url)).data;
 const stockCheck = methods.stockCheck;
 const stockList = methods.stockList;
 const productRenderList = methods.productRenderList;
@@ -208,7 +210,13 @@ const userLogin = async (email: string, password: string) => {
 };
 const userMe = async () => {
   if (!currentToken) return null;
-  return (await methods.userMe(currentToken)).data
+  try {
+    return (await methods.userMe(currentToken)).data
+  } catch {
+    currentToken = (await methods.userRefresh(currentRefreshToken)).data;
+    tokenChanged(currentToken, currentRefreshToken);
+    return (await methods.userMe(currentToken)).data
+  }
 };
 const userMeSet = async (newData: UserInfo) => (await methods.userMeSet(currentToken, newData)).data;
 const userRefresh = async () => {
@@ -275,6 +283,7 @@ export {
   catalogProducts,
   catalogReviews,
   catalogCategoryTree,
+  catalogResolveSlug,
   stockCheck,
   stockList,
   productRenderList,

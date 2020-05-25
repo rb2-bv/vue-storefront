@@ -103,8 +103,8 @@ export const getBreadcrumbs = (product: ProductInfo): {text: string, link: strin
   product == null ? [{text: "Home", link: '/'}] :
   [
     {text: "Home", link: '/'}, 
-    ...(product!.categories!.map(e => ({text: e.label, link: '/c/' + e.slug}))),
-    {text: product?.name, link: '/p/' + product?.sku + '/' + product?.slug}, 
+    ...(product!.categories!.map(e => ({text: e.label, link: e.path}))),
+    {text: product?.name, link: product?.urlPath}, 
   ];
 
 export const getProductCategoryIds = (product: ProductInfo): string[] => product?.categoryIds;

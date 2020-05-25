@@ -155,7 +155,7 @@
             :show-add-to-cart-button="true"
             :isOnWishlist="false"
             @click:wishlist="toggleWishlist(i)"
-            :link="localePath(`/p/${productGetters.getId(product)}/${productGetters.getSlug(product)}`)"
+            :link="localePath(`/${productGetters.getSlug(product)}`)"
             class="products__product-card"
           />
         </transition-group>
@@ -302,7 +302,7 @@ export default {
           gridview: isGridView.value ? undefined : "false",
           items: itemsPerPage.value !== perPageOptions[0] ? itemsPerPage.value : undefined,
           page: currentPage.value !== 1 ? currentPage.value : undefined,
-          sort: sortBy.value,
+          sort: sortBy.value == 'recommended' ? undefined: sortBy.value,
           ...getFiltersForUrl(filters.value)
         }});
         await productsSearch(productsSearchParams.value);

@@ -46,6 +46,7 @@ export const params: UseUserFactoryParams<UserInfo, UserInfo, CreateUserInfo> = 
     loadProfile(null);
   },
   updateUser: async ({updatedUserData}): Promise<UserInfo> => {
+    updatedUserData.addresses = null;
     await userMeSet(updatedUserData);
     return updatedUserData;
   },

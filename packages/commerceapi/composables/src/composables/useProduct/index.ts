@@ -134,7 +134,8 @@ const productsSearch = async (params: ProductSearchParameters): Promise<Products
           images: product.images ? product.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url) : [],
           
           ratings: product.ratings,
-          numberOfReviews: product.numberOfReviews
+          numberOfReviews: product.numberOfReviews,
+          urlPath: product.urlPath
         }];
       return product.variants.map(variant => ({
         id: product.id,
@@ -156,7 +157,8 @@ const productsSearch = async (params: ProductSearchParameters): Promise<Products
         slug: product.urlPath,
         images: variant.images ? variant.images.sort((a, b) => a!.sortOrder! - b!.sortOrder!).map(e=>e.url): [],
         ratings: product.ratings,
-        numberOfReviews: product.numberOfReviews
+        numberOfReviews: product.numberOfReviews,
+        urlPath: variant.sku !== product.sku ? product.urlPath+'/'+variant : product.urlPath
       }));
     })).reduce((prev: any, curr: any) => [...prev, ...curr], []),
 

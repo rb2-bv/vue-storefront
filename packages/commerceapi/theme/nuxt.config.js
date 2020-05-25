@@ -35,7 +35,6 @@ export default {
     // to core
     '@nuxt/typescript-build',
     '@nuxtjs/pwa',
-    '~/modules/simple.js',
     ['@vue-storefront/nuxt', {
       coreDevelopment: true,
       useRawSource: {
@@ -54,7 +53,8 @@ export default {
     ['@vue-storefront/nuxt-theme', {
       apiClient: '@vue-storefront/commerceapi-api',
       composables: '@vue-storefront/commerceapi'
-    }]
+    }],
+    '~/modules/simple.js'
   ],
   modules: [
     'nuxt-i18n',

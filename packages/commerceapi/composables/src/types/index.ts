@@ -21,6 +21,7 @@ export interface ProductInfo {
     ratings?: ProductRatingStatistics;
     numberOfReviews?: number;
     shortDescription?: string;
+    urlPath?: string;
 }
 
 export interface CreateUserInfo {
