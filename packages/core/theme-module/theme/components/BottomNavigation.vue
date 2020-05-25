@@ -5,7 +5,7 @@
       <SfBottomNavigationItem :class="$route.path == '/' ? 'sf-bottom-navigation__item--active' : ''" icon="home" size="20px" label="Home"/>
     </nuxt-link>
     <SfBottomNavigationItem data-cy="bottom-navigation-url_menu" icon="menu" size="20px" label="Menu"/>
-    <SfBottomNavigationItem data-cy="bottom-navigation-url_wishlist" icon="heart" size="20px" label="Wishlist"/>
+    <SfBottomNavigationItem data-cy="bottom-navigation-url_wishlist" icon="heart" size="20px" label="Wishlist " @click="toggleWishlistSidebar()" />
     <SfBottomNavigationItem data-cy="bottom-navigation-url_account" icon="profile" size="20px" label="Account" @click="onAccountClicked()"/>
     <!-- TODO: add logic for label - if on Home then Basket, if on PDC then AddToCart etc. -->
     <SfBottomNavigationItem data-cy="bottom-navigation-url_add-to-cart"
@@ -31,7 +31,7 @@
 import { SfBottomNavigation, SfIcon, SfCircleIcon } from '@storefront-ui/vue';
 import uiState from '~/assets/ui-state';
 import { useUser } from '<%= options.composables %>';
-const { toggleCartSidebar, toggleLoginModal } = uiState;
+const { toggleCartSidebar, toggleWishlistSidebar, toggleLoginModal } = uiState;
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
       isAuthenticated && isAuthenticated.value ? root.$router.push('/my-account') : toggleLoginModal();
     };
     return {
-      toggleCartSidebar, onAccountClicked
+      toggleCartSidebar, onAccountClicked, toggleWishlistSidebar
     }
   }
 };
