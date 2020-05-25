@@ -216,7 +216,7 @@ export interface WishlistGetters<WISHLIST, WISHLIST_ITEM> {
 }
 
 export interface CategoryGetters<CATEGORY> {
-  getTree: (category: CATEGORY) => AgnosticCategoryTree | null;
+  getTree: (category: CATEGORY[]) => AgnosticCategoryTree | null;
   getBreadcrumbs?: (category: CATEGORY) => AgnosticBreadcrumb[];
   [getterName: string]: any;
 }

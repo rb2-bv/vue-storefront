@@ -154,7 +154,9 @@
             :score-rating="3"
             :show-add-to-cart-button="true"
             :isOnWishlist="false"
+            :isAddedToCart="isOnCart(product)"
             @click:wishlist="toggleWishlist(i)"
+            @click:add-to-cart="addToCart(product, 1)"
             :link="localePath(`/${productGetters.getSlug(product)}`)"
             class="products__product-card"
           />
@@ -219,7 +221,47 @@
       <Filters
         :filters="filters"
         @click:apply-filters="applyFilters"
-      ></Filters>
+      >
+        <template #categories-mobile>
+          <SfAccordionItem
+            header="Category"
+            class="filters__accordion-item"
+          >
+            <SfAccordion class="categories mobile-only">
+              <SfAccordionItem
+                v-for="cat in categoryTree && categoryTree.items"
+                :key="`category-${cat.slug}`"
+                :header="cat.label"
+              >
+                <SfList class="list">
+                  <SfListItem class="list__item">
+                    <SfMenuItem
+                      :data-cy="`category-link_subcategory_${cat.slug}`"
+                      :label="cat.label"
+                      icon=""
+                    >
+                      <template #label>
+                        <nuxt-link :to="localePath(getCategoryPath(cat))" :class="isCategorySelected(cat.slug) ? 'sidebar--cat-selected' : ''">All</nuxt-link>
+                      </template>
+                    </SfMenuItem>
+                  </SfListItem>
+                  <SfListItem class="list__item" v-for="subCat in cat.items" :key="`subcat-${subCat.slug}`">
+                    <SfMenuItem
+                      :data-cy="`category-link_subcategory_${subCat.slug}`"
+                      :label="subCat.label"
+                      icon=""
+                    >
+                      <template #label="{ label }">
+                        <nuxt-link :to="localePath(getCategoryPath(subCat))" :class="isCategorySelected(subCat.slug) ? 'sidebar--cat-selected' : ''">{{ label }}</nuxt-link>
+                      </template>
+                    </SfMenuItem>
+                  </SfListItem>
+                </SfList>
+              </SfAccordionItem>
+            </SfAccordion>
+          </SfAccordionItem>
+        </template>
+      </Filters>
     </SfSidebar>
   </div>
 </template>
@@ -242,8 +284,8 @@ import {
   SfLoader,
   SfColor
 } from '@storefront-ui/vue';
-import { computed, ref, watch } from '@vue/composition-api';
-import { useCategory, useProduct, productGetters, categoryGetters } from '@vue-storefront/commerceapi';
+import { computed, ref, watch, onMounted } from '@vue/composition-api';
+import { useCart, useCategory, useProduct, useWishlist, productGetters, categoryGetters } from '@vue-storefront/commerceapi';
 import { getCategorySearchParameters, getCategoryPath } from '~/helpers/category';
 import { getFiltersFromUrl, getFiltersForUrl } from '~/helpers/filters';
 import { onSSR } from '@vue-storefront/core';
@@ -264,6 +306,7 @@ export default {
   transition: 'fade',
   setup(props, context) {
     const { query } = context.root.$route;
+    onMounted(() => context.root.$scrollTo(context.root.$el, 2000));
 
     const { categories, search, loading, tree, loadingTree, loadTree } = useCategory('categories');
     const {
@@ -273,6 +316,8 @@ export default {
       loading: productsLoading,
       availableFilters
     } = useProduct('categoryProducts');
+    const { loadCart, addToCart, isOnCart } = useCart();
+    const { addToWishlist } = useWishlist();
 
     const currentPage = computed(() => parseInt(query.page, 10) || 1);
     const itemsPerPage = ref(parseInt(query.items, 10) || perPageOptions[0]);
@@ -294,6 +339,7 @@ export default {
       await productsSearch(productsSearchParams.value);
       filters.value = getFiltersFromUrl(context, availableFilters.value);
       await productsSearch(productsSearchParams.value);
+      await loadCart();
     });
     watch([currentPage, itemsPerPage, filters, sortBy, isGridView], async () => {
       if (categories.value.length) {
@@ -312,15 +358,14 @@ export default {
 
     const products = computed(() => productGetters.getFiltered(categoryProducts.value, { master: true }));
     const categoryTree = computed(() => categoryGetters.getTree(tree.value));
-    const breadcrumbs = computed(() => categoryGetters.getBreadcrumbs ? categoryGetters.getBreadcrumbs(categories.value[0]): [{text: "Home", route: {link:"/"}}]);
-
+    
     const isCategorySelected = (slug) => slug === (categories.value && categories.value[0] && categories.value[0].slug);
     const selectedRootCategory = computed(() => (categories.value && categories.value[0]?.parents && categories.value[0]?.parents[0]?.label) || categories?.value && categories?.value[0]?.label);
 
     const isFilterSidebarOpen = ref(false);
 
     function toggleWishlist(index) {
-      products.value[index].isOnWishlist = !this.products.value[index].isOnWishlist;
+      addToWishlist(products.value[index]);
     }
 
     const applyFilters = (updatedFilters) => {
@@ -328,6 +373,8 @@ export default {
       productsSearch(productsSearchParams.value);
       isFilterSidebarOpen.value = false;
     };
+
+    const breadcrumbs = computed(() => categoryGetters.getBreadcrumbs ? categoryGetters.getBreadcrumbs(categories.value[0]) : fallbackBreadcrumbs);
 
     return {
       products,
@@ -350,6 +397,8 @@ export default {
       breadcrumbs,
       applyFilters,
       toggleWishlist,
+      addToCart,
+      isOnCart,
       isGridView
     };
   },
@@ -612,6 +661,12 @@ export default {
     --button-background: var(--c-light);
     --button-color: var(--c-dark-variant);
     margin: var(--spacer-xs) 0 0 0;
+  }
+  .categories {
+    padding-left: var(--spacer-sm);
+    .sf-accordion-item__content {
+      padding-left: var(--spacer-sm);
+    }
   }
 }
 </style>

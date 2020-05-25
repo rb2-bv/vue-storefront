@@ -4,7 +4,7 @@ import { CategoryGetters, AgnosticCategoryTree, AgnosticBreadcrumb } from '@vue-
 import { Category } from './../../types';
 
 
-export const getCategoryTree = (category: Category): AgnosticCategoryTree => {
+export const getCategoryTree = (category: Category[]): AgnosticCategoryTree => {
   if (!category) {
     return {
       label: "",
@@ -12,12 +12,17 @@ export const getCategoryTree = (category: Category): AgnosticCategoryTree => {
     }
   }
 
-  return {
-    label: category.label || "",
-    slug: category.slug || "",
-    path: category.urlPath || "",
-    items: category.children ? category.children.map(getCategoryTree) : []
-  };
+  let buildCategory = (c: Category): AgnosticCategoryTree => ({
+    label: c.label || "",
+    slug: c.slug || "",
+    path: c.urlPath || "",
+    items: c.children ? c.children.map(buildCategory) : []
+  });
+
+  return { 
+    label: "Home",
+    items: category.map(buildCategory)
+  }
 };
 
 const getCategoryBreadcrumbs = (category: Category): AgnosticBreadcrumb[] => {

@@ -64,6 +64,8 @@ export const getWishlistTotalItems = (wishList: WishList): number => (wishList.l
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFormattedPrice = (price: number): string => formatPrice(price);
 
+export const getWishlistItemUrl = (product: CartItem) => '/p/' + product?.sku;
+
 const wishlistGetters: WishlistGetters<WishList, CartItem> = {
   getTotals: getWishlistTotals,
   getShippingPrice: getWishlistShippingPrice,
@@ -75,7 +77,8 @@ const wishlistGetters: WishlistGetters<WishList, CartItem> = {
   getItemAttributes: getWishlistItemAttributes,
   getItemSku: getWishlistItemSku,
   getTotalItems: getWishlistTotalItems,
-  getFormattedPrice
+  getFormattedPrice,
+  getItemUrl: getWishlistItemUrl
 };
 
 export default wishlistGetters;

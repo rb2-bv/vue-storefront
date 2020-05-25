@@ -253,6 +253,12 @@ export interface CartItem {
      * @memberof CartItem
      */
     properties?: Array<ProductProperty> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CartItem
+     */
+    urlPath?: string | null;
 }
 /**
  * 

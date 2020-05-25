@@ -42,6 +42,7 @@
           <!-- TODO: add size selector after design is added -->
           <div class="product-details__section desktop-only" >
             <SfSelect
+              data-cy="product-select_size"
               v-if="options.size"
               :selected="configuration.size"
               @change="size => updateFilter({ size })"
@@ -56,29 +57,23 @@
                 <SfProductOption :label="size.label" />
               </SfSelectOption>
             </SfSelect>
-            <SfSelect
-              v-if="options.color"
-              :selected="configuration.color"
-              @change="color => updateFilter({ color })"
-              label="Color"
-              class="sf-select--bordered product-details__attribute"
-            >
-              <SfSelectOption
-                v-for="color in options.color"
-                :key="color.value"
-                :value="color.value"
-              >
-                <SfProductOption :label="color.label" />
-              </SfSelectOption>
-            </SfSelect>
-          </div>
-          <div class="product-details__section">
-            <SfAlert
-              message="Low in stock"
-              type="warning"
-              class="product-details__alert mobile-only"
+            <!-- TODO: add color picker after PR done by SFUI team -->
+            <div v-if="options.color" class="product-details__colors desktop-only">
+            <p class="product-details__color-label">Color:</p>
+            <!-- TODO: handle selected logic differently as the selected prop for SfColor is a boolean -->
+            <SfColor
+              data-cy="product-color_update"
+              v-for="(color, i) in options.color"
+              :key="i"
+              :color="color.value"
+              class="product-details__color"
+              @click="updateFilter({color})"
             />
+          </div>
+          </div>
+          <div class="product-details__section desktop-only">
             <SfAddToCart
+              data-cy="product-cart_add"
               :stock="stock"
               v-model="qty"
               :disabled="loading"
@@ -87,12 +82,12 @@
               class="product-details__add-to-cart"
             />
             <div class="product-details__action">
-              <SfButton class="sf-button--text color-secondary"
+              <SfButton data-cy="product-btn_save-later" class="sf-button--text color-secondary"
                 >Save for later</SfButton
               >
             </div>
             <div class="product-details__action">
-              <SfButton class="sf-button--text color-secondary"
+              <SfButton data-cy="product-btn_add-to-compare" class="sf-button--text color-secondary"
                 >Add to compare</SfButton
               >
             </div>
@@ -203,11 +198,11 @@ export default {
     const { id } = context.root.$route.params;
     const { products, search } = useProduct('products');
     const { products: relatedProducts, search: searchRelatedProducts, loading: relatedLoading } = useProduct('relatedProducts');
-    const { addToCart, loading } = useCart();
+    const { addToCart, loading, loadCart } = useCart();
     const { loadingStock, loadStockForSkus, getStock } = useStock();
 
     const product = computed(() => productGetters.getFiltered(products.value, { master: true, attributes: context.root.$route.query })[0]);
-    const options = computed(() => productGetters.getAttributes(product.value, ['color', 'size']));
+    const options = computed(() => productGetters.getAttributes(products.value, ['color', 'size']));
     const configuration = computed(() => productGetters.getAttributes(product.value, ['color', 'size']));
     const properties = computed(() => productGetters.getProperties(product.value));
     const categories = computed(() => productGetters.getCategoryIds(product.value));
@@ -238,8 +233,9 @@ export default {
     });
 
     onSSR(async () => {
+      await loadCart();
       await search({ id });
-      await searchRelatedProducts({ catId: [categories.value[0]] });
+      await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
     });
 
     const updateFilter = (filter) => {
@@ -265,7 +261,7 @@ export default {
       configuration,
       properties,
       product,
-      relatedProducts,
+      relatedProducts: computed(() => productGetters.getFiltered(relatedProducts.value, { master: true })),
       relatedLoading,
       options,
       qty,
@@ -283,6 +279,7 @@ export default {
   },
   components: {
     SfAlert,
+    SfColor,
     SfProperty,
     SfHeading,
     SfPrice,
