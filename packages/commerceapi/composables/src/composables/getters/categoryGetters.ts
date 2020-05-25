@@ -1,22 +1,26 @@
 /* istanbul ignore file */
 
-import { CategoryGetters, AgnosticCategoryTree } from '@vue-storefront/core';
+import { CategoryGetters, AgnosticCategoryTree, AgnosticBreadcrumb } from '@vue-storefront/core';
 import { Category } from './../../types';
 
 
-export const getCategoryTree = (category: Category[]): AgnosticCategoryTree | null => {
-  if (!category) return null;
-  // we need to build a tree, and return the root.
-  const mapChildren = (cat: Category): AgnosticCategoryTree => ({
-    items: cat.children ? cat.children.map(mapChildren) : [],
-    label: cat.label || "",
-    slug: cat.urlPath || ""
-  });
+export const getCategoryTree = (category: Category): AgnosticCategoryTree => {
+  if (!category) {
+    return {
+      label: "",
+      items: []
+    }
+  }
 
-  return {label: "Home", items: category.map(mapChildren)};
+  return {
+    label: category.label || "",
+    slug: category.slug || "",
+    path: category.urlPath || "",
+    items: category.children ? category.children.map(getCategoryTree) : []
+  };
 };
 
-const getCategoryBreadcrumbs = (category: Category): { text: string, link: string}[] => {
+const getCategoryBreadcrumbs = (category: Category): AgnosticBreadcrumb[] => {
   let res: { text: string, link: string}[] = [{text: "Home", link:"/"}];
   if (!category) return res;
 
@@ -27,7 +31,7 @@ const getCategoryBreadcrumbs = (category: Category): { text: string, link: strin
   return res;
 }
 
-const categoryGetters: CategoryGetters<Category[]> = {
+const categoryGetters: CategoryGetters<Category> = {
   getTree: getCategoryTree,
   getBreadcrumbs: getCategoryBreadcrumbs,
 };

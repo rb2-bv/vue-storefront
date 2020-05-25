@@ -112,6 +112,7 @@ import {
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { computed, ref } from '@vue/composition-api';
+import { onSSR } from '@vue-storefront/core';
 import { useCart, useCheckout, checkoutGetters, cartGetters } from '<%= options.composables %>';
 
 export default {
@@ -126,7 +127,7 @@ export default {
     SfCircleIcon
   },
   setup() {
-    const { chosenShippingMethod } = useCheckout();
+    const { chosenShippingMethod, loadDetails } = useCheckout();
     const { cart, removeFromCart, updateQuantity, applyCoupon } = useCart();
     const listIsHidden = ref(false);
     const promoCode = ref('');
@@ -139,6 +140,9 @@ export default {
       await applyCoupon(promoCode.value);
       promoCode.value = "";
     }
+    onSSR(async () => {
+      await loadDetails();
+    });
 
     return {
       totalItems,

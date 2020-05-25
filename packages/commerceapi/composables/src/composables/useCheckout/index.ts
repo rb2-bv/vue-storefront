@@ -4,9 +4,8 @@ import { UseCheckout } from '@vue-storefront/core';
 import { ref, Ref, watch, computed } from '@vue/composition-api';
 import { cartShippingMethods, cartPaymentMethods, cartShippingInformation, order, CartShippingMethod, CartPaymentMethod, UserAddress, UserInfo, cartLoad } from '@vue-storefront/commerceapi-api';
 import { PaymentMethod } from '../../types';
-import { strict } from 'assert';
-import { cart } from '../useCart';
 import { AgnosticAddress } from '../useUser/factoryParams';
+import { useCart, setCart } from '../useCart'
 
 export interface EntryUserDetails {
   firstname?: string,
@@ -52,7 +51,7 @@ Ref<EntryUserDetails>, Ref<AgnosticAddress>, Ref<AgnosticAddress>, Ref<PaymentMe
     loading.value = true;
     try {
       if (chosenShippingMethod.value?.code) {
-        cart.value = await cartShippingInformation(chosenShippingMethod.value.code!, agnosticAddressToAddress(shippingDetails.value));
+        setCart(await cartShippingInformation(chosenShippingMethod.value.code!, agnosticAddressToAddress(shippingDetails.value)));
       }
       shippingMethods.value = await cartShippingMethods( agnosticAddressToAddress(shippingDetails.value));
       paymentMethods.value = await cartPaymentMethods();
@@ -70,7 +69,7 @@ Ref<EntryUserDetails>, Ref<AgnosticAddress>, Ref<AgnosticAddress>, Ref<PaymentMe
       shippingMethod: chosenShippingMethod.value?.code
     });
     // This ensures we have a clean & new cart.
-    cart.value = await cartLoad();
+    setCart(await cartLoad());
     return orderNo;
   };
 

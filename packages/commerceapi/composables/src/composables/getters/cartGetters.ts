@@ -54,10 +54,10 @@ export const getCartTotals = (cart: CartTotal): AgnosticTotals => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartShippingPrice = (cart: CartTotal): number => cart.shippingIncludingTax || 0;
+export const getCartShippingPrice = (cart: CartTotal): number => cart?.shippingIncludingTax || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotalItems = (cart: CartTotal): number => cart.totalQuantity || 0;
+export const getCartTotalItems = (cart: CartTotal): number => cart?.totalQuantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFormattedPrice = (price: number) => formatPrice(price);

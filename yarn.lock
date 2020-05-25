@@ -2332,7 +2332,6 @@
   resolved "https://registry.yarnpkg.com/@storefront-ui/shared/-/shared-0.7.10.tgz#8b3d07587b9d88bca7e447f43fa8643161c41de7"
   integrity sha512-x4QWtcmwIKIy97I+/nROBvoFUObphlSWiZXZgvsu8/8cdJqPbkas5hz2U6twskJ/0qLFQytXhayJ5ElwG/EcbA==
 
-
 "@storefront-ui/vue@^0.7.10":
   version "0.7.10"
   resolved "https://registry.yarnpkg.com/@storefront-ui/vue/-/vue-0.7.10.tgz#ee918311b5b030c571bb49b42aa97105f039f6ca"
@@ -4394,7 +4393,7 @@ body-parser@1.19.0:
     raw-body "2.4.0"
     type-is "~1.6.17"
 
-body-scroll-lock@^3.0.1:
+body-scroll-lock@^3.0.1, body-scroll-lock@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-3.0.2.tgz#97df9bb3b17a0140c4a09b3568d146ae9af6b981"
   integrity sha512-PtItUun94iIupKry8J/h6SfRCLWZnly77KbPsTSKALmxfR282L8R0Ujkv7bydSZvLxAJS4sBJ3y/E6X8gYkGrQ==

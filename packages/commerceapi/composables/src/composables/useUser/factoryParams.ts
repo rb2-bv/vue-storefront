@@ -1,9 +1,8 @@
 import { useSSR, onSSR, UseUser } from '@vue-storefront/core';
 import { computed, Ref, ref } from '@vue/composition-api';
 import { userUpdateAddress, UserInfo, userMe, userLogout, userMeSet, userCreate, userLogin, userChangePassword, CreateUserInfo, UserAddress, userResetPassword, userCreatePassword } from '../../types';
-import useCart from '../useCart';
+import { useCart, setCart } from '../useCart';
 import { shippingDetails, billingDetails, personalDetails } from '../useCheckout';
-import { ADDRCONFIG } from 'dns';
 import { getUserAddressData } from '../getters/userGetters';
 import { agnosticAddressToAddress } from '../useCheckout/index';
 
