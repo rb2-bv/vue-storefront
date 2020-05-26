@@ -1,0 +1,31 @@
+/* eslint-disable  */
+
+export default {
+  'Categories': 'Categorieën',
+  'Filters': 'Filters',
+  'Sort by': 'Sorteren op',
+  'Products found': 'Producten gevonden',
+  'About us': 'Over ons',
+  'Who we are': 'Wie zijn wij',
+  'Quality in the details': 'Kwaliteit in de details',
+  'Customer Reviews': 'Reviews',
+  'Departments': 'Afdelingen',
+  'Women fashion': 'Damensmode',
+  'Men fashion': 'Herenmode',
+  'Kidswear': 'Kinderkleding',
+  'Home': 'Start',
+  'Help': 'Help',
+  'Customer service': 'Klantenservice',
+  'Size guide': 'Größentabelle',
+  'Contact us': 'Kontaktiere uns',
+  'Payment & Delivery': 'Zahlung & Lieferung',
+  'Purchase terms': 'Kaufbedingungen',
+  'Guarantee': 'Garantie',
+  'Description': 'Beschreibung',
+  'Read reviews': 'Bewertungen lesen',
+  'Additional Information': 'Zusätzliche Information',
+  'Save for later': 'Für später speichern',
+  'Add to compare': 'Hinzufügen zum vergleichen',
+  'Match it with': 'Kombiniere es mit',
+  'Share your look': 'Teile deinen Look'
+};

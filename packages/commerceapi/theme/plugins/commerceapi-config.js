@@ -4,25 +4,29 @@ export const config = {
   currency: 'EUR',
   country: 'NL',
   countries: [
-    { code: 'US',
-      label: 'United States' },
-    { code: 'AT',
-      label: 'Austria' },
+    { code: 'BE',
+      name: 'BE',
+      label: 'Belgium' },
     { code: 'DE',
+      name: 'DE',
       label: 'Germany' },
     { code: 'NL',
+      name: 'NL',
       label: 'Nederland' }
   ],
   currencies: [
-    { name: 'EUR',
+    { code: 'EUR',
       label: 'Euro' },
-    { name: 'USD',
-      label: 'Dollar' }
   ],
   locales: [
+    { name: 'nl',
+      code: 'nl',
+      label: 'Nederlands' },
     { name: 'en',
+      code: 'en',
       label: 'English' },
     { name: 'de',
+      code: 'de',
       label: 'German' }
   ],
   cookies: {

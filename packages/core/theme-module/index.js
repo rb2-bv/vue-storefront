@@ -22,6 +22,7 @@ module.exports = async function DefaultThemeModule(moduleOptions) {
   const themeComponentsDir = path.join(this.options.rootDir, 'components');
   const themePagesDir = path.join(this.options.rootDir, 'pages');
   const themeHelpersDir = path.join(this.options.rootDir, 'helpers');
+  const languageDir = path.join(this.options.rootDir, 'lang');
   const themeFiles = getAllFilesFromDir(baseThemeDir).filter(file => !file.includes(path.sep + 'static' + path.sep));
 
   const compileAgnosticTemplate = (filePath) => {
@@ -41,7 +42,8 @@ module.exports = async function DefaultThemeModule(moduleOptions) {
   await Promise.all([
     copyThemeFiles(themeComponentsDir),
     copyThemeFiles(themePagesDir),
-    copyThemeFiles(themeHelpersDir)
+    copyThemeFiles(themeHelpersDir),
+    copyThemeFiles(languageDir)
   ]);
 
   log.success(`Added ${themeFiles.length} theme file(s) to ${chalk.bold('.theme')} folder`);
