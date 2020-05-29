@@ -113,7 +113,7 @@ import {
 } from '@storefront-ui/vue';
 import { computed, ref } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
-import { useCart, useCheckout, checkoutGetters, cartGetters } from '<%= options.composables %>';
+import { useCart, useCheckout, checkoutGetters, cartGetters } from '@vue-storefront/commerceapi';
 
 export default {
   name: 'CartPreview',

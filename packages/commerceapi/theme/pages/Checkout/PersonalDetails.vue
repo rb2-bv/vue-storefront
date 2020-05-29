@@ -87,7 +87,7 @@ import {
   SfCharacteristic
 } from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
-import { useCheckout, useUser } from '<%= options.composables %>';
+import { useCheckout, useUser } from '@vue-storefront/commerceapi';
 import uiState from '~/assets/ui-state';
 
 

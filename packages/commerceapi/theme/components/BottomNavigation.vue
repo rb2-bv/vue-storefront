@@ -30,7 +30,7 @@
 <script>
 import { SfBottomNavigation, SfIcon, SfCircleIcon } from '@storefront-ui/vue';
 import uiState from '~/assets/ui-state';
-import { useUser } from '<%= options.composables %>';
+import { useUser } from '@vue-storefront/commerceapi';
 const { toggleCartSidebar, toggleWishlistSidebar, toggleLoginModal } = uiState;
 
 export default {

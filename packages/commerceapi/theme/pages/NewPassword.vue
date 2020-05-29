@@ -31,7 +31,7 @@ import { SfInput, SfButton } from "@storefront-ui/vue";
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
 import { computed } from "@vue/composition-api";
-import { useUser } from "<%= options.composables %>";
+import { useUser } from '@vue-storefront/commerceapi';
 import uiState from '~/assets/ui-state';
 
 const { toggleLoginModal } = uiState;

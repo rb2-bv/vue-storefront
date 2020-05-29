@@ -29,7 +29,7 @@ import { SfSteps, SfButton } from '@storefront-ui/vue';
 import CartPreview from '~/components/checkout/CartPreview';
 import OrderReview from '~/components/checkout/OrderReview';
 import { ref, watch } from '@vue/composition-api';
-import { useUser } from '<%= options.composables %>';
+import { useUser } from '@vue-storefront/commerceapi';
 
 const STEPS = [
   { name: 'personal-details',

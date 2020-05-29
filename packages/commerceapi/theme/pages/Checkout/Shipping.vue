@@ -145,7 +145,6 @@ import {
 import { useLocale, useCheckout, checkoutGetters } from '@vue-storefront/commerceapi';
 import { computed } from '@vue/composition-api';
 
-];
 
 export default {
   name: 'PersonalDetails',

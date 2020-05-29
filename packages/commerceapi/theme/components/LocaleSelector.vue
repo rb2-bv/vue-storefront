@@ -39,7 +39,7 @@ import {
   SfBottomModal,
   SfCharacteristic
 } from '@storefront-ui/vue';
-import { useLocale } from '<%= options.composables %>';
+import { useLocale } from '@vue-storefront/commerceapi';
 import { ref } from '@vue/composition-api';
 
 /*

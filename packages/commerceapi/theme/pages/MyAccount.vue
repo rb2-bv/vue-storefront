@@ -46,7 +46,7 @@
 <script>
 import { SfBreadcrumbs, SfContentPages, SfButton } from '@storefront-ui/vue';
 import { computed, watch, ref } from '@vue/composition-api';
-import { userGetters, useUser } from '<%= options.composables %>';
+import { userGetters, useUser } from '@vue-storefront/commerceapi';
 import MyProfile from './MyAccount/MyProfile';
 import ShippingDetails from './MyAccount/ShippingDetails';
 import LoyaltyCard from './MyAccount/LoyaltyCard';
