@@ -31,7 +31,6 @@ export const getCartItemAttributes = (product: CartItem, filterByAttributeName?:
   for (var el = 0; el < product!.properties!.length; el++) 
   {
     const prop = product!.properties![el];
-    if (filterByAttributeName && -1 === filterByAttributeName.indexOf(prop!.name!)) continue;
     o[prop!.name!] = {
       label: prop.displayName!,
       name: prop.name!,

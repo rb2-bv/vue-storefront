@@ -1,4 +1,4 @@
-import { useProductFactory, ProductsSearchResult } from '@vue-storefront/core';
+import { AgnosticSortByOption, useProductFactory, ProductsSearchResult } from '@vue-storefront/core';
 import { catalogProducts, priceWithTax, CatalogProductRequest, Product, AggregateResponse, SearchProductsResponse, AggregateField, AttributeOption, AggregateResponseBucket } from '@vue-storefront/commerceapi-api';
 import { ProductInfo } from '../../types';
 
@@ -75,7 +75,15 @@ interface ProductSearchParameters {
   search?: string;
 }
 
-const productsSearch = async (params: ProductSearchParameters): Promise<ProductsSearchResult<ProductInfo, Record<string, FilterData>>> => {
+const availableSortingOptions = [
+  { value: 'recommended', label: 'Recommended' },
+  { value: 'created_at:desc', label: 'Latest' },
+  { value: 'final_price:asc', label: 'Price from low to high' },
+  { value: 'final_price:desc', label: 'Price from high to low' }
+];
+
+
+const productsSearch = async (params: ProductSearchParameters): Promise<ProductsSearchResult<ProductInfo, Record<string, FilterData>, AgnosticSortByOption[]>> => {
   var req: CatalogProductRequest = {};
   if (params.search) {
     req.filter = params.search;
@@ -107,6 +115,7 @@ const productsSearch = async (params: ProductSearchParameters): Promise<Products
 
   var res = {
     availableFilters: getFiltersFromResponse(productResponse),
+    availableSortingOptions,
     total: productResponse.total,
     
     data: (productResponse.items.map((product: Product) => {
@@ -168,4 +177,4 @@ const productsSearch = async (params: ProductSearchParameters): Promise<Products
 
 
 
-export default useProductFactory<ProductInfo, ProductSearchParameters, Record<string, FilterData>>({ productsSearch });
+export default useProductFactory<ProductInfo, ProductSearchParameters, Record<string, FilterData>, AgnosticSortByOption[]>({ productsSearch });
