@@ -15,7 +15,7 @@
         <SfContentPage data-cy="my-account-page_my-profile" title="My profile">
           <MyProfile
             :account="account"
-            @update:personal="updatePersonal($event)"
+            @update:personal="account = { ...account, ...$event }"
           />
         </SfContentPage>
         <SfContentPage data-cy="my-account-page_shipping-details" title="Shipping details">
@@ -45,8 +45,8 @@
 </template>
 <script>
 import { SfBreadcrumbs, SfContentPages, SfButton } from '@storefront-ui/vue';
-import { computed, watch, ref } from '@vue/composition-api';
-import { userGetters, useUser } from '<%= options.composables %>';
+import { computed } from '@vue/composition-api';
+import { useUser } from '<%= options.composables %>';
 import MyProfile from './MyAccount/MyProfile';
 import ShippingDetails from './MyAccount/ShippingDetails';
 import LoyaltyCard from './MyAccount/LoyaltyCard';
@@ -54,7 +54,7 @@ import MyNewsletter from './MyAccount/MyNewsletter';
 import OrderHistory from './MyAccount/OrderHistory';
 import MyReviews from './MyAccount/MyReviews';
 
-
+// TODO: protect this route: https://github.com/DivanteLtd/next/issues/379
 export default {
   name: 'MyAccount',
   components: {
@@ -70,9 +70,7 @@ export default {
   },
   setup(props, context) {
     const { $router, $route } = context.root;
-    const { logout, loading, user, updateUser } = useUser();
-    const { getFirstName, getLastName, getEmail } = userGetters;
-    let account = ref({});
+    const { logout } = useUser();
     const activePage = computed(() => {
       const { pageName } = $route.params;
 
@@ -93,26 +91,7 @@ export default {
       $router.push(`/my-account/${(title || '').toLowerCase().replace(' ', '-')}`);
     };
 
-    watch(loading, () => {
-      if (!loading.value) {
-        account.value = { ...account.value,
-            firstName: getFirstName(user.value),
-            lastName: getLastName(user.value),
-            email: getEmail ? getEmail(user.value): ''
-        };
-      }
-    });
-
-    const updatePersonal = async (details) => {
-      await updateUser(details);
-      context.account = { ...account,
-          firstName: getFirstName(user.value),
-          lastName: getLastName(user.value),
-          email: getEmail ? getEmail(user.value): ''
-      };
-    }
-
-    return { changeActivePage, activePage, updatePersonal, account };
+    return { changeActivePage, activePage };
   },
   data() {
     return {
@@ -129,7 +108,43 @@ export default {
             link: '#'
           }
         }
-      ]
+      ],
+      account: {
+        firstName: 'Sviatlana',
+        lastName: 'Havaka',
+        email: 'example@email.com',
+        password: 'a*23Et',
+        shipping: [
+          {
+            firstName: 'Sviatlana',
+            lastName: 'Havaka',
+            streetName: 'Zielinskiego',
+            apartment: '24/193A',
+            city: 'Wroclaw',
+            state: 'Lower Silesia',
+            zipCode: '53-540',
+            country: 'Poland',
+            phoneNumber: '(00)560 123 456'
+          },
+          {
+            firstName: 'Sviatlana',
+            lastName: 'Havaka',
+            streetName: 'Zielinskiego',
+            apartment: '20/193A',
+            city: 'Wroclaw',
+            state: 'Lower Silesia',
+            zipCode: '53-603',
+            country: 'Poland',
+            phoneNumber: '(00)560 123 456'
+          }
+        ],
+        orders: [
+          ['#35765', '4th Nov, 2019', 'Visa card', '$12.00', 'In process'],
+          ['#35766', '4th Nov, 2019', 'Paypal', '$12.00', 'Finalised'],
+          ['#35768', '4th Nov, 2019', 'Mastercard', '$12.00', 'Finalised'],
+          ['#35769', '4th Nov, 2019', 'Paypal', '$12.00', 'Finalised']
+        ]
+      }
     };
   }
 };

@@ -2,12 +2,13 @@
   <div id="checkout">
     <div class="checkout">
       <div class="checkout__main">
-        <SfSteps :active="currentStep" v-if="currentStep < 4" class="checkout__steps">
+        <SfSteps :active="currentStep" v-if="currentStep < STEPS.length" class="checkout__steps">
           <SfStep v-for="(step, index) in STEPS" :key="step.name" :name="step.label">
             <nuxt-child
               @showReview="handleShowReview"
               @changeStep="updateStep($event)"
               @nextStep="handleNextStep(index + 1)"
+              @prevStep="handleNextStep(index - 1)"
             />
           </SfStep>
         </SfSteps>
@@ -27,7 +28,8 @@
 import { SfSteps, SfButton } from '@storefront-ui/vue';
 import CartPreview from '~/components/checkout/CartPreview';
 import OrderReview from '~/components/checkout/OrderReview';
-import { ref } from '@vue/composition-api';
+import { ref, watch } from '@vue/composition-api';
+import { useUser } from '<%= options.composables %>';
 
 const STEPS = [
   { name: 'personal-details',
@@ -55,17 +57,33 @@ export default {
   setup(props, context) {
     const showCartPreview = ref(true);
     const currentStep = ref(0);
+    const { isAuthenticated } = useUser();
 
     const handleShowReview = () => {
       showCartPreview.value = false;
     };
 
     const updateStep = (next) => {
-      currentStep.value = next;
+      if (next == 0 && isAuthenticated.value) {
+        if (currentStep.value == STEPS[1]) {
+          context.root.$router.push('/');
+        } else {
+          next++;
+          context.root.$router.push(STEPS[next].name);
+        }
+      } else 
+        currentStep.value = next;
     };
 
+    watch(isAuthenticated, () => {
+      if (isAuthenticated.value && currentStep.value == 0)
+      {
+        context.root.$router.push(STEPS[1].name);
+      }
+    });
+
     const handleNextStep = (nextStep) => {
-      context.root.$router.push(nextStep < 4 ? STEPS[nextStep].name : 'thank-you');
+      context.root.$router.push(nextStep < 0 ? '/' : nextStep < STEPS.length ? STEPS[nextStep].name : 'thank-you');
     };
 
     return {

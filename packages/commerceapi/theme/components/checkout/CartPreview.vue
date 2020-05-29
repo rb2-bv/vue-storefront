@@ -58,8 +58,14 @@
       />
       <SfProperty
         name="Subtotal"
-        :value="checkoutGetters.getFormattedPrice(totals.subtotal)"
+        :value="checkoutGetters.getFormattedPrice(totals.subtotal + (totals.discount || 0))"
         class="sf-property--full-width sf-property--large property"
+      />
+      <SfProperty
+        name="Discount"
+        :value="checkoutGetters.getFormattedPrice(totals.discount)"
+        class="sf-property--full-width sf-property--large property"
+        v-if="totals.discount && totals.discount > 0"
       />
       <SfProperty
         name="Shipping"
@@ -80,7 +86,7 @@
         :label="$t('Enter promo code')"
         class="sf-input--filled promo-code__input"
       />
-      <SfCircleIcon class="promo-code__circle-icon" icon="check" />
+      <SfCircleIcon class="promo-code__circle-icon" icon="check" @click="applyCouponCode()"/>
     </div>
     <div class="highlighted">
       <SfCharacteristic
@@ -130,6 +136,10 @@ export default {
     const totalItems = computed(() => cartGetters.getTotalItems(cart.value));
     const totals = computed(() => cartGetters.getTotals(cart.value));
 
+    let applyCouponCode = async () => {
+      await applyCoupon(promoCode.value);
+      promoCode.value = "";
+    }
     onSSR(async () => {
       await loadDetails();
     });
@@ -146,7 +156,7 @@ export default {
       updateQuantity,
       checkoutGetters,
       cartGetters,
-      applyCoupon,
+      applyCouponCode,
       characteristics: [
         {
           title: 'Safety',

@@ -82,18 +82,13 @@ module.exports = async function DefaultThemeModule(moduleOptions) {
     });
     routes.push({
       name: 'category',
-      path: '/c/:slug_1?/:slug_2?/:slug_3?/:slug_4?/:slug_5?',
+      path: '/c/:slug_1/:slug_2?/:slug_3?/:slug_4?/:slug_5?',
       component: resolve(projectLocalThemeDir, 'pages/Category.vue')
-    }); 
+    });
     routes.push({
       name: 'my-account',
       path: '/my-account/:pageName?',
       component: resolve(projectLocalThemeDir, 'pages/MyAccount.vue')
-    });
-    routes.push({
-      name: 'new-password',
-      path: '/new-password/:username/:token',
-      component: resolve(projectLocalThemeDir, 'pages/NewPassword.vue')
     });
     routes.push({
       name: 'checkout',

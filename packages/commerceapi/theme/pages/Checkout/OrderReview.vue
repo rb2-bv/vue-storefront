@@ -16,7 +16,7 @@
               {{ personalDetails.email }}
             </p>
           </div>
-          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 0)">Edit</SfButton>
+          <SfButton data-cy="order-review-btn_personal-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 0)">Edit</SfButton>
         </div>
       </SfAccordionItem>
       <SfAccordionItem header="Shipping address">
@@ -30,7 +30,7 @@
             </p>
             <p class="content">{{ shippingDetails.phoneNumber }}</p>
           </div>
-          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 1)">Edit</SfButton
+          <SfButton data-cy="order-review-btn_shippin-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 1)">Edit</SfButton
           >
         </div>
       </SfAccordionItem>
@@ -50,7 +50,7 @@
               <p class="content">{{ billingDetails.phoneNumber }}</p>
             </template>
           </div>
-          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
+          <SfButton data-cy="order-review-btn_billing-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
         </div>
       </SfAccordionItem>
       <SfAccordionItem header="Payment method">
@@ -58,7 +58,7 @@
           <div class="accordion__content">
             <p class="content">{{ chosenPaymentMethod.label }}</p>
           </div>
-          <SfButton class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
+          <SfButton data-cy="order-review-btn_payment-edit2" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
         </div>
       </SfAccordionItem>
     </SfAccordion>
@@ -102,6 +102,7 @@
         </SfTableData>
         <SfTableData class="table__action">
           <SfIcon
+            data-cy="order-review-icon_remove-from-cart"
             icon="cross"
             size="xxs"
             color="#BEBFC4"
@@ -141,11 +142,11 @@
         </SfCheckbox>
           <div class="summary__action">
           <!-- TODO: add nuxt link for navigating back and forward -->
-          <SfButton class="color-secondary summary__back-button" @click="$emit('prevStep')">
+          <SfButton data-cy="order-review-btn_summary-back" class="color-secondary summary__back-button" @click="$emit('prevStep')">
             Go back
           </SfButton>
-          <SfButton class="summary__action-button" @click="processOrder()" :disabled="ordering">
-            Order
+          <SfButton data-cy="order-review-btn_summary-conitnue" class="summary__action-button" @click="$emit('nextStep')">
+            Continue to shipping
           </SfButton>
         </div>
       </div>
@@ -168,7 +169,8 @@ import {
   SfAccordion
 } from '@storefront-ui/vue';
 import { ref, computed } from '@vue/composition-api';
-import { useCheckout, useCart, cartGetters, checkoutGetters } from '@vue-storefront/commerceapi';
+import { onSSR } from '@vue-storefront/core';
+import { useCheckout, useCart, cartGetters, checkoutGetters } from '<%= options.composables %>';
 
 export default {
   name: 'ReviewOrder',
@@ -188,8 +190,7 @@ export default {
     context.emit('changeStep', 3);
     const billingSameAsShipping = ref(false);
     const terms = ref(false);
-    const { cart, removeFromCart } = useCart();
-    const ordering = ref(false);
+    const { cart, removeFromCart, loadCart } = useCart();
     const products = computed(() => cartGetters.getItems(cart.value));
     const totals = computed(() => cartGetters.getTotals(cart.value));
     const {
@@ -201,11 +202,13 @@ export default {
       placeOrder
     } = useCheckout();
 
+    onSSR(async () => {
+      await loadCart();
+    });
+
     const processOrder = async () => {
-        ordering.value = true;
-        await placeOrder();
-        ordering.value = false;
-        context.emit('nextStep');
+      await placeOrder();
+      context.emit('nextStep');
     };
 
     return {
@@ -218,7 +221,6 @@ export default {
       billingSameAsShipping,
       terms,
       totals,
-      ordering,
       removeFromCart,
       processOrder,
       tableHeaders: ['Description', 'Colour', 'Size', 'Quantity', 'Amount'],

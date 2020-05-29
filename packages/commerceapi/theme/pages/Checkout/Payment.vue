@@ -13,6 +13,7 @@
         class="form__element"
       />
       <SfInput
+        data-cy="payment-input_firstName"
         v-model="billingDetails.firstName"
         label="First name"
         name="firstName"
@@ -20,6 +21,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_lastName"
         v-model="billingDetails.lastName"
         label="Last name"
         name="lastName"
@@ -27,6 +29,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_streetName"
         v-model="billingDetails.streetName"
         label="Street name"
         name="streetName"
@@ -34,6 +37,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_apartment"
         v-model="billingDetails.apartment"
         label="House/Apartment number"
         name="apartment"
@@ -41,6 +45,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_"
         v-model="billingDetails.city"
         label="City"
         name="city"
@@ -48,6 +53,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_state"
         v-model="billingDetails.state"
         label="State/Province"
         name="state"
@@ -55,6 +61,7 @@
         required
       />
       <SfInput
+        data-cy="payment-input_postalCode"
         v-model="billingDetails.postalCode"
         label="Zip-code"
         name="zipCode"
@@ -62,6 +69,7 @@
         required
       />
       <SfSelect
+        data-cy="payment-select_billingDetails"
         v-model="billingDetails.country"
         label="Country"
         class="form__element form__element--half form__element--half-even form__select sf-select--underlined"
@@ -77,6 +85,7 @@
         </SfSelectOption>
       </SfSelect>
       <SfInput
+        data-cy="payment-input_phone"
         v-model="billingDetails.phone"
         label="Phone number"
         name="phone"

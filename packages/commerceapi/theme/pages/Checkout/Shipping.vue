@@ -7,6 +7,7 @@
     />
     <div class="form">
       <SfInput
+        data-cy="shipping-details-input_firstName"
         v-model="shippingDetails.firstName"
         label="First name"
         name="firstName"
@@ -14,6 +15,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_lastName"
         v-model="shippingDetails.lastName"
         label="Last name"
         name="lastName"
@@ -21,6 +23,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_streetName"
         v-model="shippingDetails.streetName"
         label="Street name"
         name="streetName"
@@ -28,6 +31,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_apartmanet"
         v-model="shippingDetails.apartment"
         label="House/Apartment number"
         name="apartment"
@@ -35,6 +39,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_city"
         v-model="shippingDetails.city"
         label="City"
         name="city"
@@ -42,6 +47,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_state"
         v-model="shippingDetails.state"
         label="State/Province"
         name="state"
@@ -49,6 +55,7 @@
         required
       />
       <SfInput
+        data-cy="shipping-details-input_postalCode"
         v-model="shippingDetails.postalCode"
         label="Zip-code"
         name="zipCode"
@@ -56,6 +63,7 @@
         required
       />
       <SfSelect
+        data-cy="shipping-details-select_country"
         v-model="shippingDetails.country"
         label="Country"
         class="form__element form__element--half form__element--half-even form__select sf-select--underlined"
@@ -71,6 +79,7 @@
         </SfSelectOption>
       </SfSelect>
       <SfInput
+        data-cy="shipping-details-input_phone"
         v-model="shippingDetails.phone"
         label="Phone number"
         name="phone"
@@ -86,6 +95,7 @@
     <div class="form">
       <div class="form__radio-group">
         <SfRadio
+          data-cy="shipping-details-radio_shippingMethod"
           v-for="item in shippingMethods"
           :key="checkoutGetters.getShippingMethodName(item)"
           :label="checkoutGetters.getShippingMethodName(item)"
@@ -113,10 +123,10 @@
       </div>
       <div class="form__action">
         <!-- TODO: add nuxt link for returning to personal details -->
-        <SfButton class="color-secondary form__back-button" @click="$emit('prevStep')">
+        <SfButton data-cy="shipping-btn_go-back" class="color-secondary form__back-button"  @click="$emit('prevStep')">
           Go back
         </SfButton>
-        <SfButton class="form__action-button" @click="$emit('nextStep')">
+        <SfButton data-cy="shipping-btn_continue" class="form__action-button" @click="$emit('nextStep')">
           Continue to payment
         </SfButton>
       </div>
@@ -135,6 +145,7 @@ import {
 import { useLocale, useCheckout, checkoutGetters } from '@vue-storefront/commerceapi';
 import { computed } from '@vue/composition-api';
 
+];
 
 export default {
   name: 'PersonalDetails',

@@ -47,7 +47,7 @@
           <span class="navbar__label">{{ $t('Sort by') }}:</span>
           <SfSelect  v-model="sortBy" data-cy="category-select_sortBy">
             <SfSelectOption
-              v-for="option in sortByOptions"
+              v-for="option in availableSortingOptions"
               :key="option.value"
               :value="option.value"
               class="sort__option"
@@ -285,7 +285,7 @@ import {
   SfColor
 } from '@storefront-ui/vue';
 import { computed, ref, watch, onMounted } from '@vue/composition-api';
-import { useCart, useCategory, useProduct, useWishlist, productGetters, categoryGetters } from '@vue-storefront/commerceapi';
+import { useCategory, useProduct, useCart, useWishlist, productGetters, categoryGetters } from '@vue-storefront/commerceapi';
 import { getCategorySearchParameters, getCategoryPath } from '~/helpers/category';
 import { getFiltersFromUrl, getFiltersForUrl } from '~/helpers/filters';
 import { onSSR } from '@vue-storefront/core';
@@ -314,7 +314,8 @@ export default {
       totalProducts,
       search: productsSearch,
       loading: productsLoading,
-      availableFilters
+      availableFilters,
+      availableSortingOptions
     } = useProduct('categoryProducts');
     const { loadCart, addToCart, isOnCart } = useCart();
     const { addToWishlist } = useWishlist();
@@ -392,7 +393,7 @@ export default {
       perPageOptions: computed(() => perPageOptions),
       sortBy,
       isFilterSidebarOpen,
-      sortByOptions: computed(() => sortByOptions),
+      availableSortingOptions,
       filters,
       breadcrumbs,
       applyFilters,

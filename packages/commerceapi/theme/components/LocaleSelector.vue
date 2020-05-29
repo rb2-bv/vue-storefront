@@ -5,11 +5,11 @@
       class="container__lang container__lang--selected"
       @click="isLangModalOpen = !isLangModalOpen"
     >
-      <SfImage :src="`/icons/langs/${locale}.png`" width="20" />
+      <SfImage :src="`/icons/langs/${locale.code}.png`" width="20" />
     </SfButton>
     <SfBottomModal :is-open="isLangModalOpen" title="Choose language" @click:close="isLangModalOpen = !isLangModalOpen">
       <SfList>
-        <SfListItem v-for="lang in availableLocales" :key="lang.name">
+        <SfListItem v-for="lang in availableLocales" :key="lang.code">
           <SfButton
             class="sf-button--full-width"
             :aria-label="lang.label"
@@ -20,7 +20,7 @@
                 <span>{{ lang.label }}</span>
               </template>
               <template #icon>
-                <SfImage :src="`/icons/langs/${lang.name}.png`" />
+                <SfImage :src="`/icons/langs/${lang.code}.png`" />
               </template>
             </SfCharacteristic>
           </SfButton>

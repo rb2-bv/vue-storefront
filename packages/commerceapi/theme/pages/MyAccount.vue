@@ -18,12 +18,10 @@
             @update:personal="updatePersonal($event)"
           />
         </SfContentPage>
-        <SfContentPage data-cy="my-account-page_shipping-details" title="Addresses">
+        <SfContentPage data-cy="my-account-page_shipping-details" title="Shipping details">
           <ShippingDetails
-            :addresses="addresses"
-            @add:address="addAddress($event)"
-            @update:address="updateAddress($event)"
-            @delete:address="removeAddress($event)"
+            :account="account"
+            @update:shipping="account = { ...account, ...$event }"
           />
         </SfContentPage>
         <SfContentPage data-cy="my-account-page_loyalty-card" title="Loyalty card">
@@ -48,7 +46,7 @@
 <script>
 import { SfBreadcrumbs, SfContentPages, SfButton } from '@storefront-ui/vue';
 import { computed, watch, ref } from '@vue/composition-api';
-import { userGetters, useUser } from '@vue-storefront/commerceapi';
+import { userGetters, useUser } from '<%= options.composables %>';
 import MyProfile from './MyAccount/MyProfile';
 import ShippingDetails from './MyAccount/ShippingDetails';
 import LoyaltyCard from './MyAccount/LoyaltyCard';
@@ -72,17 +70,9 @@ export default {
   },
   setup(props, context) {
     const { $router, $route } = context.root;
-    const { 
-      logout, 
-      loading, 
-      user, 
-      updateUser, 
-      addAddress,
-      updateAddress,
-      removeAddress, } = useUser();
-    const { getFirstName, getLastName, getEmail, getAddresses } = userGetters;
+    const { logout, loading, user, updateUser } = useUser();
+    const { getFirstName, getLastName, getEmail } = userGetters;
     let account = ref({});
-    let addresses = ref([]);
     const activePage = computed(() => {
       const { pageName } = $route.params;
 
@@ -103,9 +93,8 @@ export default {
       $router.push(`/my-account/${(title || '').toLowerCase().replace(' ', '-')}`);
     };
 
-    watch([user, loading], () => {
+    watch(loading, () => {
       if (!loading.value) {
-        addresses.value = getAddresses(user.value);
         account.value = { ...account.value,
             firstName: getFirstName(user.value),
             lastName: getLastName(user.value),
@@ -123,7 +112,7 @@ export default {
       };
     }
 
-    return { changeActivePage, activePage, updatePersonal, account, addresses, addAddress, updateAddress, removeAddress };
+    return { changeActivePage, activePage, updatePersonal, account };
   },
   data() {
     return {
@@ -131,13 +120,13 @@ export default {
         {
           text: 'Home',
           route: {
-            link: '/'
+            link: '#'
           }
         },
         {
           text: 'My Account',
           route: {
-            link: '/my-account'
+            link: '#'
           }
         }
       ]
